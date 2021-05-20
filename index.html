@@ -434,7 +434,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-05-19 21:43:24" itemprop="dateModified" datetime="2021-05-19T21:43:24+08:00">2021-05-19</time>
+                <time title="修改时间：2021-05-20 14:05:14" itemprop="dateModified" datetime="2021-05-20T14:05:14+08:00">2021-05-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -457,97 +457,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <a id="more"></a>
-
-<p><img src="https://gitee.com/KingCide/kc-cloud/raw/master/image/image-20210425212013706.png" alt="image-20210425212013706"></p>
-<h2 id="主题"><a href="#主题" class="headerlink" title="主题"></a>主题</h2><p>利用分层模型描述供应链系统</p>
-<h2 id="系统内容"><a href="#系统内容" class="headerlink" title="系统内容"></a>系统内容</h2><p><strong>供应链</strong>是指产品生产和流通过程中所涉及的原材料供应商、制造商、分销商、零售商以及最终消费者等成员通过与上游、下游成员的连接组成的网络结构。 </p>
-<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>本系统的需求主要包括两类：由消费者向下的信息传递需求、由供应商向上的商品流通需求。</p>
-<h2 id="系统运作过程"><a href="#系统运作过程" class="headerlink" title="系统运作过程"></a>系统运作过程</h2><p>从消费者的<strong>使用需求</strong>出发，将自己的需求信息传递给零售商，进而传递给分销商。</p>
-<p>根据需求，此时分销商可能<strong>改变商品数量分配或价格</strong>，直接将改变返回零售商。</p>
-<p>或者分销商继续将<strong>生产需求</strong>传递给制造商，制造商向供应商传递原材料需求，同时改变生产方式。</p>
-<p>供应商得到<strong>原料需求</strong>后，采购原料后通过物流发送给制造商。</p>
-<p>制造商生产出<strong>商品</strong>后，通过同一个网络将商品<strong>一层层</strong>地运送到消费者手中。</p>
-<h2 id="分层结构"><a href="#分层结构" class="headerlink" title="分层结构"></a>分层结构</h2><p>1、供应商：指给制造商提供原材料或零、部件的企业。</p>
-<p>2、制造商：负责产品生产、开发和售后服务等。</p>
-<p>3、分销企业：为实现将产品送到经营地理范围每一角落而设的产品流通代理企业，相当于网络层路由器。</p>
-<p>4、零售企业：将产品销售给消费者的企业，相当于网络层子网路由器。</p>
-<p>5、消费者：作为商品流向的最高层，同时负责向下流供应链提供需求信息，相当于应用层。</p>
-<p>6、物流企业：即上述层次之外专门提供物流服务的企业，相当于网络的链路。</p>
-<h2 id="协议概述"><a href="#协议概述" class="headerlink" title="协议概述"></a>协议概述</h2><table>
-<thead>
-<tr>
-<th><strong>层</strong></th>
-<th><strong>层功能</strong></th>
-<th><strong>协议</strong></th>
-<th></th>
-<th align="left"></th>
-<th></th>
-</tr>
-</thead>
-<tbody><tr>
-<td></td>
-<td></td>
-<td><strong>名称</strong></td>
-<td><strong>语义</strong></td>
-<td align="left"><strong>语法</strong></td>
-<td><strong>时序</strong></td>
-</tr>
-<tr>
-<td>供应商</td>
-<td>指给制造商提供原材料或零、部件的企业</td>
-<td>供应协议</td>
-<td>根据自己获得的原料需求向制造商提供原料</td>
-<td align="left">得到原料需求后，采购原料后通过物流发送给制造商</td>
-<td>先从制造商处获得原料需求，再根据原料需求向制造商提供原料</td>
-</tr>
-<tr>
-<td>制造商</td>
-<td>负责产品生产、开发和售后服务等</td>
-<td>生产协议</td>
-<td>生产商品并将其运送给分销企业</td>
-<td align="left">将获得的原料加工成商品，并将商品通过物流网络运送给分销企业</td>
-<td>先从供应商处获得原料并将其加工成商品，再将商品通过物流网络运送给分销企业</td>
-</tr>
-<tr>
-<td>分销企业</td>
-<td>为实现将产品送到经营地理范围每一角落而设的产品流通代理企业。</td>
-<td>分销协议</td>
-<td>根据需求控制商品的分配与价格，同时上传消费需求</td>
-<td align="left">根据需求可能改变商品数量分配或价格，直接将改变返回零售商，并将生产需求传递给制造商</td>
-<td>先从零售商处获得消费需求，根据消费需求调控商品的分配与价格；再生成对应的生产需求并传递给制造商</td>
-</tr>
-<tr>
-<td>零售企业</td>
-<td>将产品销售给消费者的企业</td>
-<td>零售协议</td>
-<td>落实分销企业的分配，将商品销售给消费者并收集上传消费需求</td>
-<td align="left">从分销企业获得商品并销售给消费者，再从消费者处收集消费需求并上传给分销企业</td>
-<td>先从分销企业获得对应配额的商品，再根据其规定的价格销售给消费者，同时从消费者处收集消费需求，将消费需求整理后上传给分销企业</td>
-</tr>
-<tr>
-<td>消费者</td>
-<td>作为商品流向的最高层，同时负责向下流供应链提供需求信息</td>
-<td>消费协议</td>
-<td>表达自己的消费需求，并获得对应商品</td>
-<td align="left">根据自己的使用需求，将自己的需求信息传递给零售商</td>
-<td>先根据自己的消费需求生成需求信息并将其传递给零售企业，再从零售企业处获得</td>
-</tr>
-</tbody></table>
-<h2 id="关键协议"><a href="#关键协议" class="headerlink" title="关键协议"></a>关键协议</h2><h4 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h4><p>动机（用于描述这个系统中为什么需要这个协议）</p>
-<p>范围</p>
-<p>接口</p>
-<p>操作</p>
-<h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>与其他协议关系</p>
-<p>操作模型</p>
-<p>函数说明</p>
-<p>网关</p>
-<h3 id="规范"><a href="#规范" class="headerlink" title="规范"></a>规范</h3><p>网际头部格式</p>
-<p>讨论</p>
-<p>接口</p>
-<h3 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h3><p>例子</p>
-<p>数据传输顺序</p>
-
+          <p><img src="https://gitee.com/KingCide/kc-cloud/raw/master/image/image-20210425212013706.png" alt="image-20210425212013706"></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2021/04/25/%E8%AE%A1%E9%80%9A%E7%BD%91%E9%A1%B9%E7%9B%AE-%E5%88%86%E5%B1%82%E6%A8%A1%E5%9E%8B%E6%96%B9%E6%A1%88%E8%AE%BE%E8%AE%A1/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
