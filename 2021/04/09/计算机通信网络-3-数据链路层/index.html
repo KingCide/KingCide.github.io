@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kingcide.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="数据链路层功能实现两个相连机器之间的有效、可靠的通信。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机通信网络-3-数据链路层">
+<meta property="og:url" content="https://kingcide.github.io/2021/04/09/%E8%AE%A1%E7%AE%97%E6%9C%BA%E9%80%9A%E4%BF%A1%E7%BD%91%E7%BB%9C-3-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/index.html">
+<meta property="og:site_name" content="Kc&#39;s Blog">
+<meta property="og:description" content="数据链路层功能实现两个相连机器之间的有效、可靠的通信。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210410144256343.png">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210421232031698.png">
+<meta property="article:published_time" content="2021-04-09T07:16:11.000Z">
+<meta property="article:modified_time" content="2022-08-01T04:10:33.536Z">
+<meta property="article:author" content="KingCide">
+<meta property="article:tag" content="网络">
+<meta property="article:tag" content="计通">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210410144256343.png">
+
+<link rel="canonical" href="https://kingcide.github.io/2021/04/09/%E8%AE%A1%E7%AE%97%E6%9C%BA%E9%80%9A%E4%BF%A1%E7%BD%91%E7%BB%9C-3-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>计算机通信网络-3-数据链路层 | Kc's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Kc's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">(⊙.⊙)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-music">
+
+    <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kingcide.github.io/2021/04/09/%E8%AE%A1%E7%AE%97%E6%9C%BA%E9%80%9A%E4%BF%A1%E7%BD%91%E7%BB%9C-3-%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KingCide">
+      <meta itemprop="description" content="乐极生悲，否极泰来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kc's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          计算机通信网络-3-数据链路层
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-09 15:16:11" itemprop="dateCreated datePublished" datetime="2021-04-09T15:16:11+08:00">2021-04-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-01 12:10:33" itemprop="dateModified" datetime="2022-08-01T12:10:33+08:00">2022-08-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E5%8D%B0%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习印记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="数据链路层功能"><a href="#数据链路层功能" class="headerlink" title="数据链路层功能"></a>数据链路层功能</h2><p>实现两个<strong>相连</strong>机器之间的<strong>有效</strong>、<strong>可靠</strong>的通信。</p>
+<a id="more"></a>
+
+<ul>
+<li>相连：<strong>物理</strong>相连而非逻辑相连；信号的物理特性（时间等）不发生质的改变；一般无具备逻辑判断的中介节点。</li>
+<li>有效：有效率=开销少+延时短。</li>
+<li>可靠：评价信道——误码率；评价链路——误帧率。</li>
+</ul>
+<p>三种可能的服务：无确认无连接、有确认无连接、有确认面向连接。</p>
+<p><strong>功能：成帧、差错检测、流量控制、链路管理。</strong></p>
+<ul>
+<li><p>逻辑链路控制子层</p>
+</li>
+<li><p>介质访问控制子层</p>
+</li>
+</ul>
+<h2 id="成帧和帧同步技术"><a href="#成帧和帧同步技术" class="headerlink" title="成帧和帧同步技术"></a>成帧和帧同步技术</h2><p>帧：一个完整的数据块。</p>
+<p>成帧：使用某种方法标明一个数据块的起始和终止。</p>
+<h3 id="Sync信道帧同步"><a href="#Sync信道帧同步" class="headerlink" title="Sync信道帧同步"></a>Sync信道帧同步</h3><p>位填充首尾定界法：</p>
+<p>确定开始传输数据：加定界标志F=Pattern=”01111110”。</p>
+<p>定界标志出现在实际传输的数据：（发送方）连续5个1后直接加0。</p>
+<h3 id="Async信道帧同步"><a href="#Async信道帧同步" class="headerlink" title="Async信道帧同步"></a>Async信道帧同步</h3><p>字符填充首尾定界法：</p>
+<p>首尾填充字节F(01111110)，同时采用<strong>转义符法</strong>，在帧中的数据字符前添加转义字符。</p>
+<h3 id="块传输帧同步"><a href="#块传输帧同步" class="headerlink" title="块传输帧同步"></a>块传输帧同步</h3><p>可以视为增强型异步传输。</p>
+<ul>
+<li><p>校验和法：用于帧长度固定、帧和帧首尾相连的传输方式中。</p>
+<p>ATM：帧长53字节称为信元，B[4]=B[0]+…+B[3]。</p>
+<p>没有定界符开销；可靠性挺高；需要固定信元；要求足够寄存器和高计算速度。</p>
+</li>
+<li><p>违例码法：</p>
+<p>曼彻斯特编码——J表示在一个符号中表示高电平、K表示低电平而无跳变。</p>
+<p>4b/5b编码——4bit数据映射成5bit数据，多出来一半的数据用于控制。</p>
+</li>
+</ul>
+<h2 id="差错检测"><a href="#差错检测" class="headerlink" title="差错检测"></a>差错检测</h2><p><strong>海明距离</strong>：两个码字中不同的位的个数。评估检错和纠错编码有效性的一种方法。</p>
+<p><strong>拉开海明距离</strong>：加开销——增加冗余位。</p>
+<p>为检d比特错，需要使用距离为d＋1的编码。</p>
+<p>为纠d比特错，需要使用距离为2d＋1的编码。</p>
+<h3 id="海明编码"><a href="#海明编码" class="headerlink" title="海明编码"></a>海明编码</h3><p>7位的数据需要4位的校验码，分别位于第1，2，4，8位。</p>
+<img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210410144256343.png" alt="image-20210410144256343" style="zoom:67%;" />
+
+<p>检测码相关的位，通过奇偶得到检验位的数值。</p>
+<p>接受数据后计算与比对校验位，就可以知道发生错误的位。</p>
+<h3 id="奇偶校验"><a href="#奇偶校验" class="headerlink" title="奇偶校验"></a>奇偶校验</h3><ul>
+<li>纵向冗余校验</li>
+<li>循环冗余校验：生成多项式、模2运算、接收方判断余数是否为0</li>
+</ul>
+<h3 id="校验和法"><a href="#校验和法" class="headerlink" title="校验和法"></a>校验和法</h3><p>消息为连续多个16位无符号整数，结果分为16位累加值和16位进位值，累加值和进位值相加取反，得到校验和。</p>
+<p>校验和直接填在数据后面。</p>
+<p>校验的时候：累加值+进位值+校验和——&gt;取反 =0。</p>
+<h2 id="差错控制技术"><a href="#差错控制技术" class="headerlink" title="差错控制技术"></a>差错控制技术</h2><h3 id="基本错误类型"><a href="#基本错误类型" class="headerlink" title="基本错误类型"></a>基本错误类型</h3><ul>
+<li>帧错误</li>
+<li>确认帧错误</li>
+<li>帧丢失</li>
+<li>确认帧丢失</li>
+<li>过早超时</li>
+</ul>
+<h3 id="停等协议"><a href="#停等协议" class="headerlink" title="停等协议"></a>停等协议</h3><p>发送方发完一帧后，等待收方应答再发下一帧。</p>
+<ul>
+<li>传播延时：$ T_p=\frac{d}{2/3c} $</li>
+<li>传输延时：$T_r=\frac{帧长}{数据传输速率}$</li>
+<li>停等协议延时：$T\approx2T_p+T_r$   确认帧的帧长短，已忽略传输延时。</li>
+<li>信道效率：$\alpha=\frac{T_r}{T}$</li>
+<li>随着<strong>数传速率</strong>和<strong>距离</strong>的增加效率下降</li>
+</ul>
+<h3 id="回退N帧协议"><a href="#回退N帧协议" class="headerlink" title="回退N帧协议"></a>回退N帧协议</h3><p>重传某个序号开始的所有帧。</p>
+<h3 id="选择性重传协议"><a href="#选择性重传协议" class="headerlink" title="选择性重传协议"></a>选择性重传协议</h3><p>重传某个序号的帧，接收方需要缓存。</p>
+<h3 id="累积确认"><a href="#累积确认" class="headerlink" title="累积确认"></a>累积确认</h3><p>如果收到一个确认帧，默认已经收到了该帧，及之前的全部帧。</p>
+<h3 id="滑动窗口控制"><a href="#滑动窗口控制" class="headerlink" title="滑动窗口控制"></a>滑动窗口控制</h3><p>窗口：解决收发双方的缓存区的控制问题，根本是为了让发送方连续发送。</p>
+<p>发送方窗口长度：即发方能连续发送多少帧，$W_s\ge\frac{2T_p}{T_r}+1$</p>
+<p>接受方窗口长度：取决于上层接受速度，但考虑极端情况，一般$W_r\geq W_s$</p>
+<p>帧序号：只需要在一定范围内保持唯一，序号容量&gt;=发窗+收窗。</p>
+<h2 id="典型数据链路层协议"><a href="#典型数据链路层协议" class="headerlink" title="典型数据链路层协议"></a>典型数据链路层协议</h2><h3 id="HDLC"><a href="#HDLC" class="headerlink" title="HDLC"></a>HDLC</h3><h3 id="PPP"><a href="#PPP" class="headerlink" title="PPP"></a>PPP</h3><p>点对点协议(Point to Point Protocol)</p>
+<ul>
+<li>面向连接的服务<ul>
+<li>适应PSTN之类的传输网络</li>
+<li>几乎无差错控制、流量控制</li>
+</ul>
+</li>
+<li>面向字符同步</li>
+<li>可支持多种网络层协议</li>
+<li>支持用户身份认证</li>
+<li>支持IP地址协商</li>
+</ul>
+<img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210421232031698.png" alt="image-20210421232031698" style="zoom:67%;" />
+
+<h2 id="协议和有限状态机"><a href="#协议和有限状态机" class="headerlink" title="协议和有限状态机"></a>协议和有限状态机</h2><ul>
+<li><p>协议的描述方法</p>
+<ul>
+<li>文档-RFC</li>
+<li>时序图——片段化</li>
+<li>有限状态机——直观、全局、准确</li>
+</ul>
+</li>
+<li><p>四要素：</p>
+<ul>
+<li>状态：实体有限个状态</li>
+<li>转移：状态由事件的触发，变化到下一个状态</li>
+<li>事件：触发条件，如收到PDU、定时器到达</li>
+<li>动作：处理队列中的事件，<strong>不同状态下，对同一事件可能有不同的处理方法</strong></li>
+</ul>
+</li>
+<li><p>有限状态机的作用：</p>
+<ul>
+<li>验证可靠性：失败——一系列状态转换出现不正确 或 死锁——状态有向图只有入没有出</li>
+<li>验证完备性</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag"># 网络</a>
+              <a href="/tags/%E8%AE%A1%E9%80%9A/" rel="tag"># 计通</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/04/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E9%80%9A%E4%BF%A1%E7%BD%91%E7%BB%9C-2-%E7%89%A9%E7%90%86%E5%B1%82/" rel="prev" title="计算机通信网络-2-物理层">
+      <i class="fa fa-chevron-left"></i> 计算机通信网络-2-物理层
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/04/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E9%80%9A%E4%BF%A1%E7%BD%91%E7%BB%9C-6-%E4%BC%A0%E8%BE%93%E5%B1%82/" rel="next" title="计算机通信网络-6-传输层">
+      计算机通信网络-6-传输层 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82%E5%8A%9F%E8%83%BD"><span class="nav-number">1.</span> <span class="nav-text">数据链路层功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%90%E5%B8%A7%E5%92%8C%E5%B8%A7%E5%90%8C%E6%AD%A5%E6%8A%80%E6%9C%AF"><span class="nav-number">2.</span> <span class="nav-text">成帧和帧同步技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Sync%E4%BF%A1%E9%81%93%E5%B8%A7%E5%90%8C%E6%AD%A5"><span class="nav-number">2.1.</span> <span class="nav-text">Sync信道帧同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Async%E4%BF%A1%E9%81%93%E5%B8%A7%E5%90%8C%E6%AD%A5"><span class="nav-number">2.2.</span> <span class="nav-text">Async信道帧同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9D%97%E4%BC%A0%E8%BE%93%E5%B8%A7%E5%90%8C%E6%AD%A5"><span class="nav-number">2.3.</span> <span class="nav-text">块传输帧同步</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%AE%E9%94%99%E6%A3%80%E6%B5%8B"><span class="nav-number">3.</span> <span class="nav-text">差错检测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%B7%E6%98%8E%E7%BC%96%E7%A0%81"><span class="nav-number">3.1.</span> <span class="nav-text">海明编码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A5%87%E5%81%B6%E6%A0%A1%E9%AA%8C"><span class="nav-number">3.2.</span> <span class="nav-text">奇偶校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%A1%E9%AA%8C%E5%92%8C%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text">校验和法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%AE%E9%94%99%E6%8E%A7%E5%88%B6%E6%8A%80%E6%9C%AF"><span class="nav-number">4.</span> <span class="nav-text">差错控制技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E9%94%99%E8%AF%AF%E7%B1%BB%E5%9E%8B"><span class="nav-number">4.1.</span> <span class="nav-text">基本错误类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%81%9C%E7%AD%89%E5%8D%8F%E8%AE%AE"><span class="nav-number">4.2.</span> <span class="nav-text">停等协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9E%E9%80%80N%E5%B8%A7%E5%8D%8F%E8%AE%AE"><span class="nav-number">4.3.</span> <span class="nav-text">回退N帧协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E6%80%A7%E9%87%8D%E4%BC%A0%E5%8D%8F%E8%AE%AE"><span class="nav-number">4.4.</span> <span class="nav-text">选择性重传协议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B4%AF%E7%A7%AF%E7%A1%AE%E8%AE%A4"><span class="nav-number">4.5.</span> <span class="nav-text">累积确认</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E6%8E%A7%E5%88%B6"><span class="nav-number">4.6.</span> <span class="nav-text">滑动窗口控制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82%E5%8D%8F%E8%AE%AE"><span class="nav-number">5.</span> <span class="nav-text">典型数据链路层协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HDLC"><span class="nav-number">5.1.</span> <span class="nav-text">HDLC</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PPP"><span class="nav-number">5.2.</span> <span class="nav-text">PPP</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE%E5%92%8C%E6%9C%89%E9%99%90%E7%8A%B6%E6%80%81%E6%9C%BA"><span class="nav-number">6.</span> <span class="nav-text">协议和有限状态机</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">KingCide</p>
+  <div class="site-description" itemprop="description">乐极生悲，否极泰来</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kingcide" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kingcide" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1659057796@qq.com" title="E-Mail → mailto:1659057796@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://www.bilibili.com/" title="https:&#x2F;&#x2F;www.bilibili.com&#x2F;" rel="noopener" target="_blank">Bilibili</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">KingCide</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
