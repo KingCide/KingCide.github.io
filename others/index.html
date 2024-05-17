@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"kingcide.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="点击按钮记录你的 IP 地址 点击记录 你的 IP 地址是：     document.getElementById(&#39;recordButton&#39;).addEventListener(&#39;click&#39;, function() {        fetch(&#39;https:&#x2F;&#x2F;api.ipapi.co&#x2F;json&#x2F;&#39;)        .then(response &#x3D;&gt; response.json())">
+  <meta name="description" content="记录点击者 IP 地址       点击按钮记录你的 IP 地址     点击记录     你的 IP 地址是：              document.getElementById(&#39;recordButton&#39;).addEventListener(&#39;click&#39;, function() {             fetch(&#39;https:&#x2F;&#x2F;ipinfo.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="其他">
 <meta property="og:url" content="https://kingcide.github.io/others/index.html">
 <meta property="og:site_name" content="Kc&#39;s Blog">
-<meta property="og:description" content="点击按钮记录你的 IP 地址 点击记录 你的 IP 地址是：     document.getElementById(&#39;recordButton&#39;).addEventListener(&#39;click&#39;, function() {        fetch(&#39;https:&#x2F;&#x2F;api.ipapi.co&#x2F;json&#x2F;&#39;)        .then(response &#x3D;&gt; response.json())">
+<meta property="og:description" content="记录点击者 IP 地址       点击按钮记录你的 IP 地址     点击记录     你的 IP 地址是：              document.getElementById(&#39;recordButton&#39;).addEventListener(&#39;click&#39;, function() {             fetch(&#39;https:&#x2F;&#x2F;ipinfo.">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-05-15T06:43:55.000Z">
-<meta property="article:modified_time" content="2024-05-16T13:33:48.590Z">
+<meta property="article:modified_time" content="2024-05-17T05:40:39.500Z">
 <meta property="article:author" content="KingCide">
 <meta name="twitter:card" content="summary">
 
@@ -190,7 +190,40 @@
       
       
       <div class="post-body">
-          <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h1>点击按钮记录你的 IP 地址</h1> <button id="recordButton">点击记录</button> <p>你的 IP 地址是：<span id="ipAddress"></span></p> <script>    document.getElementById('recordButton').addEventListener('click', function() {        fetch('https://api.ipapi.co/json/')        .then(response => response.json())        .then(data => {            document.getElementById('ipAddress').textContent = data.ip;        })        .catch(error => console.error('获取 IP 地址出错', error));    }); </script>
+          <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>记录点击者 IP 地址</title>
+</head>
+<body>
+    <h1>点击按钮记录你的 IP 地址</h1>
+    <button id="recordButton">点击记录</button>
+    <p>你的 IP 地址是：<span id="ipAddress"></span></p>
+    <script>
+        document.getElementById('recordButton').addEventListener('click', function() {
+            fetch('https://ipinfo.io/json?token=2da3f5c77cc83e')
+            .then(response => response.json())
+            .then(data => {
+                let info = `
+                    <p>IP 地址: ${data.ip}</p>
+                    <p>城市: ${data.city}</p>
+                    <p>地区: ${data.region}</p>
+                    <p>国家: ${data.country}</p>
+                    <p>位置: ${data.loc}</p>
+                    <p>组织: ${data.org}</p>
+                    <p>邮政编码: ${data.postal}</p>
+                    <p>时区: ${data.timezone}</p>
+                `;
+                document.getElementById('ipInfo').innerHTML = info;
+            })
+            .catch(error => console.error('获取 IP 信息出错', error));
+        });
+    </script>
+</body>
+</html>
+
       </div>
       
       
