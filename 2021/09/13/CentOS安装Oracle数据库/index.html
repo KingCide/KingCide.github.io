@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.3.0">
+<meta name="generator" content="Hexo 7.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
@@ -142,6 +142,11 @@
     <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
 
   </li>
+        <li class="menu-item menu-item-cv">
+
+    <a href="/cv/" rel="section"><i class="fa fa-graduation-cap fa-fw"></i>简历</a>
+
+  </li>
         <li class="menu-item menu-item-others">
 
     <a href="/others/" rel="section"><i class="fa fa-ellipsis-h fa-fw"></i>其他</a>
@@ -235,7 +240,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><a id="more"></a>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><span id="more"></span>
 
 <h3 id="下载版本说明"><a href="#下载版本说明" class="headerlink" title="下载版本说明"></a>下载版本说明</h3><table>
 <thead>
@@ -270,9 +275,11 @@
 </tr>
 </tbody></table>
 <p>由于没有下载完整版的镜像，挂载的光盘上面没有packages文件夹，所以需要自己下载：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum --downloadonly --downloaddir&#x3D;&#x2F;home&#x2F;packages install elfutils-libelf-devel</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum --downloadonly --downloaddir=/home/packages install elfutils-libelf-devel</span><br></pre></td></tr></table></figure>
+
 <p><img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/clip_image002.jpg" alt="img"></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rpm -ivh sysstat-11.7.3-5.el8.x86_64.rpm lm_sensors-libs-3.4.0-22.20180522git70f7e08.el8.i686.rpm lm_sensors-libs-3.4.0-22.20180522git70f7e08.el8.x86_64.rpm glibc-2.28-151.el8.i686.rpm</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo rpm -ivh sysstat-11.7.3-5.el8.x86_64.rpm lm_sensors-libs-3.4.0-22.20180522git70f7e08.el8.i686.rpm lm_sensors-libs-3.4.0-22.20180522git70f7e08.el8.x86_64.rpm glibc-2.28-151.el8.i686.rpm</span><br></pre></td></tr></table></figure>
+
 <p>需要到下载的安装包的文件夹下面，这几个包互相依赖，需要一起安装。</p>
 <p>下载<code>compat-libstdc++-33-3.2.3</code>等两个包的时候，会报告“未找到匹配的参数”</p>
 <p>我试着：<code>sudo yum install epel-release</code></p>
@@ -282,9 +289,11 @@
 <p>之后到浏览器直接下载RPM包复制到<a target="_blank" rel="noopener" href="https://centos.pkgs.org/7/centos-x86_64/elfutils-libelf-0.176-5.el7.x86_64.rpm.html">https://centos.pkgs.org/7/centos-x86_64/elfutils-libelf-0.176-5.el7.x86_64.rpm.html</a></p>
 <p>使用<code>rpm -qa | grep sysstat</code>查询是否有这个包</p>
 <h3 id="链接库"><a href="#链接库" class="headerlink" title="链接库"></a>链接库</h3><p>在</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost Oracle]# su - Oracle</span><br><span class="line">[Oracle@localhost ~]$ env | grep Oracle</span><br><span class="line">[Oracle@localhost ~]$ env | grep DISPLAY</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost Oracle]# su - Oracle</span><br><span class="line">[Oracle@localhost ~]$ env | grep Oracle</span><br><span class="line">[Oracle@localhost ~]$ env | grep DISPLAY</span><br></pre></td></tr></table></figure>
+
 <p>时</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ERROR: ld.so: object &#39;&#x2F;lib64&#x2F;libc-2.17.so&#39; from LD_PRELOAD cannot be preload</span><br><span class="line"></span><br><span class="line">无法创建符号链接&#39;&#x2F;lib64&#x2F;libc.so.6&#39;: 文件已存在</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ERROR: ld.so: object &#x27;/lib64/libc-2.17.so&#x27; from LD_PRELOAD cannot be preload</span><br><span class="line"></span><br><span class="line">无法创建符号链接&#x27;/lib64/libc.so.6&#x27;: 文件已存在</span><br></pre></td></tr></table></figure>
+
 
 
 <h3 id="共享文件夹配置"><a href="#共享文件夹配置" class="headerlink" title="共享文件夹配置"></a>共享文件夹配置</h3><p>因为用的CentOS8，和网上很多教程的情况不太一样。</p>
@@ -296,14 +305,16 @@
 <li><p>这个命令用来挂载到  /mnt/hgfs 文件夹下面</p>
 </li>
 </ol>
-   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo &#x2F;usr&#x2F;bin&#x2F;vmhgfs-fuse .host:&#x2F; &#x2F;mnt&#x2F;hgfs -o nonempty -o allow_other -o uid&#x3D;1000 -o gid&#x3D;1000 -o umask&#x3D;022</span><br></pre></td></tr></table></figure>
+   <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo /usr/bin/vmhgfs-fuse .host:/ /mnt/hgfs -o nonempty -o allow_other -o uid=1000 -o gid=1000 -o umask=022</span><br></pre></td></tr></table></figure>
+
 <ol start="4">
 <li><p>然后就可以找到了。</p>
 </li>
 <li><p>这个过程中试过了一万条命令，所以如果用上面这个命令不好用的话，就对症下药吧。</p>
 </li>
 </ol>
-<h3 id="删除文件夹"><a href="#删除文件夹" class="headerlink" title="删除文件夹"></a>删除文件夹</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -rf MyDocuments&#x2F;</span><br></pre></td></tr></table></figure>
+<h3 id="删除文件夹"><a href="#删除文件夹" class="headerlink" title="删除文件夹"></a>删除文件夹</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rm -rf MyDocuments/</span><br></pre></td></tr></table></figure>
+
 
 
 <h3 id="无法开机"><a href="#无法开机" class="headerlink" title="无法开机"></a>无法开机</h3><p>开机的时候总是黑屏，只有个光标一直闪······</p>
@@ -313,15 +324,18 @@
 <hr>
 <h3 id="采用指导书推荐的CentOS6"><a href="#采用指导书推荐的CentOS6" class="headerlink" title="采用指导书推荐的CentOS6"></a>采用指导书推荐的CentOS6</h3><p>在不能开机后，我决定重头开始，再下一个虚拟机，唯一困扰的问题就是电脑的空间。</p>
 <p>命令启动 em 控制台， 观察 Oracle 状态</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">emctl start dbconsole</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">emctl start dbconsole</span><br></pre></td></tr></table></figure>
+
 
 
 <p>关闭防火墙</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service iptables stop</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service iptables stop</span><br></pre></td></tr></table></figure>
+
 
 
 <p>SQL developer想要连接需要命令如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">su - root</span><br><span class="line">service iptables stop</span><br><span class="line">su -  Oracle</span><br><span class="line">emctl start dbconsole &#x2F;&#x2F;启动 em 控制台</span><br><span class="line">lsnrctl start</span><br><span class="line">sqlplus &#x2F;nolog &#x2F;&#x2F;进入 sqlplus</span><br><span class="line">	SQL&gt; conn &#x2F;as sysdba &#x2F;&#x2F;进入 sysdba 模式</span><br><span class="line">	SQL&gt; startup &#x2F;&#x2F;启动数据库</span><br><span class="line">	SQL&gt; exit &#x2F;&#x2F;退出 sqlplus</span><br><span class="line">lsnrctl status &#x2F;&#x2F;查看监听状态</span><br><span class="line">ps -ef | grep ora_ &#x2F;&#x2F;查看 oracle 系统进程</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">su - root</span><br><span class="line">service iptables stop</span><br><span class="line">su -  Oracle</span><br><span class="line">emctl start dbconsole //启动 em 控制台</span><br><span class="line">lsnrctl start</span><br><span class="line">sqlplus /nolog //进入 sqlplus</span><br><span class="line">	SQL&gt; conn /as sysdba //进入 sysdba 模式</span><br><span class="line">	SQL&gt; startup //启动数据库</span><br><span class="line">	SQL&gt; exit //退出 sqlplus</span><br><span class="line">lsnrctl status //查看监听状态</span><br><span class="line">ps -ef | grep ora_ //查看 oracle 系统进程</span><br></pre></td></tr></table></figure>
+
 
     </div>
 

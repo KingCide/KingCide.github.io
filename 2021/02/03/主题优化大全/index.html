@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.3.0">
+<meta name="generator" content="Hexo 7.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"kingcide.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="更改网站图标 可以利用网站工具，调整图标为合适的大小和格式，放入文件夹 \themes\next\source\images 在主题配置文件中，更改图标路径  12345favicon:  small: &#x2F;images&#x2F;kc_icon_s.ico  medium: &#x2F;images&#x2F;kc_icon_m.ico  apple_touch_icon: &#x2F;">
+  <meta name="description" content="更改网站图标 可以利用网站工具，调整图标为合适的大小和格式，放入文件夹 \themes\next\source\images 在主题配置文件中，更改图标路径  12345favicon:  small: &#x2F;images&#x2F;kc_icon_s.ico  medium: &#x2F;images&#x2F;kc_icon_m.ico  apple_touch_icon: &#x2F;images&#x2F;apple-touch-icon-n">
 <meta property="og:type" content="article">
 <meta property="og:title" content="主题优化大全">
 <meta property="og:url" content="https://kingcide.github.io/2021/02/03/%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96%E5%A4%A7%E5%85%A8/index.html">
 <meta property="og:site_name" content="Kc&#39;s Blog">
-<meta property="og:description" content="更改网站图标 可以利用网站工具，调整图标为合适的大小和格式，放入文件夹 \themes\next\source\images 在主题配置文件中，更改图标路径  12345favicon:  small: &#x2F;images&#x2F;kc_icon_s.ico  medium: &#x2F;images&#x2F;kc_icon_m.ico  apple_touch_icon: &#x2F;">
+<meta property="og:description" content="更改网站图标 可以利用网站工具，调整图标为合适的大小和格式，放入文件夹 \themes\next\source\images 在主题配置文件中，更改图标路径  12345favicon:  small: &#x2F;images&#x2F;kc_icon_s.ico  medium: &#x2F;images&#x2F;kc_icon_m.ico  apple_touch_icon: &#x2F;images&#x2F;apple-touch-icon-n">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210211172222693.png">
 <meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210212203156020.png">
@@ -148,6 +148,11 @@
     <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
 
   </li>
+        <li class="menu-item menu-item-cv">
+
+    <a href="/cv/" rel="section"><i class="fa fa-graduation-cap fa-fw"></i>简历</a>
+
+  </li>
         <li class="menu-item menu-item-others">
 
     <a href="/others/" rel="section"><i class="fa fa-ellipsis-h fa-fw"></i>其他</a>
@@ -245,8 +250,9 @@
 <li>可以利用<a target="_blank" rel="noopener" href="https://tool.lu/favicon/">网站工具</a>，调整图标为合适的大小和格式，放入文件夹 \themes\next\source\images</li>
 <li>在主题配置文件中，更改图标路径</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">favicon:</span><br><span class="line">  small: &#x2F;images&#x2F;kc_icon_s.ico</span><br><span class="line">  medium: &#x2F;images&#x2F;kc_icon_m.ico</span><br><span class="line">  apple_touch_icon: &#x2F;images&#x2F;apple-touch-icon-next.png</span><br><span class="line">  safari_pinned_tab: &#x2F;images&#x2F;logo.svg</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">favicon:</span><br><span class="line">  small: /images/kc_icon_s.ico</span><br><span class="line">  medium: /images/kc_icon_m.ico</span><br><span class="line">  apple_touch_icon: /images/apple-touch-icon-next.png</span><br><span class="line">  safari_pinned_tab: /images/logo.svg</span><br></pre></td></tr></table></figure>
+
+<span id="more"></span>
 
 <h2 id="添加背景动画"><a href="#添加背景动画" class="headerlink" title="添加背景动画"></a>添加背景动画</h2><ol>
 <li><code>three_waves: true </code> 这是next自带的背景之一，为点状的波浪</li>
@@ -254,25 +260,34 @@
 <li><code>canvas_sphere: true</code>为带刺的球</li>
 </ol>
 <h2 id="添加主页链接"><a href="#添加主页链接" class="headerlink" title="添加主页链接"></a>添加主页链接</h2><p>直接在配置文件中加入下面语句，同时也可以在<code>link_icon: link</code> 中更改fontawesome图标</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">links:</span><br><span class="line">  Bilibili: https:&#x2F;&#x2F;www.bilibili.com&#x2F;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">links:</span><br><span class="line">  Bilibili: https://www.bilibili.com/</span><br></pre></td></tr></table></figure>
+
 <p>添加社交链接，配置文件中也有详细示例（next更新到7.x后有所改变）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">social_icons:</span><br><span class="line">  enable: true</span><br><span class="line">  icons_only: false</span><br><span class="line">  transition: false</span><br><span class="line">social:</span><br><span class="line">  GitHub: https:&#x2F;&#x2F;github.com&#x2F;kingcide || github</span><br><span class="line">  E-Mail: mailto:1659057796@qq.com || envelope</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">social_icons:</span><br><span class="line">  enable: true</span><br><span class="line">  icons_only: false</span><br><span class="line">  transition: false</span><br><span class="line">social:</span><br><span class="line">  GitHub: https://github.com/kingcide || github</span><br><span class="line">  E-Mail: mailto:1659057796@qq.com || envelope</span><br></pre></td></tr></table></figure>
+
 <h2 id="网站分享设置"><a href="#网站分享设置" class="headerlink" title="网站分享设置"></a>网站分享设置</h2><p>next里面有needShareButton，方便将博客微信、QQ、豆瓣等地方，但是我暂时不需要</p>
 <h2 id="设置分类和标签"><a href="#设置分类和标签" class="headerlink" title="设置分类和标签"></a>设置分类和标签</h2><p>分类和标签的设置方法相近。首先执行命令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page categories</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page categories</span><br></pre></td></tr></table></figure>
+
 <p>根据提示找到文件<code>index.md</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INFO  Created: ~&#x2F;Documents&#x2F;blog&#x2F;source&#x2F;categories&#x2F;index.md</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INFO  Created: ~/Documents/blog/source/categories/index.md</span><br></pre></td></tr></table></figure>
+
 <p>添加type: “categories”到内容中，如下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">title: categories</span><br><span class="line">date: 2020-02-07 21:55:46</span><br><span class="line">type: &quot;categories&quot;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">title: categories</span><br><span class="line">date: 2020-02-07 21:55:46</span><br><span class="line">type: &quot;categories&quot;</span><br></pre></td></tr></table></figure>
+
 <p>给文章添加“categories”属性</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">title: 主题优化</span><br><span class="line">date: 2021-02-03 11:37:45</span><br><span class="line">categories: </span><br><span class="line">- 学习印记</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">title: 主题优化</span><br><span class="line">date: 2021-02-03 11:37:45</span><br><span class="line">categories: </span><br><span class="line">- 学习印记</span><br></pre></td></tr></table></figure>
+
 <p>此时若想主题上方出现标签和分类的按钮，还需要设置</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">menu:</span><br><span class="line">  home: &#x2F; || fa fa-home</span><br><span class="line">  #about: &#x2F;about&#x2F; || fa fa-user</span><br><span class="line">  tags: &#x2F;tags&#x2F; || fa fa-tags</span><br><span class="line">  categories: &#x2F;categories&#x2F; || fa fa-th</span><br><span class="line">  archives: &#x2F;archives&#x2F; || fa fa-archive</span><br><span class="line">  #schedule: &#x2F;schedule&#x2F; || fa fa-calendar</span><br><span class="line">  #sitemap: &#x2F;sitemap.xml || fa fa-sitemap</span><br><span class="line">  #commonweal: &#x2F;404&#x2F; || fa fa-heartbeat</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">menu:</span><br><span class="line">  home: / || fa fa-home</span><br><span class="line">  #about: /about/ || fa fa-user</span><br><span class="line">  tags: /tags/ || fa fa-tags</span><br><span class="line">  categories: /categories/ || fa fa-th</span><br><span class="line">  archives: /archives/ || fa fa-archive</span><br><span class="line">  #schedule: /schedule/ || fa fa-calendar</span><br><span class="line">  #sitemap: /sitemap.xml || fa fa-sitemap</span><br><span class="line">  #commonweal: /404/ || fa fa-heartbeat</span><br></pre></td></tr></table></figure>
+
 <p>为了以后新建文章方便，修改<code>\scaffolds\post.md</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: &#123;&#123; title &#125;&#125;</span><br><span class="line">date: &#123;&#123; date &#125;&#125;</span><br><span class="line">tags:</span><br><span class="line">categories:</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: &#123;&#123; title &#125;&#125;</span><br><span class="line">date: &#123;&#123; date &#125;&#125;</span><br><span class="line">tags:</span><br><span class="line">categories:</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+
 <h2 id="添加查看全文"><a href="#添加查看全文" class="headerlink" title="添加查看全文"></a>添加查看全文</h2><ol>
 <li><p>在文章的<code>front-matter</code>中添加<code>description</code></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: xxx</span><br><span class="line">date: xxx</span><br><span class="line">description: 这是显示在首页的概述，正文内容均会被隐藏。</span><br><span class="line">---</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: xxx</span><br><span class="line">date: xxx</span><br><span class="line">description: 这是显示在首页的概述，正文内容均会被隐藏。</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>在需要截断的地方加入：<code>&lt;!--more--&gt;</code></p>
 </li>
 </ol>
@@ -282,7 +297,8 @@
 <li><p>在主题配置文件中设置pdf:true</p>
 </li>
 <li><p>若需要插入pdf，需要在文章中添加：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;% pdf https:&#x2F;&#x2F;......&#x2F;file&#x2F;test.pdf %&#125;</span><br><span class="line">或</span><br><span class="line">&#123;% pdf test.pdf %&#125; &#x2F;&#x2F;目前&#123;% pdf .&#x2F;test.pdf %&#125;也可</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;% pdf https://....../file/test.pdf %&#125;</span><br><span class="line">或</span><br><span class="line">&#123;% pdf test.pdf %&#125; //目前&#123;% pdf ./test.pdf %&#125;也可</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>一开始不能在localhost上看到，以为出了问题，部署到网页上才发现可以看到，只是在主页中和移动端无法看到。</p>
 </li>
 <li><p>然后呢，我又把第一步的文件删了，再下载<code>npm install --save hexo-pdf</code></p>
@@ -311,12 +327,14 @@
 <li><p>病急乱投医：<code>cnpm install https://github.com/7ym0n/hexo-asset-image --save</code></p>
 </li>
 <li><p>这个插件一来就好多了，至少没有主页和详情页显示不同的问题。且下面三种方式都可以显示图片：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">![p](.&#x2F;文件夹名字&#x2F;p.jpg) &#x2F;&#x2F;不过只有这种方式可以在Typora上实现预览</span><br><span class="line">![p](p.jpg)</span><br><span class="line">![q](&#x2F;image&#x2F;q.jpg) </span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">![p](./文件夹名字/p.jpg) //不过只有这种方式可以在Typora上实现预览</span><br><span class="line">![p](p.jpg)</span><br><span class="line">![q](/image/q.jpg) </span><br></pre></td></tr></table></figure>
+</li>
 <li><p>现在突然发现不能部署，<a target="_blank" rel="noopener" href="https://perry96.com/archives/882898e3.html">部署报错Spawn failed及解决方案</a> 。主要原理就是要回退到某个版本。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git reset --hard 9191249ae0dd9dfa7fa973eb67201bc9f01ed0b5</span><br><span class="line">HEAD is now at 9191249 Site updated: 2021-02-04 18:11:40</span><br></pre></td></tr></table></figure>
-<h2 id="添加背景音乐"><a href="#添加背景音乐" class="headerlink" title="添加背景音乐"></a>添加背景音乐</h2></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git reset --hard 9191249ae0dd9dfa7fa973eb67201bc9f01ed0b5</span><br><span class="line">HEAD is now at 9191249 Site updated: 2021-02-04 18:11:40</span><br></pre></td></tr></table></figure>
+
+</li>
 </ol>
-<h3 id="使用网易云外链"><a href="#使用网易云外链" class="headerlink" title="使用网易云外链"></a>使用网易云外链</h3><ol>
+<h2 id="添加背景音乐"><a href="#添加背景音乐" class="headerlink" title="添加背景音乐"></a>添加背景音乐</h2><h3 id="使用网易云外链"><a href="#使用网易云外链" class="headerlink" title="使用网易云外链"></a>使用网易云外链</h3><ol>
 <li><p>在网易云创建歌单，<a target="_blank" rel="noopener" href="https://jingyan.baidu.com/article/d7130635dcdf6813fdf475c7.html">创建外链</a>，复制插件代码，修改width和height可以改变音乐</p>
 <img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210211172222693.png" alt="image-20210211172222693" style="zoom: 67%;" />
 </li>
@@ -330,17 +348,21 @@
 </ol>
 <h3 id="使用Aplayer插件"><a href="#使用Aplayer插件" class="headerlink" title="使用Aplayer插件"></a>使用Aplayer插件</h3><ol>
 <li><p>命令行安装插件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-tag-aplayer --save &#x2F;&#x2F;cnpm可能下载个假的</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-tag-aplayer --save //cnpm可能下载个假的</span><br></pre></td></tr></table></figure>
+</li>
 <li><p><a target="_blank" rel="noopener" href="https://github.com/metowolf/MetingJS">MetingJS</a> 是基于<a target="_blank" rel="noopener" href="https://github.com/metowolf/Meting">Meting API</a> 的 APlayer 衍生播放器，引入 MetingJS 后，播放器将支持对于 QQ音乐、网易云音乐、虾米、酷狗、百度等平台的音乐播放。在站点配置文件末尾添加：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">aplayer:</span><br><span class="line">  meting: true</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">aplayer:</span><br><span class="line">  meting: true</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>之后就可以通过 <code>&#123;% meting ...%&#125;</code> 在文章中使用 MetingJS 播放器了：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% meting &quot;6611129053&quot; &quot;netease&quot; &quot;playlist&quot; &quot;theme:#FF4081&quot; &quot;mode:circulation&quot; &quot;mutex:true&quot; &quot;listmaxheight:340px&quot; &quot;preload:auto&quot; %&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% meting &quot;6611129053&quot; &quot;netease&quot; &quot;playlist&quot; &quot;theme:#FF4081&quot; &quot;mode:circulation&quot; &quot;mutex:true&quot; &quot;listmaxheight:340px&quot; &quot;preload:auto&quot; %&#125;</span><br></pre></td></tr></table></figure>
+
 <p>效果如下：</p>
 <p><img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210213135233821.png" alt="image-20210213135233821"></p>
 <p>更多的标签配置可以到<a target="_blank" rel="noopener" href="https://github.com/MoePlayer/hexo-tag-aplayer/blob/master/docs/README-zh_cn.md">官方文档</a>查看</p>
 </li>
 <li><p>除了使用各种音乐平台，当然还可以使用本地文件来播放：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% aplayer &quot;岁月&quot; &quot;王菲-那英&quot; &quot;url&quot; %&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% aplayer &quot;岁月&quot; &quot;王菲-那英&quot; &quot;url&quot; %&#125;</span><br></pre></td></tr></table></figure>
+
 <p>在这里，我还是把音频保存在OneDrive，用工具转化成直链作为url。</p>
 <p>效果如下：</p>
 <p><img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210213144928887.png" alt="image-20210213144928887"></p>
@@ -352,7 +374,8 @@
 <li><p>新建页面<code>hexo new page music</code></p>
 </li>
 <li><p>打开主题配置文件，在menu下新建一个music的类，选择对应的图标</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">music: &#x2F;music&#x2F; || fa fa-music</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">music: /music/ || fa fa-music</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>\themes\next_re\languages\zh-CN.yml 中添加翻译</p>
 </li>
 </ol>
@@ -360,19 +383,17 @@
 <li><p>根据<a target="_blank" rel="noopener" href="https://github.com/MoePlayer/hexo-tag-dplayer">官方文档</a> <code>npm install hexo-tag-dplayer --save</code></p>
 </li>
 <li><p>举例：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;% dplayer &quot;url&#x3D;https:&#x2F;&#x2F;moeplayer.b0.upaiyun.com&#x2F;dplayer&#x2F;hikarunara.mp4&quot; &quot;addition&#x3D;https:&#x2F;&#x2F;dplayer.daoapp.io&#x2F;bilibili?aid&#x3D;4157142&quot; &quot;api&#x3D;https:&#x2F;&#x2F;api.prprpr.me&#x2F;dplayer&#x2F;&quot; &quot;pic&#x3D;https:&#x2F;&#x2F;moeplayer.b0.upaiyun.com&#x2F;dplayer&#x2F;hikarunara.jpg&quot; &quot;id&#x3D;9E2E3368B56CDBB4&quot; &quot;loop&#x3D;yes&quot; &quot;theme&#x3D;#FADFA3&quot; &quot;autoplay&#x3D;false&quot; &quot;token&#x3D;tokendemo&quot; %&#125;</span><br><span class="line">&#123;% dplayer &#39;url&#x3D;some.mp4&#39; &quot;id&#x3D;someid&quot; &quot;api&#x3D;https:&#x2F;&#x2F;api.prprpr.me&#x2F;dplayer&#x2F;&quot; &quot;addition&#x3D;&#x2F;some.json&quot; &#39;code&#x3D;player.on(&quot;loadstart&quot;,function()&#123;console.log(&quot;loadstart&quot;)&#125;)&#39; &quot;autoplay&quot; %&#125; </span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;% dplayer &quot;url=https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.mp4&quot; &quot;addition=https://dplayer.daoapp.io/bilibili?aid=4157142&quot; &quot;api=https://api.prprpr.me/dplayer/&quot; &quot;pic=https://moeplayer.b0.upaiyun.com/dplayer/hikarunara.jpg&quot; &quot;id=9E2E3368B56CDBB4&quot; &quot;loop=yes&quot; &quot;theme=#FADFA3&quot; &quot;autoplay=false&quot; &quot;token=tokendemo&quot; %&#125;</span><br><span class="line">&#123;% dplayer &#x27;url=some.mp4&#x27; &quot;id=someid&quot; &quot;api=https://api.prprpr.me/dplayer/&quot; &quot;addition=/some.json&quot; &#x27;code=player.on(&quot;loadstart&quot;,function()&#123;console.log(&quot;loadstart&quot;)&#125;)&#x27; &quot;autoplay&quot; %&#125; </span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
 <h2 id="可视化编辑和管理"><a href="#可视化编辑和管理" class="headerlink" title="可视化编辑和管理"></a>可视化编辑和管理</h2><p>接下来的这些内容就是在’Hexo Admin’界面里编辑的。</p>
-</li>
-<li><p>检索的时候看到的这个功能——<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_34259159/article/details/88939890">Hexo可视化编写和文章加密设置</a></p>
-</li>
-<li><p>首先安装Hexo Admin——<code>npm install --save hexo-admin</code></p>
-</li>
-<li><p>然后就可以<code>hexo server -d</code>启动服务</p>
-</li>
-<li><p>接着就可以在页面编辑<code>localhost:4000/admin/</code></p>
-</li>
-<li><p>这是<a target="_blank" rel="noopener" href="https://github.com/jaredly/hexo-admin">官方文档</a>，还可以设置管理员密码</p>
-</li>
+<ol>
+<li>检索的时候看到的这个功能——<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_34259159/article/details/88939890">Hexo可视化编写和文章加密设置</a></li>
+<li>首先安装Hexo Admin——<code>npm install --save hexo-admin</code></li>
+<li>然后就可以<code>hexo server -d</code>启动服务</li>
+<li>接着就可以在页面编辑<code>localhost:4000/admin/</code></li>
+<li>这是<a target="_blank" rel="noopener" href="https://github.com/jaredly/hexo-admin">官方文档</a>，还可以设置管理员密码</li>
 </ol>
 <p>可以方便地添加设置页面和文章，现在我在左边编辑markdown，右边preview。</p>
 <h2 id="文章加密"><a href="#文章加密" class="headerlink" title="文章加密"></a>文章加密</h2><p>有时候会想要写一些感性的东西，简单地加密后，还想看的人也就屈指可数了。</p>
@@ -381,9 +402,11 @@
 <li><p>安装：<code>npm install --save hexo-blog-encrypt</code></p>
 </li>
 <li><p>修改配置文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">encrypt: # hexo-blog-encrypt</span><br><span class="line">  abstract: 有东西被加密了, 请输入密码查看.</span><br><span class="line">  message: 您好, 这里需要密码.</span><br><span class="line">  tags:</span><br><span class="line">  - &#123;name: tagName, password: 密码A&#125;</span><br><span class="line">  - &#123;name: tagName, password: 密码B&#125;</span><br><span class="line">  theme: xray</span><br><span class="line">  wrong_pass_message: 抱歉, 这个密码看着不太对, 请再试试.</span><br><span class="line">  wrong_hash_message: 抱歉, 这个文章不能被校验, 不过您还是能看看解密后的内容.</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">encrypt: # hexo-blog-encrypt</span><br><span class="line">  abstract: 有东西被加密了, 请输入密码查看.</span><br><span class="line">  message: 您好, 这里需要密码.</span><br><span class="line">  tags:</span><br><span class="line">  - &#123;name: tagName, password: 密码A&#125;</span><br><span class="line">  - &#123;name: tagName, password: 密码B&#125;</span><br><span class="line">  theme: xray</span><br><span class="line">  wrong_pass_message: 抱歉, 这个密码看着不太对, 请再试试.</span><br><span class="line">  wrong_hash_message: 抱歉, 这个文章不能被校验, 不过您还是能看看解密后的内容.</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>只要在文章信息头添加password即可启用</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: Hello World</span><br><span class="line">date: 2016-03-30 21:18:02</span><br><span class="line">password: hello</span><br><span class="line">---</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: Hello World</span><br><span class="line">date: 2016-03-30 21:18:02</span><br><span class="line">password: hello</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>更多的功能包括对Tag加密，修改输入密码时的主题等等</p>
 </li>
 </ol>

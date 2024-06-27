@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.3.0">
+<meta name="generator" content="Hexo 7.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
@@ -140,6 +140,11 @@
     <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
 
   </li>
+        <li class="menu-item menu-item-cv">
+
+    <a href="/cv/" rel="section"><i class="fa fa-graduation-cap fa-fw"></i>简历</a>
+
+  </li>
         <li class="menu-item menu-item-others">
 
     <a href="/others/" rel="section"><i class="fa fa-ellipsis-h fa-fw"></i>其他</a>
@@ -234,9 +239,10 @@
 
       
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>由于需要使用GO来完成TCP/IP课设，记录其基本语言结构方便回顾。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="Go语言结构"><a href="#Go语言结构" class="headerlink" title="Go语言结构"></a>Go语言结构</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">   <span class="comment">/* 这是我的第一个简单的程序 */</span></span><br><span class="line">   fmt.Println(<span class="string">&quot;Hello, World!&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <ol>
 <li><em>package main</em> 定义了包名，每个 Go 应用程序都包含一个名为 main 的包。</li>
 <li> <em>import “fmt”</em> 告诉 Go 编译器这个程序需要使用 fmt 包（的函数，或其他元素）。</li>
@@ -245,20 +251,26 @@
 </ol>
 <h2 id="Go语言变量"><a href="#Go语言变量" class="headerlink" title="Go语言变量"></a>Go语言变量</h2><ol>
 <li><p>声明变量使用var</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var identifier type</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var identifier type</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>可以一次声明多个变量</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> b, c <span class="keyword">int</span> = <span class="number">1</span>, <span class="number">2</span></span><br></pre></td></tr></table></figure></li>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> b, c <span class="type">int</span> = <span class="number">1</span>, <span class="number">2</span></span><br></pre></td></tr></table></figure>
+</li>
 <li><ul>
 <li><p>指定变量类型，未初始化则默认零值/false/“”/nil</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> c <span class="keyword">bool</span></span><br></pre></td></tr></table></figure></li>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> c <span class="type">bool</span></span><br></pre></td></tr></table></figure>
+</li>
 <li><p>根据值自行判定变量类型</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> d = <span class="literal">true</span></span><br></pre></td></tr></table></figure></li>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> d = <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+</li>
 <li><p>使用<code>:=</code>声明加赋值</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">intVal := <span class="number">1</span></span><br></pre></td></tr></table></figure></li>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">intVal := <span class="number">1</span></span><br></pre></td></tr></table></figure>
+</li>
 </ul>
 </li>
 <li><p>多变量声明</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> x, y <span class="keyword">int</span></span><br><span class="line"><span class="keyword">var</span> (  <span class="comment">// 这种因式分解关键字的写法一般用于声明全局变量</span></span><br><span class="line">    a <span class="keyword">int</span></span><br><span class="line">    b <span class="keyword">bool</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> c, d <span class="keyword">int</span> = <span class="number">1</span>, <span class="number">2</span></span><br><span class="line"><span class="keyword">var</span> e, f = <span class="number">123</span>, <span class="string">&quot;hello&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//这种不带声明格式的只能在函数体中出现</span></span><br><span class="line"><span class="comment">//g, h := 123, &quot;hello&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    g, h := <span class="number">123</span>, <span class="string">&quot;hello&quot;</span></span><br><span class="line">    <span class="built_in">println</span>(x, y, a, b, c, d, e, f, g, h)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> x, y <span class="type">int</span></span><br><span class="line"><span class="keyword">var</span> (  <span class="comment">// 这种因式分解关键字的写法一般用于声明全局变量</span></span><br><span class="line">    a <span class="type">int</span></span><br><span class="line">    b <span class="type">bool</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> c, d <span class="type">int</span> = <span class="number">1</span>, <span class="number">2</span></span><br><span class="line"><span class="keyword">var</span> e, f = <span class="number">123</span>, <span class="string">&quot;hello&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//这种不带声明格式的只能在函数体中出现</span></span><br><span class="line"><span class="comment">//g, h := 123, &quot;hello&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    g, h := <span class="number">123</span>, <span class="string">&quot;hello&quot;</span></span><br><span class="line">    <span class="built_in">println</span>(x, y, a, b, c, d, e, f, g, h)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>声明了一个局部变量，需要在相同的代码块中使用它；全局变量是允许声明但不使用的。</p>
 </li>
 <li><p>可以<code>a, b, c := 5, 7, &quot;abc&quot;</code></p>
@@ -274,27 +286,31 @@
 &#125; else &#123;
   /* 在布尔表达式为 false 时执行 */
 &#125;
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">2. 匹配成功后停止</span><br><span class="line"></span><br><span class="line">   &#96;&#96;&#96;go</span><br><span class="line">   switch marks &#123;</span><br><span class="line">         case 90: grade &#x3D; &quot;A&quot;</span><br><span class="line">         case 80: grade &#x3D; &quot;B&quot;</span><br><span class="line">         case 50,60,70 : grade &#x3D; &quot;C&quot;</span><br><span class="line">         default: grade &#x3D; &quot;D&quot;  </span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">2. 匹配成功后停止</span><br><span class="line"></span><br><span class="line">   ```go</span><br><span class="line">   switch marks &#123;</span><br><span class="line">         case 90: grade = &quot;A&quot;</span><br><span class="line">         case 80: grade = &quot;B&quot;</span><br><span class="line">         case 50,60,70 : grade = &quot;C&quot;</span><br><span class="line">         default: grade = &quot;D&quot;  </span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+
 若执行的case里有`fallthrough`，强制执行后面的case，不管是不是true
 </code></pre>
 </li>
 <li><p>可用于判断某个 interface 变量中实际存储的变量类型</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">     </span><br><span class="line">   <span class="keyword">switch</span> i := x.(<span class="keyword">type</span>) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="literal">nil</span>:  </span><br><span class="line">         fmt.Printf(<span class="string">&quot; x 的类型 :%T&quot;</span>,i)                </span><br><span class="line">      <span class="keyword">case</span> <span class="keyword">int</span>:  </span><br><span class="line">         fmt.Printf(<span class="string">&quot;x 是 int 型&quot;</span>)                      </span><br><span class="line">      <span class="keyword">case</span> <span class="keyword">float64</span>:</span><br><span class="line">         fmt.Printf(<span class="string">&quot;x 是 float64 型&quot;</span>)          </span><br><span class="line">      <span class="keyword">case</span> <span class="function"><span class="keyword">func</span><span class="params">(<span class="keyword">int</span>)</span> <span class="title">float64</span>:</span></span><br><span class="line">         fmt.Printf(<span class="string">&quot;x 是 func(int) 型&quot;</span>)                      </span><br><span class="line">      <span class="keyword">case</span> <span class="keyword">bool</span>, <span class="keyword">string</span>:</span><br><span class="line">         fmt.Printf(<span class="string">&quot;x 是 bool 或 string 型&quot;</span> )      </span><br><span class="line">      <span class="keyword">default</span>:</span><br><span class="line">         fmt.Printf(<span class="string">&quot;未知型&quot;</span>)    </span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x <span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">     </span><br><span class="line">   <span class="keyword">switch</span> i := x.(<span class="keyword">type</span>) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="literal">nil</span>:  </span><br><span class="line">         fmt.Printf(<span class="string">&quot; x 的类型 :%T&quot;</span>,i)                </span><br><span class="line">      <span class="keyword">case</span> <span class="type">int</span>:  </span><br><span class="line">         fmt.Printf(<span class="string">&quot;x 是 int 型&quot;</span>)                      </span><br><span class="line">      <span class="keyword">case</span> <span class="type">float64</span>:</span><br><span class="line">         fmt.Printf(<span class="string">&quot;x 是 float64 型&quot;</span>)          </span><br><span class="line">      <span class="keyword">case</span> <span class="function"><span class="keyword">func</span><span class="params">(<span class="type">int</span>)</span></span> <span class="type">float64</span>:</span><br><span class="line">         fmt.Printf(<span class="string">&quot;x 是 func(int) 型&quot;</span>)                      </span><br><span class="line">      <span class="keyword">case</span> <span class="type">bool</span>, <span class="type">string</span>:</span><br><span class="line">         fmt.Printf(<span class="string">&quot;x 是 bool 或 string 型&quot;</span> )      </span><br><span class="line">      <span class="keyword">default</span>:</span><br><span class="line">         fmt.Printf(<span class="string">&quot;未知型&quot;</span>)    </span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+</li>
 <li><p>select 是 Go 中的一个控制结构，类似于用于通信的 switch 语句。每个 case 必须是一个通信操作，要么是发送要么是接收。<br>select 随机执行一个可运行的 case。如果没有 case 可运行，它将阻塞，直到有 case 可运行。一个默认的子句应该总是可运行的。</p>
 </li>
 </ol>
 <h2 id="Go语言循环语句"><a href="#Go语言循环语句" class="headerlink" title="Go语言循环语句"></a>Go语言循环语句</h2><ol>
-<li><p>```go<br>func main() {</p>
-<pre><code>    sum := 0
-    for i := 0; i &lt;= 10; i++ &#123;
-            sum += i
-    &#125;
-    fmt.Println(sum)
+<li><pre><code class="go">func main() &#123;
+        sum := 0
+        for i := 0; i &lt;= 10; i++ &#123;
+                sum += i
+        &#125;
+        fmt.Println(sum)
+&#125;
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">2. 类似while</span><br><span class="line"></span><br><span class="line">   ```go</span><br><span class="line">   		for sum &lt;= 10&#123;</span><br><span class="line">                   sum += sum</span><br><span class="line">           &#125;</span><br></pre></td></tr></table></figure>
 </code></pre>
-<p>}</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">2. 类似while</span><br><span class="line"></span><br><span class="line">   &#96;&#96;&#96;go</span><br><span class="line">   		for sum &lt;&#x3D; 10&#123;</span><br><span class="line">                   sum +&#x3D; sum</span><br><span class="line">           &#125;</span><br></pre></td></tr></table></figure></li>
+</li>
 <li><p>迭代输出元素</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">numbers := [<span class="number">6</span>]<span class="keyword">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>&#125;</span><br><span class="line">      <span class="keyword">for</span> i,x:= <span class="keyword">range</span> numbers &#123;</span><br><span class="line">              fmt.Printf(<span class="string">&quot;第 %d 位 x 的值 = %d\n&quot;</span>, i,x)</span><br><span class="line">      &#125;  </span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">numbers := [<span class="number">6</span>]<span class="type">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">5</span>&#125;</span><br><span class="line">      <span class="keyword">for</span> i,x:= <span class="keyword">range</span> numbers &#123;</span><br><span class="line">              fmt.Printf(<span class="string">&quot;第 %d 位 x 的值 = %d\n&quot;</span>, i,x)</span><br><span class="line">      &#125;  </span><br></pre></td></tr></table></figure>
+
 <p>输出结果为：</p>
 <blockquote>
 <p>第 0 位 x 的值 = 1<br>第 1 位 x 的值 = 2<br>第 2 位 x 的值 = 3<br>第 3 位 x 的值 = 5<br>第 4 位 x 的值 = 0<br>第 5 位 x 的值 = 0</p>

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.3.0">
+<meta name="generator" content="Hexo 7.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
@@ -145,6 +145,11 @@
     <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
 
   </li>
+        <li class="menu-item menu-item-cv">
+
+    <a href="/cv/" rel="section"><i class="fa fa-graduation-cap fa-fw"></i>简历</a>
+
+  </li>
         <li class="menu-item menu-item-others">
 
     <a href="/others/" rel="section"><i class="fa fa-ellipsis-h fa-fw"></i>其他</a>
@@ -239,7 +244,7 @@
 
       
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>由于Gitee限制了外链访问图片，我博客里的照片全都被屏蔽了，主要已经习惯了Typora记笔记并将图片保存在云上，所以决定采用<strong>阿里云OSS对象存储</strong>来保存图片，以后看看能不能用来玩点其他的东西。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="配置步骤"><a href="#配置步骤" class="headerlink" title="配置步骤"></a>配置步骤</h2><p>前两步参考的视频是：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1ci4y1L7j8?vd_source=168e779198210f6992bdd616abf19379">https://www.bilibili.com/video/BV1ci4y1L7j8?vd_source=168e779198210f6992bdd616abf19379</a></p>
 <h3 id="阿里云"><a href="#阿里云" class="headerlink" title="阿里云"></a>阿里云</h3><p>购买服务、开通OSS、建立Bucket、获取Access ID（要注意复制的时候没有空格）</p>
@@ -253,6 +258,7 @@
 <h2 id="阿里云OSS扩展"><a href="#阿里云OSS扩展" class="headerlink" title="阿里云OSS扩展"></a>阿里云OSS扩展</h2><h3 id="SDK-软件开发工具包"><a href="#SDK-软件开发工具包" class="headerlink" title="SDK 软件开发工具包"></a>SDK 软件开发工具包</h3><p><img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20220801230310129.png" alt="image-20220801230310129"></p>
 <p>官方提供了详细的源码用来完成开发的需要，比如说python的工具包就可以对OSS的图片进行批量处理，然后再下载下来，<a target="_blank" rel="noopener" href="https://help.aliyun.com/document_detail/47660.html%E3%80%82">https://help.aliyun.com/document_detail/47660.html。</a></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> oss2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 填写Bucket所在地域对应的Endpoint。以华东1（杭州）为例，Endpoint填写为https://oss-cn-hangzhou.aliyuncs.com。</span></span><br><span class="line">endpoint = <span class="string">&#x27;https://oss-cn-hangzhou.aliyuncs.com&#x27;</span></span><br><span class="line"><span class="comment"># 阿里云账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM用户进行API访问或日常运维，请登录RAM控制台创建RAM用户。</span></span><br><span class="line">access_key_id = <span class="string">&#x27;yourAccessKeyId&#x27;</span></span><br><span class="line">access_key_secret = <span class="string">&#x27;yourAccessKeySecret&#x27;</span></span><br><span class="line"><span class="comment"># 指定原图所在的Bucket名称，例如examplebucket。</span></span><br><span class="line">bucket_name = <span class="string">&#x27;examplebucket&#x27;</span></span><br><span class="line"><span class="comment"># 指定原图名称。如果图片不在Bucket根目录，需携带图片完整路径，例如exampledir/example.jpg。</span></span><br><span class="line">key = <span class="string">&#x27;exampledir/example.jpg&#x27;</span></span><br><span class="line"><span class="comment"># 指定处理后的图片名称。</span></span><br><span class="line">new_pic = <span class="string">&#x27;exampledir/newexample.jpg&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 指定Bucket实例，所有文件相关的方法都需要通过Bucket实例来调用。</span></span><br><span class="line">bucket = oss2.Bucket(oss2.Auth(access_key_id, access_key_secret), endpoint, bucket_name)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果图片不在指定Bucket内，需将本地路径下的图片上传到指定Bucket。</span></span><br><span class="line"><span class="comment"># bucket.put_object_from_file(key, &#x27;D:\\localpath\\example.jpg&#x27;)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 将图片缩放为固定宽高100 px后，再旋转90°，之后保存至本地。</span></span><br><span class="line">style = <span class="string">&#x27;image/resize,m_fixed,w_100,h_100/rotate,90&#x27;</span></span><br><span class="line">bucket.get_object_to_file(key, new_pic, process=style)</span><br><span class="line"><span class="comment"># 图片处理完成后，若Bucket内的原图不再需要，可以删除原图。</span></span><br><span class="line"><span class="comment"># bucket.delete_object(key)</span></span><br><span class="line"><span class="comment"># 如果处理后的图片不再需要，可以删除处理后的图片。</span></span><br><span class="line"><span class="comment"># os.remove(new_pic)</span></span><br></pre></td></tr></table></figure>
+
 <h3 id="使用OSS中的数据作为机器学习的训练样本"><a href="#使用OSS中的数据作为机器学习的训练样本" class="headerlink" title="使用OSS中的数据作为机器学习的训练样本"></a>使用OSS中的数据作为机器学习的训练样本</h3><ol>
 <li>OSS中的数据与PAI连通，可以作为机器学习的样本进行训练</li>
 <li><a target="_blank" rel="noopener" href="https://help.aliyun.com/document_detail/42600.html">协同过滤做商品推荐</a></li>

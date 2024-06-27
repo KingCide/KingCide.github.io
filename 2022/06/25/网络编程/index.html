@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.3.0">
+<meta name="generator" content="Hexo 7.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
@@ -140,6 +140,11 @@
     <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
 
   </li>
+        <li class="menu-item menu-item-cv">
+
+    <a href="/cv/" rel="section"><i class="fa fa-graduation-cap fa-fw"></i>简历</a>
+
+  </li>
         <li class="menu-item menu-item-others">
 
     <a href="/others/" rel="section"><i class="fa fa-ellipsis-h fa-fw"></i>其他</a>
@@ -228,16 +233,20 @@
 
       
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>套接字学习，C++环境配置</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="运行出错"><a href="#运行出错" class="headerlink" title="运行出错"></a>运行出错</h2><p>首先要运行网上的代码，会报错<code>undefined reference</code>如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">c:&#x2F;mingw&#x2F;bin&#x2F;..&#x2F;lib&#x2F;gcc&#x2F;mingw32&#x2F;8.2.0&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;mingw32&#x2F;bin&#x2F;ld.exe: C:\Users\KingC\AppData\Local\Temp\ccDMjN17.o:ipconfig.cpp:(.text+0x128): undefined reference to &#96;WSAGetLastError@0&#39;</span><br><span class="line">c:&#x2F;mingw&#x2F;bin&#x2F;..&#x2F;lib&#x2F;gcc&#x2F;mingw32&#x2F;8.2.0&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;mingw32&#x2F;bin&#x2F;ld.exe: C:\Users\KingC\AppData\Local\Temp\ccDMjN17.o:ipconfig.cpp:(.text+0x2a7): undefined reference to &#96;inet_ntoa@4&#39;</span><br><span class="line">c:&#x2F;mingw&#x2F;bin&#x2F;..&#x2F;lib&#x2F;gcc&#x2F;mingw32&#x2F;8.2.0&#x2F;..&#x2F;..&#x2F;..&#x2F;..&#x2F;mingw32&#x2F;bin&#x2F;ld.exe: C:\Users\KingC\AppData\Local\Temp\ccDMjN17.o:ipconfig.cpp:(.text+0x2e1): undefined reference to &#96;WSACleanup@0&#39;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">c:/mingw/bin/../lib/gcc/mingw32/8.2.0/../../../../mingw32/bin/ld.exe: C:\Users\KingC\AppData\Local\Temp\ccDMjN17.o:ipconfig.cpp:(.text+0x128): undefined reference to `WSAGetLastError@0&#x27;</span><br><span class="line">c:/mingw/bin/../lib/gcc/mingw32/8.2.0/../../../../mingw32/bin/ld.exe: C:\Users\KingC\AppData\Local\Temp\ccDMjN17.o:ipconfig.cpp:(.text+0x2a7): undefined reference to `inet_ntoa@4&#x27;</span><br><span class="line">c:/mingw/bin/../lib/gcc/mingw32/8.2.0/../../../../mingw32/bin/ld.exe: C:\Users\KingC\AppData\Local\Temp\ccDMjN17.o:ipconfig.cpp:(.text+0x2e1): undefined reference to `WSACleanup@0&#x27;</span><br></pre></td></tr></table></figure>
+
 <p>是因为需要链接到库，修改运行的命令，一开始如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd &quot;c:\Users\KingC\Desktop\test_code\网络编程\&quot; &amp;&amp; g++ ipconfig.cpp -o ipconfig &amp;&amp; &quot;c:\Users\KingC\Desktop\test_code\网络编程\&quot;ipconfig</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd &quot;c:\Users\KingC\Desktop\test_code\网络编程\&quot; &amp;&amp; g++ ipconfig.cpp -o ipconfig &amp;&amp; &quot;c:\Users\KingC\Desktop\test_code\网络编程\&quot;ipconfig</span><br></pre></td></tr></table></figure>
+
 <p>添加<code>-lwsock32 -fexec-charset=GBK</code>后，链接到库，同时使用GBK编码，</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd &quot;c:\Users\KingC\Desktop\test_code\网络编程\&quot; &amp;&amp; g++ ipconfig.cpp -o ipconfig -lwsock32 -fexec-charset&#x3D;GBK &amp;&amp; &quot;c:\Users\KingC\Desktop\test_code\网络编程\&quot;ipconfig</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd &quot;c:\Users\KingC\Desktop\test_code\网络编程\&quot; &amp;&amp; g++ ipconfig.cpp -o ipconfig -lwsock32 -fexec-charset=GBK &amp;&amp; &quot;c:\Users\KingC\Desktop\test_code\网络编程\&quot;ipconfig</span><br></pre></td></tr></table></figure>
+
 <p>以上我是采用vscode <strong>code runner</strong>插件运行的，因此要在它的设置中修改编译使用的命令，在下面”cpp”的命令中添加两项。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&quot;code-runner.executorMap&quot;: &#123;</span><br><span class="line"></span><br><span class="line">        &quot;javascript&quot;: &quot;node&quot;,</span><br><span class="line">        &quot;java&quot;: &quot;cd $dir &amp;&amp; javac $fileName &amp;&amp; java $fileNameWithoutExt&quot;,</span><br><span class="line">        &quot;c&quot;: &quot;cd $dir &amp;&amp; gcc $fileName -o $fileNameWithoutExt &amp;&amp; $dir$fileNameWithoutExt&quot;,</span><br><span class="line">        &quot;cpp&quot;: &quot;cd $dir &amp;&amp; g++ $fileName -o $fileNameWithoutExt -lwsock32 -fexec-charset=GBK &amp;&amp; $dir$fileNameWithoutExt&quot;,</span><br><span class="line">        &quot;objective-c&quot;: &quot;cd $dir &amp;&amp; gcc -framework Cocoa $fileName -o $fileNameWithoutExt &amp;&amp; $dir$fileNameWithoutExt&quot;,</span><br><span class="line">        &quot;php&quot;: &quot;php&quot;,</span><br><span class="line">        &quot;python&quot;: &quot;python -u&quot;,</span><br></pre></td></tr></table></figure>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;code-runner.executorMap&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line"></span><br><span class="line">        <span class="attr">&quot;javascript&quot;</span><span class="punctuation">:</span> <span class="string">&quot;node&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;java&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cd $dir &amp;&amp; javac $fileName &amp;&amp; java $fileNameWithoutExt&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;c&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cd $dir &amp;&amp; gcc $fileName -o $fileNameWithoutExt &amp;&amp; $dir$fileNameWithoutExt&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;cpp&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cd $dir &amp;&amp; g++ $fileName -o $fileNameWithoutExt -lwsock32 -fexec-charset=GBK &amp;&amp; $dir$fileNameWithoutExt&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;objective-c&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cd $dir &amp;&amp; gcc -framework Cocoa $fileName -o $fileNameWithoutExt &amp;&amp; $dir$fileNameWithoutExt&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;php&quot;</span><span class="punctuation">:</span> <span class="string">&quot;php&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;python&quot;</span><span class="punctuation">:</span> <span class="string">&quot;python -u&quot;</span><span class="punctuation">,</span></span><br></pre></td></tr></table></figure>
+
 
 
 

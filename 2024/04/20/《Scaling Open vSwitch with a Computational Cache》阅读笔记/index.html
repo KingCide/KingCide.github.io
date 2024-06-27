@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.3.0">
+<meta name="generator" content="Hexo 7.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
@@ -148,6 +148,11 @@
     <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
 
   </li>
+        <li class="menu-item menu-item-cv">
+
+    <a href="/cv/" rel="section"><i class="fa fa-graduation-cap fa-fw"></i>简历</a>
+
+  </li>
         <li class="menu-item menu-item-others">
 
     <a href="/others/" rel="section"><i class="fa fa-ellipsis-h fa-fw"></i>其他</a>
@@ -237,7 +242,7 @@
       
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>本文摘要：</p>
 <p>Open vSwitch（OVS）是一种广泛使用的开源虚拟交换机实现。在这项工作中，我们试图通过<strong>加速其数据路径的核心组件——包分类机制</strong>，来扩展OVS以支持数十万条OpenFlow规则。为此，我们使用了NuevoMatch，这是一种利用神经网络推理进行数据包匹配的最新算法，它承诺具有显著的<strong>可扩展性</strong>和性能优势。我们克服了原始NuevoMatch中更新规则速度慢的主要算法挑战，将其速度提高了超过三个数量级。这一改进使得将NuevoMatch与OVS集成成为可能，提供了两种设计选项：（1）将其作为OVS的<strong>megaflow缓存前的额外缓存层</strong>；（2）用它<strong>完全替代OVS的数据路径</strong>，直接对OpenFlow规则进行分类，避免了对控制路径的调用。我们对真实世界的数据包追踪和1K至500K的ClassBench规则进行了全面评估，结果显示，在500K规则的情况下，第一种设计和第二种设计分别实现了1.9倍和12.3倍的几何平均速度提升，后者还支持每秒高达60K OpenFlow规则的更新，远远超过了原始OVS的性能。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="文章综述"><a href="#文章综述" class="headerlink" title="文章综述"></a>文章综述</h2><h3 id="作者信息"><a href="#作者信息" class="headerlink" title="作者信息"></a>作者信息</h3><p><a target="_blank" rel="noopener" href="https://alonrashelbach.com/">Alon Rashelbach</a></p>
 <p>以色列理工学院的一名博士，他的这个工作先是发表在了nsdi22，然后增加了一些公式之后，发表在了ToN期刊上。他在今年的nsdi，也是继续延续可编程网络交换机的方向发表了新的文章。</p>

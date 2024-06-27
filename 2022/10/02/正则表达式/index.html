@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.3.0">
+<meta name="generator" content="Hexo 7.2.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
@@ -140,6 +140,11 @@
     <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
 
   </li>
+        <li class="menu-item menu-item-cv">
+
+    <a href="/cv/" rel="section"><i class="fa fa-graduation-cap fa-fw"></i>简历</a>
+
+  </li>
         <li class="menu-item menu-item-others">
 
     <a href="/others/" rel="section"><i class="fa fa-ellipsis-h fa-fw"></i>其他</a>
@@ -234,7 +239,7 @@
 
       
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>我从ipad导出的读书笔记有一定的格式，我需要对它进行查找替换，得到合适的markdown格式，免去一句话一句话地重复删除和添加。</p>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="文本示例"><a href="#文本示例" class="headerlink" title="文本示例"></a>文本示例</h2><p>我所要处理的文本格式如下</p>
 <blockquote>
@@ -260,20 +265,32 @@
 </blockquote>
 <p>我需要处理的步骤是，删除每段话前的日期和章节号，在接下来那段话的开头，替换为一个<code>&gt;</code>和一个<code>空格</code>。</p>
 <p>需要注意的是有的引用后面会有一段思考笔记，这段话不应该被纳入引用的文字里面。</p>
-<h2 id="正则语法"><a href="#正则语法" class="headerlink" title="正则语法"></a>正则语法</h2><h3 id="VScode中查找替换方法"><a href="#VScode中查找替换方法" class="headerlink" title="VScode中查找替换方法"></a>VScode中查找替换方法</h3><h4 id="选择空行（不需要了）"><a href="#选择空行（不需要了）" class="headerlink" title="选择空行（不需要了）"></a>选择空行（不需要了）</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">^\s*\n</span><br></pre></td></tr></table></figure>
-<h4 id="选择删去的文字"><a href="#选择删去的文字" class="headerlink" title="选择删去的文字"></a>选择删去的文字</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.*年.*月.*日\n.*\n.*\n.*\n^</span><br></pre></td></tr></table></figure>
+<h2 id="正则语法"><a href="#正则语法" class="headerlink" title="正则语法"></a>正则语法</h2><h3 id="VScode中查找替换方法"><a href="#VScode中查找替换方法" class="headerlink" title="VScode中查找替换方法"></a>VScode中查找替换方法</h3><h4 id="选择空行（不需要了）"><a href="#选择空行（不需要了）" class="headerlink" title="选择空行（不需要了）"></a>选择空行（不需要了）</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">^\s*\n</span><br></pre></td></tr></table></figure>
+
+<h4 id="选择删去的文字"><a href="#选择删去的文字" class="headerlink" title="选择删去的文字"></a>选择删去的文字</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.*年.*月.*日\n.*\n.*\n.*\n^</span><br></pre></td></tr></table></figure>
+
 <p>四个<code>\n</code>删去四整行，最后一个<code>^</code>定位到下一行的开头。</p>
-<h4 id="替换为"><a href="#替换为" class="headerlink" title="替换为"></a>替换为</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; </span><br></pre></td></tr></table></figure>
+<h4 id="替换为"><a href="#替换为" class="headerlink" title="替换为"></a>替换为</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt; </span><br></pre></td></tr></table></figure>
+
 <h3 id="python一键替换代码"><a href="#python一键替换代码" class="headerlink" title="python一键替换代码"></a>python一键替换代码</h3><h4 id="文件读取"><a href="#文件读取" class="headerlink" title="文件读取"></a>文件读取</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">filename = tkinter.filedialog.askopenfilename()</span><br><span class="line">f = <span class="built_in">open</span>(filename,<span class="string">&#x27;r&#x27;</span>,encoding=<span class="string">&#x27;UTF-8&#x27;</span>)</span><br><span class="line"><span class="built_in">str</span>=f.read()</span><br></pre></td></tr></table></figure>
+
 <h4 id="替换空行（不需要了）"><a href="#替换空行（不需要了）" class="headerlink" title="替换空行（不需要了）"></a>替换空行（不需要了）</h4><p>Python的正则表达式模块不默认为<a target="_blank" rel="noopener" href="http://docs.python.org/library/re.html#re.MULTILINE">多行<code>^</code>匹配</a>，因此需要明确指定该标志 re.MULTILINE</p>
 <ol>
-<li>一种方式为<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pattern1 = re.<span class="built_in">compile</span>(<span class="string">r&quot;^\s*\n&quot;</span>, re.MULTILINE)</span><br><span class="line">test=pattern1.sub(<span class="string">&quot;&quot;</span>,test)</span><br></pre></td></tr></table></figure></li>
-<li>另一种方式为<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pattern1=<span class="string">r&quot;^\s*\n&quot;</span></span><br><span class="line"><span class="built_in">str</span>=re.sub(pattern1, <span class="string">&quot;&quot;</span>, <span class="built_in">str</span>, count=<span class="number">0</span>, flags= re.MULTILINE)</span><br></pre></td></tr></table></figure></li>
-<li>还可以在模式中包含内联标志<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">re.sub(<span class="string">&quot;^\s*\n&quot;</span>,<span class="string">&quot;&quot;</span>,s)</span><br></pre></td></tr></table></figure>
-<h4 id="文件保存"><a href="#文件保存" class="headerlink" title="文件保存"></a>文件保存</h4></li>
+<li><p>一种方式为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pattern1 = re.<span class="built_in">compile</span>(<span class="string">r&quot;^\s*\n&quot;</span>, re.MULTILINE)</span><br><span class="line">test=pattern1.sub(<span class="string">&quot;&quot;</span>,test)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>另一种方式为</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pattern1=<span class="string">r&quot;^\s*\n&quot;</span></span><br><span class="line"><span class="built_in">str</span>=re.sub(pattern1, <span class="string">&quot;&quot;</span>, <span class="built_in">str</span>, count=<span class="number">0</span>, flags= re.MULTILINE)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>还可以在模式中包含内联标志</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">re.sub(<span class="string">&quot;^\s*\n&quot;</span>,<span class="string">&quot;&quot;</span>,s)</span><br></pre></td></tr></table></figure>
+
+</li>
 </ol>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(filename,<span class="string">&#x27;w&#x27;</span>,encoding=<span class="string">&#x27;UTF-8&#x27;</span>)</span><br><span class="line">f.write(<span class="built_in">str</span>)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+<h4 id="文件保存"><a href="#文件保存" class="headerlink" title="文件保存"></a>文件保存</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">f = <span class="built_in">open</span>(filename,<span class="string">&#x27;w&#x27;</span>,encoding=<span class="string">&#x27;UTF-8&#x27;</span>)</span><br><span class="line">f.write(<span class="built_in">str</span>)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
 <h4 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line"><span class="keyword">import</span> tkinter.filedialog</span><br><span class="line"></span><br><span class="line">filename = tkinter.filedialog.askopenfilename()</span><br><span class="line">f = <span class="built_in">open</span>(filename,<span class="string">&#x27;r&#x27;</span>,encoding=<span class="string">&#x27;UTF-8&#x27;</span>)</span><br><span class="line"><span class="built_in">str</span>=f.read()</span><br><span class="line"></span><br><span class="line">pattern1=<span class="string">r&quot;^\s*\n&quot;</span></span><br><span class="line">pattern2=<span class="string">r&quot;.*年.*月.*日\n.*\n.*\n.*\n^&quot;</span></span><br><span class="line">pattern3=<span class="string">r&quot;&gt; &quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># str=re.sub(pattern1, &quot;&quot;, str, count=0, flags= re.MULTILINE)</span></span><br><span class="line"><span class="built_in">str</span>=re.sub(pattern2, pattern3, <span class="built_in">str</span>, count=<span class="number">0</span>, flags= re.MULTILINE)</span><br><span class="line"></span><br><span class="line">f = <span class="built_in">open</span>(filename,<span class="string">&#x27;w&#x27;</span>,encoding=<span class="string">&#x27;UTF-8&#x27;</span>)</span><br><span class="line">f.write(<span class="built_in">str</span>)</span><br><span class="line">f.close()</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
