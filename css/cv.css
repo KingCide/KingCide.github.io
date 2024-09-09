@@ -111,16 +111,22 @@ ul.skills li:last-child{
 /*
  Page Rules
 */
-.page { width: 1000px;
-        min-height: 29.7cm;
-        margin: 1cm auto;
-
-        background: white;
-        padding: 20px 50px;
+.cv-content {
+    max-width: 100%;
+    overflow-x: auto;
 }
-.subpage { padding: 1cm;
-           border: 1px red solid;
-           height: 297mm;
+
+.page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .page {
+        padding: 10px;
+    }
 }
 
 @page { size: A4;

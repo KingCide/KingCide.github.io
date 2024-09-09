@@ -29,8 +29,9 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20240721025634659.png">
 <meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20240721025845686.png">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20240722173900111.png">
 <meta property="article:published_time" content="2024-07-20T18:51:11.000Z">
-<meta property="article:modified_time" content="2024-07-20T19:07:05.592Z">
+<meta property="article:modified_time" content="2024-07-22T12:14:50.353Z">
 <meta property="article:author" content="KingCide">
 <meta property="article:tag" content="javascript">
 <meta property="article:tag" content="html">
@@ -203,10 +204,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-07-21 02:51:11 / 修改时间：03:07:05" itemprop="dateCreated datePublished" datetime="2024-07-21T02:51:11+08:00">2024-07-21</time>
+              <time title="创建时间：2024-07-21 02:51:11" itemprop="dateCreated datePublished" datetime="2024-07-21T02:51:11+08:00">2024-07-21</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-22 20:14:50" itemprop="dateModified" datetime="2024-07-22T20:14:50+08:00">2024-07-22</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -243,9 +250,13 @@
 <p>发现在加载了一些请求后，要卡顿30s，然后才能显示网页，在此之前几乎是空白的。</p>
 <p>在显示网页之前，会有一个请求报错，显示没有响应。</p>
 <p><img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20240721025845686.png" alt="image-20240721025845686"></p>
-<p>我自己在浏览器中试了下，发现它<a target="_blank" rel="noopener" href="https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css%E7%A1%AE%E5%AE%9E%E6%B2%A1%E6%9C%89%E5%93%8D%E5%BA%94%E3%80%82">https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css确实没有响应。</a></p>
-<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_57767508/article/details/124915932">查找资料</a>，只需要将所有 <code>fastly.jsdelivr.net</code> 更换为<code> fastly.jsdelivr.net</code>。</p>
+<p>我自己在浏览器中试了下，发现它 <a target="_blank" rel="noopener" href="https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css">https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css</a> 确实没有响应。</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_57767508/article/details/124915932">查找资料</a>，只需要将所有<code>fastly.jsdelivr.net</code> 更换为<code> fastly.jsdelivr.net</code>。</p>
 <p>在本地的public文件夹下，查看所有渲染好的页面，发现所有页面都需要发送这个请求，所以我需要替换一下所有页面的这个字段。</p>
+<blockquote>
+<p><img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20240722173900111.png"></p>
+<p>可以看到，目前的解决方法有个bug：上面的截图中是本地md的显示，然而在渲染之后的html中正文中的内容也被替换掉了。暂时不管它了。</p>
+</blockquote>
 <h2 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h2><p>我创建了一个 Hexo 插件来在生成过程中修改 HTML 内容。</p>
 <p>在 Hexo 项目根目录下创建  <code>scripts/cdn_replace.js</code>：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">&#x27;path&#x27;</span>);</span><br><span class="line"></span><br><span class="line">hexo.<span class="property">extend</span>.<span class="property">filter</span>.<span class="title function_">register</span>(<span class="string">&#x27;after_render:html&#x27;</span>, <span class="keyword">function</span>(<span class="params">str, data</span>)&#123;</span><br><span class="line">  <span class="keyword">return</span> str.<span class="title function_">replace</span>(<span class="regexp">/cdn\.jsdelivr\.net/g</span>, <span class="string">&#x27;fastly.jsdelivr.net&#x27;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
@@ -285,7 +296,10 @@
     <a href="/2024/07/20/Satellite-network-emulation-By-STORM/" rel="prev" title="Satellite network emulation By STORM">
       <i class="fa fa-chevron-left"></i> Satellite network emulation By STORM
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2024/07/24/Git-%E5%A4%9A%E6%9C%BA%E5%99%A8%E5%A4%9A%E4%BB%93%E5%BA%93%E4%BB%A3%E7%A0%81%E5%90%8C%E6%AD%A5/" rel="next" title="Git:多机器多仓库代码同步">
+      Git:多机器多仓库代码同步 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -358,7 +372,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">63</span>
+          <span class="site-state-item-count">64</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -371,7 +385,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">52</span>
+        <span class="site-state-item-count">54</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
