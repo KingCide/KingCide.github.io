@@ -27,8 +27,8 @@
 <meta property="og:site_name" content="Kc&#39;s Blog">
 <meta property="og:description" content="容器资源使用监控                        body {             font-family: Arial, sans-serif;             margin: 0;             padding: 20px;             background-color: #f0f0f0;         }">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-09-09T08:56:28.795Z">
-<meta property="article:modified_time" content="2024-09-09T08:56:14.064Z">
+<meta property="article:published_time" content="2024-09-09T09:06:38.103Z">
+<meta property="article:modified_time" content="2024-09-06T06:27:56.805Z">
 <meta property="article:author" content="KingCide">
 <meta name="twitter:card" content="summary">
 
@@ -245,21 +245,146 @@
         </div>
     </div>
 
-<pre><code>&lt;script&gt;
-    const fileInput = document.getElementById(&#39;file-input&#39;);
-    const cpuCtx = document.getElementById(&#39;cpuChart&#39;).getContext(&#39;2d&#39;);
-    const memoryCtx = document.getElementById(&#39;memoryChart&#39;).getContext(&#39;2d&#39;);
-    let cpuChart, memoryChart;
-</code></pre>
-<p>​        fileInput.addEventListener(‘change’, function(e) {<br>​            const file = e.target.files[0];<br>​            Papa.parse(file, {<br>​                header: true,<br>​                complete: function(results) {<br>​                    const data = results.data;<br>​                    createCharts(data);<br>​                }<br>​            });<br>​        });</p>
-<p>​        function createCharts(data) {<br>​            const timestamps = […new Set(data.map(row =&gt; row.Timestamp))];<br>​            const hosts = […new Set(data.map(row =&gt; row.Host))];<br>​<br>​            createCPUChart(data, timestamps, hosts);<br>​            createMemoryChart(data, timestamps, hosts);<br>​        }</p>
-<p>​        function createCPUChart(data, timestamps, hosts) {<br>​            const datasets = hosts.map(host =&gt; ({<br>​                label: <code>$&#123;host&#125; - CPU %</code>,<br>​                data: timestamps.map(timestamp =&gt; {<br>​                    const row = data.find(r =&gt; r.Timestamp === timestamp &amp;&amp; r.Host === host);<br>​                    return row ? parseFloat(row[‘CPU %’]) : null;<br>​                }),<br>​                borderColor: getRandomColor(),<br>​                fill: false<br>​            }));</p>
-<p>​            if (cpuChart) {<br>​                cpuChart.destroy();<br>​            }</p>
-<p>​            cpuChart = new Chart(cpuCtx, {<br>​                type: ‘line’,<br>​                data: {<br>​                    labels: timestamps,<br>​                    datasets: datasets<br>​                },<br>​                options: {<br>​                    responsive: true,<br>​                    maintainAspectRatio: false,<br>​                    scales: {<br>​                        x: {<br>​                            title: {<br>​                                display: true,<br>​                                text: ‘时间’<br>​                            }<br>​                        },<br>​                        y: {<br>​                            title: {<br>​                                display: true,<br>​                                text: ‘CPU 使用率 (%)’<br>​                            },<br>​                            beginAtZero: true<br>​                        }<br>​                    },<br>​                    plugins: {<br>​                        title: {<br>​                            display: true,<br>​                            text: ‘容器 CPU 使用率随时间变化’<br>​                        },<br>​                        tooltip: {<br>​                            mode: ‘index’,<br>​                            intersect: false<br>​                        }<br>​                    }<br>​                }<br>​            });<br>​        }</p>
-<p>​        function createMemoryChart(data, timestamps, hosts) {<br>​            const datasets = hosts.map(host =&gt; ({<br>​                label: <code>$&#123;host&#125; - Memory %</code>,<br>​                data: timestamps.map(timestamp =&gt; {<br>​                    const row = data.find(r =&gt; r.Timestamp === timestamp &amp;&amp; r.Host === host);<br>​                    return row ? parseFloat(row[‘Memory %’]) : null;<br>​                }),<br>​                borderColor: getRandomColor(),<br>​                fill: false<br>​            }));</p>
-<p>​            if (memoryChart) {<br>​                memoryChart.destroy();<br>​            }</p>
-<p>​            memoryChart = new Chart(memoryCtx, {<br>​                type: ‘line’,<br>​                data: {<br>​                    labels: timestamps,<br>​                    datasets: datasets<br>​                },<br>​                options: {<br>​                    responsive: true,<br>​                    maintainAspectRatio: false,<br>​                    scales: {<br>​                        x: {<br>​                            title: {<br>​                                display: true,<br>​                                text: ‘时间’<br>​                            }<br>​                        },<br>​                        y: {<br>​                            title: {<br>​                                display: true,<br>​                                text: ‘内存使用率 (%)’<br>​                            },<br>​                            beginAtZero: true<br>​                        }<br>​                    },<br>​                    plugins: {<br>​                        title: {<br>​                            display: true,<br>​                            text: ‘容器内存使用率随时间变化’<br>​                        },<br>​                        tooltip: {<br>​                            mode: ‘index’,<br>​                            intersect: false<br>​                        }<br>​                    }<br>​                }<br>​            });<br>​        }</p>
-<p>​        function getRandomColor() {<br>​            const r = Math.floor(Math.random() * 255);<br>​            const g = Math.floor(Math.random() * 255);<br>​            const b = Math.floor(Math.random() * 255);<br>​            return <code>rgb($&#123;r&#125;, $&#123;g&#125;, $&#123;b&#125;)</code>;<br>​        }<br>​    </script></p>
+    <script>
+        const fileInput = document.getElementById('file-input');
+        const cpuCtx = document.getElementById('cpuChart').getContext('2d');
+        const memoryCtx = document.getElementById('memoryChart').getContext('2d');
+        let cpuChart, memoryChart;
+
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            Papa.parse(file, {
+                header: true,
+                complete: function(results) {
+                    const data = results.data;
+                    createCharts(data);
+                }
+            });
+        });
+
+        function createCharts(data) {
+            const timestamps = [...new Set(data.map(row => row.Timestamp))];
+            const hosts = [...new Set(data.map(row => row.Host))];
+            
+            createCPUChart(data, timestamps, hosts);
+            createMemoryChart(data, timestamps, hosts);
+        }
+
+        function createCPUChart(data, timestamps, hosts) {
+            const datasets = hosts.map(host => ({
+                label: `${host} - CPU %`,
+                data: timestamps.map(timestamp => {
+                    const row = data.find(r => r.Timestamp === timestamp && r.Host === host);
+                    return row ? parseFloat(row['CPU %']) : null;
+                }),
+                borderColor: getRandomColor(),
+                fill: false
+            }));
+
+            if (cpuChart) {
+                cpuChart.destroy();
+            }
+
+            cpuChart = new Chart(cpuCtx, {
+                type: 'line',
+                data: {
+                    labels: timestamps,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '时间'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'CPU 使用率 (%)'
+                            },
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '容器 CPU 使用率随时间变化'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function createMemoryChart(data, timestamps, hosts) {
+            const datasets = hosts.map(host => ({
+                label: `${host} - Memory %`,
+                data: timestamps.map(timestamp => {
+                    const row = data.find(r => r.Timestamp === timestamp && r.Host === host);
+                    return row ? parseFloat(row['Memory %']) : null;
+                }),
+                borderColor: getRandomColor(),
+                fill: false
+            }));
+
+            if (memoryChart) {
+                memoryChart.destroy();
+            }
+
+            memoryChart = new Chart(memoryCtx, {
+                type: 'line',
+                data: {
+                    labels: timestamps,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '时间'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '内存使用率 (%)'
+                            },
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '容器内存使用率随时间变化'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function getRandomColor() {
+            const r = Math.floor(Math.random() * 255);
+            const g = Math.floor(Math.random() * 255);
+            const b = Math.floor(Math.random() * 255);
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+    </script>
+
+
 </body></html>
       </div>
       
