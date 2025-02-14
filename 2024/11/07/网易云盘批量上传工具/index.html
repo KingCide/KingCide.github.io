@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kingcide.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="我开发了一个支持多用户批量上传到网易云盘的扩展功能模块，主要包括：批量音乐文件上传、音质选择（SQ&#x2F;Hi-res）、自动与系统元数据信息匹配、会话管理系统。通过对多用户的session进行管理，实现并行上传不同曲库；通过对网易云曲库元数据的读取，创建了与本地音频的映射数据库，相比其他商家实现了0误差的歌曲匹配；在公网服务器与内网机器之间做内网穿透和nginx反向代理，同时依托前后端分离的设计思路，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网易云盘批量上传工具">
+<meta property="og:url" content="https://kingcide.github.io/2024/11/07/%E7%BD%91%E6%98%93%E4%BA%91%E7%9B%98%E6%89%B9%E9%87%8F%E4%B8%8A%E4%BC%A0%E5%B7%A5%E5%85%B7/index.html">
+<meta property="og:site_name" content="Kc&#39;s Blog">
+<meta property="og:description" content="我开发了一个支持多用户批量上传到网易云盘的扩展功能模块，主要包括：批量音乐文件上传、音质选择（SQ&#x2F;Hi-res）、自动与系统元数据信息匹配、会话管理系统。通过对多用户的session进行管理，实现并行上传不同曲库；通过对网易云曲库元数据的读取，创建了与本地音频的映射数据库，相比其他商家实现了0误差的歌曲匹配；在公网服务器与内网机器之间做内网穿透和nginx反向代理，同时依托前后端分离的设计思路，">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-11-06T16:42:50.000Z">
+<meta property="article:modified_time" content="2024-11-06T17:10:10.287Z">
+<meta property="article:author" content="KingCide">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="HTML">
+<meta property="article:tag" content="应用">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kingcide.github.io/2024/11/07/%E7%BD%91%E6%98%93%E4%BA%91%E7%9B%98%E6%89%B9%E9%87%8F%E4%B8%8A%E4%BC%A0%E5%B7%A5%E5%85%B7/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>网易云盘批量上传工具 | Kc's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Kc's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">(⊙.⊙)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-music">
+
+    <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
+
+  </li>
+        <li class="menu-item menu-item-cv">
+
+    <a href="/cv/" rel="section"><i class="fa fa-graduation-cap fa-fw"></i>简历</a>
+
+  </li>
+        <li class="menu-item menu-item-others">
+
+    <a href="/others/" rel="section"><i class="fa fa-ellipsis-h fa-fw"></i>其他</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kingcide.github.io/2024/11/07/%E7%BD%91%E6%98%93%E4%BA%91%E7%9B%98%E6%89%B9%E9%87%8F%E4%B8%8A%E4%BC%A0%E5%B7%A5%E5%85%B7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KingCide">
+      <meta itemprop="description" content="乐极生悲，否极泰来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kc's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          网易云盘批量上传工具
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-11-07 00:42:50 / 修改时间：01:10:10" itemprop="dateCreated datePublished" datetime="2024-11-07T00:42:50+08:00">2024-11-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E5%8D%B0%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习印记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <link rel="stylesheet" type="text/css" href="https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>我开发了一个支持多用户批量上传到网易云盘的扩展功能模块，主要包括：批量音乐文件上传、音质选择（SQ/Hi-res）、自动与系统元数据信息匹配、会话管理系统。通过对多用户的<strong>session进行管理</strong>，实现并行上传不同曲库；通过对<strong>网易云曲库元数据的读取</strong>，创建了与本地音频的映射数据库，相比其他商家实现了0误差的歌曲匹配；在公网服务器与内网机器之间做<strong>内网穿透和nginx反向代理</strong>，同时依托<strong>前后端分离</strong>的设计思路，用户可以在公网访问上传服务。</p>
+<span id="more"></span>
+
+<h2 id="项目背景"><a href="#项目背景" class="headerlink" title="项目背景"></a>项目背景</h2><p>NeteaseCloudMusicApi 是一个非常流行的开源项目，提供了网易云音乐的 Node.js API 实现。</p>
+<p>原项目的主要特点：</p>
+<ol>
+<li>提供完整的网易云音乐API接口</li>
+<li>基于Node.js实现</li>
+<li>通过CSRF和请求伪造实现接口调用</li>
+<li>支持多种使用方式（Node.js调用、TypeScript支持等）</li>
+</ol>
+<h2 id="系统架构"><a href="#系统架构" class="headerlink" title="系统架构"></a>系统架构</h2><h3 id="核心模块"><a href="#核心模块" class="headerlink" title="核心模块"></a>核心模块</h3><ul>
+<li>generate.html: 生成上传链接</li>
+<li>login.html: 扫码登录页面</li>
+<li>upload.html: 文件上传界面</li>
+<li>session.js: 会话管理模块</li>
+<li>newupload.js: 上传核心逻辑</li>
+</ul>
+<h3 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h3><ol>
+<li>生成带session的登录链接</li>
+<li>扫码登录并关联session</li>
+<li>自动开始上传任务</li>
+<li>实时监控上传进度</li>
+</ol>
+<h2 id="会话管理设计"><a href="#会话管理设计" class="headerlink" title="会话管理设计"></a>会话管理设计</h2><h3 id="Session存储结构"><a href="#Session存储结构" class="headerlink" title="Session存储结构"></a>Session存储结构</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 存储session信息</span></span><br><span class="line"><span class="keyword">const</span> sessions = <span class="keyword">new</span> <span class="title class_">Map</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 修改处理函数格式以匹配项目要求</span></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="keyword">async</span> (query, request) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; sessionId, operation, cookie &#125; = query;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (operation) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&#x27;save&#x27;</span>:</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (!sessionId) &#123;</span><br><span class="line">                    <span class="keyword">return</span> &#123;</span><br><span class="line">                        <span class="attr">status</span>: <span class="number">400</span>,</span><br><span class="line">                        <span class="attr">body</span>: &#123; <span class="attr">code</span>: <span class="number">400</span>, <span class="attr">message</span>: <span class="string">&#x27;sessionId不能为空&#x27;</span> &#125;</span><br><span class="line">                    &#125;;</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// 保存session信息，包括cookie和quality</span></span><br><span class="line">                sessions.<span class="title function_">set</span>(sessionId, &#123;</span><br><span class="line">                    <span class="attr">createdAt</span>: <span class="keyword">new</span> <span class="title class_">Date</span>(),</span><br><span class="line">                    <span class="attr">isUsed</span>: <span class="literal">false</span>,</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="安全机制"><a href="#安全机制" class="headerlink" title="安全机制"></a>安全机制</h3><ol>
+<li><strong>会话有效期控制</strong></li>
+</ol>
+<ul>
+<li>120分钟自动过期</li>
+<li>一次性使用机制</li>
+<li>登录状态验证</li>
+</ul>
+<ol start="2">
+<li><strong>Cookie安全</strong></li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">// 如果是上传阶段（已有cookie），则需要验证cookie</span></span><br><span class="line"><span class="keyword">if</span> (session.<span class="property">isUsed</span> &amp;&amp; session.<span class="property">cookie</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="attr">status</span>: <span class="number">200</span>,</span><br><span class="line">        <span class="attr">body</span>: &#123; </span><br><span class="line">            <span class="attr">code</span>: <span class="number">200</span>, </span><br><span class="line">            <span class="attr">valid</span>: <span class="literal">true</span>, </span><br><span class="line">            <span class="attr">cookie</span>: session.<span class="property">cookie</span>,</span><br><span class="line">            <span class="attr">quality</span>: session.<span class="property">quality</span>,</span><br><span class="line">            <span class="attr">uid</span>: session.<span class="property">uid</span>,</span><br><span class="line">            <span class="attr">message</span>: <span class="string">&#x27;Session有效&#x27;</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 登录阶段，只验证session存在且未过期</span></span><br><span class="line"><span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">status</span>: <span class="number">200</span>,</span><br></pre></td></tr></table></figure>
+
+
+<ol start="3">
+<li><strong>状态转换控制</strong></li>
+</ol>
+<ul>
+<li>idle -&gt; uploading -&gt; completed</li>
+<li>异常自动回滚</li>
+<li>延迟清理机制</li>
+</ul>
+<h2 id="文件上传实现"><a href="#文件上传实现" class="headerlink" title="文件上传实现"></a>文件上传实现</h2><h3 id="文件扫描"><a href="#文件扫描" class="headerlink" title="文件扫描"></a>文件扫描</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 扫描目录获取音乐文件</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">scanDirectory</span>(<span class="params">dir</span>) &#123;</span><br><span class="line">  <span class="keyword">const</span> files = [];</span><br><span class="line">  <span class="keyword">const</span> items = <span class="keyword">await</span> fs.<span class="title function_">readdir</span>(dir);</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> item <span class="keyword">of</span> items) &#123;</span><br><span class="line">    <span class="keyword">const</span> fullPath = path.<span class="title function_">join</span>(dir, item);</span><br><span class="line">    <span class="keyword">const</span> stat = <span class="keyword">await</span> fs.<span class="title function_">stat</span>(fullPath);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (stat.<span class="title function_">isFile</span>() &amp;&amp; <span class="regexp">/\.(mp3|flac|wav|m4a)$/i</span>.<span class="title function_">test</span>(item)) &#123;</span><br><span class="line">      files.<span class="title function_">push</span>(&#123;</span><br><span class="line">        <span class="attr">path</span>: fullPath,</span><br><span class="line">        <span class="attr">name</span>: item</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">return</span> files;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>特点：</p>
+<ul>
+<li>支持多种音频格式</li>
+<li>异步目录扫描</li>
+<li>文件名规范化</li>
+</ul>
+<h3 id="上传任务管理"><a href="#上传任务管理" class="headerlink" title="上传任务管理"></a>上传任务管理</h3><ol>
+<li><strong>状态对象设计</strong></li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建上传状态对象的工厂函数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">createUploadStatus</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">status</span>: <span class="string">&#x27;idle&#x27;</span>,</span><br><span class="line">    <span class="attr">total</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">current</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">currentFile</span>: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">    <span class="attr">files</span>: []</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ol start="2">
+<li><strong>并发控制</strong></li>
+</ol>
+<ul>
+<li>单任务队列</li>
+<li>重试机制</li>
+<li>进度追踪</li>
+</ul>
+<h3 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h3><ol>
+<li><strong>重试策略</strong></li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> retryCount = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">let</span> uploadSuccess = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (retryCount &lt; <span class="number">3</span> &amp;&amp; !uploadSuccess) &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (retryCount &gt; <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">`正在进行第 <span class="subst">$&#123;retryCount&#125;</span> 次重试上传: <span class="subst">$&#123;file.name&#125;</span>`</span>);</span><br><span class="line">      <span class="comment">// 重试前等待一段时间</span></span><br><span class="line">      <span class="keyword">await</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> <span class="built_in">setTimeout</span>(resolve, <span class="number">3000</span>));</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+<ol start="2">
+<li><strong>错误恢复</strong></li>
+</ol>
+<ul>
+<li>最大重试次数限制</li>
+<li>延迟重试</li>
+<li>错误日志记录</li>
+</ul>
+<h2 id="前端实现"><a href="#前端实现" class="headerlink" title="前端实现"></a>前端实现</h2><h3 id="链接生成页面（管理平面）"><a href="#链接生成页面（管理平面）" class="headerlink" title="链接生成页面（管理平面）"></a>链接生成页面（管理平面）</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">generateUUID</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx&#x27;</span>.<span class="title function_">replace</span>(<span class="regexp">/[xy]/g</span>, <span class="keyword">function</span>(<span class="params">c</span>) &#123;</span><br><span class="line">        <span class="keyword">var</span> r = <span class="title class_">Math</span>.<span class="title function_">random</span>() * <span class="number">16</span> | <span class="number">0</span>,</span><br><span class="line">            v = c == <span class="string">&#x27;x&#x27;</span> ? r : (r &amp; <span class="number">0x3</span> | <span class="number">0x8</span>);</span><br><span class="line">        <span class="keyword">return</span> v.<span class="title function_">toString</span>(<span class="number">16</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>特点：</p>
+<ul>
+<li>UUID生成</li>
+<li>音质选择</li>
+<li>链接复制功能</li>
+</ul>
+<h3 id="登录页面"><a href="#登录页面" class="headerlink" title="登录页面"></a>登录页面</h3><ol>
+<li><strong>二维码登录流程</strong></li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">getQRKey</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> res = <span class="keyword">await</span> axios.<span class="title function_">get</span>(<span class="string">`/login/qr/key?timestamp=<span class="subst">$&#123;<span class="built_in">Date</span>.now()&#125;</span>`</span>);</span><br><span class="line">    <span class="keyword">return</span> res.<span class="property">data</span>.<span class="property">data</span>.<span class="property">unikey</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">getQRCode</span>(<span class="params">key</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> res = <span class="keyword">await</span> axios.<span class="title function_">get</span>(<span class="string">`/login/qr/create?key=<span class="subst">$&#123;key&#125;</span>&amp;qrimg=true&amp;timestamp=<span class="subst">$&#123;<span class="built_in">Date</span>.now()&#125;</span>`</span>);</span><br><span class="line">    <span class="keyword">return</span> res.<span class="property">data</span>.<span class="property">data</span>.<span class="property">qrimg</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">checkQRStatus</span>(<span class="params">key</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> res = <span class="keyword">await</span> axios.<span class="title function_">get</span>(<span class="string">`/login/qr/check?key=<span class="subst">$&#123;key&#125;</span>&amp;timestamp=<span class="subst">$&#123;<span class="built_in">Date</span>.now()&#125;</span>`</span>);</span><br><span class="line">    <span class="keyword">return</span> res.<span class="property">data</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">initQR</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// 获取并验证session</span></span><br><span class="line">    sessionId = <span class="title function_">getSessionId</span>();</span><br><span class="line">    <span class="keyword">if</span> (!sessionId) &#123;</span><br><span class="line">        <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;status&#x27;</span>).<span class="property">textContent</span> = <span class="string">&#x27;无效的登录链接&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> isValid = <span class="keyword">await</span> <span class="title function_">validateSession</span>(sessionId);</span><br><span class="line">    <span class="keyword">if</span> (!isValid) &#123;</span><br><span class="line">        <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;status&#x27;</span>).<span class="property">textContent</span> = <span class="string">&#x27;登录链接已过期或无效&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取key</span></span><br><span class="line">    key = <span class="keyword">await</span> <span class="title function_">getQRKey</span>();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 获取二维码</span></span><br><span class="line">    <span class="keyword">const</span> qrimg = <span class="keyword">await</span> <span class="title function_">getQRCode</span>(key);</span><br><span class="line">    <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;qrImg&#x27;</span>).<span class="property">innerHTML</span> = <span class="string">`&lt;img src=&quot;<span class="subst">$&#123;qrimg&#125;</span>&quot; /&gt;`</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 开始轮询检查状态</span></span><br><span class="line">    <span class="title function_">checkStatus</span>();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<ol start="2">
+<li><strong>状态监控</strong></li>
+</ol>
+<ul>
+<li>定时轮询</li>
+<li>自动跳转</li>
+<li>错误提示</li>
+</ul>
+<h3 id="上传页面"><a href="#上传页面" class="headerlink" title="上传页面"></a>上传页面</h3><ol>
+<li><strong>进度展示</strong></li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 检查上传状态</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">checkStatus</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> sessionId = <span class="title function_">getSessionId</span>();</span><br><span class="line">        <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="title function_">axios</span>(&#123;</span><br><span class="line">            <span class="attr">method</span>: <span class="string">&#x27;post&#x27;</span>,</span><br><span class="line">            <span class="attr">url</span>: <span class="string">`/newupload?time=<span class="subst">$&#123;<span class="built_in">Date</span>.now()&#125;</span>&amp;sessionId=<span class="subst">$&#123;sessionId&#125;</span>`</span>,</span><br><span class="line">            <span class="attr">data</span>: &#123;</span><br><span class="line">                <span class="attr">operation</span>: <span class="string">&#x27;status&#x27;</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">withCredentials</span>: <span class="literal">true</span></span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">const</span> status = response.<span class="property">data</span>.<span class="property">data</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (status.<span class="property">status</span> === <span class="string">&#x27;uploading&#x27;</span>) &#123;</span><br><span class="line">            uploadStatus.<span class="property">textContent</span> = <span class="string">`正在上传: <span class="subst">$&#123;status.current&#125;</span>/<span class="subst">$&#123;status.total&#125;</span>`</span>;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">const</span> progressItem = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="string">&#x27;div&#x27;</span>);</span><br><span class="line">            progressItem.<span class="property">className</span> = <span class="string">&#x27;progress&#x27;</span>;</span><br><span class="line">            progressItem.<span class="property">textContent</span> = <span class="string">`当前文件: <span class="subst">$&#123;status.currentFile&#125;</span>`</span>;</span><br><span class="line">            progressList.<span class="property">innerHTML</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">            progressList.<span class="title function_">appendChild</span>(progressItem);</span><br><span class="line">            </span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (status.<span class="property">status</span> === <span class="string">&#x27;completed&#x27;</span>) &#123;</span><br><span class="line">            uploadStatus.<span class="property">textContent</span> = <span class="string">`上传完成！共处理 <span class="subst">$&#123;status.total&#125;</span> 个文件`</span>;</span><br><span class="line">            progressList.<span class="property">innerHTML</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">            <span class="title function_">stopStatusCheck</span>();</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (status.<span class="property">status</span> === <span class="string">&#x27;idle&#x27;</span>) &#123;</span><br><span class="line">            uploadStatus.<span class="property">textContent</span> = <span class="string">&#x27;上传任务已停止&#x27;</span>;</span><br><span class="line">            progressList.<span class="property">innerHTML</span> = <span class="string">&#x27;&#x27;</span>;</span><br><span class="line">            <span class="title function_">stopStatusCheck</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">        uploadStatus.<span class="property">textContent</span> = <span class="string">&#x27;检查状态失败: &#x27;</span> + error.<span class="property">message</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ol start="2">
+<li><strong>自动化处理</strong></li>
+</ol>
+<ul>
+<li>登录检查</li>
+<li>自动开始</li>
+<li>实时更新</li>
+</ul>
+<h2 id="未来优化方向"><a href="#未来优化方向" class="headerlink" title="未来优化方向"></a>未来优化方向</h2><ol>
+<li><strong>性能提升</strong></li>
+</ol>
+<ul>
+<li>引入消息队列</li>
+<li>并发上传</li>
+<li>断点续传</li>
+</ul>
+<ol start="2">
+<li><strong>功能增强</strong></li>
+</ol>
+<ul>
+<li>进度持久化</li>
+<li>智能匹配</li>
+<li>批量处理</li>
+</ul>
+<ol start="3">
+<li><strong>监控改进</strong></li>
+</ol>
+<ul>
+<li>性能监控</li>
+<li>错误追踪</li>
+<li>用户反馈</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+              <a href="/tags/HTML/" rel="tag"># HTML</a>
+              <a href="/tags/%E5%BA%94%E7%94%A8/" rel="tag"># 应用</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/10/31/Tampermonkey%E6%B5%8F%E8%A7%88%E5%99%A8%E8%84%9A%E6%9C%AC%E5%BC%80%E5%8F%91%E5%AE%9E%E8%B7%B5/" rel="prev" title="Tampermonkey浏览器脚本开发实践">
+      <i class="fa fa-chevron-left"></i> Tampermonkey浏览器脚本开发实践
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/12/15/%E3%80%8A%E4%B8%89%E7%94%9F%E4%B8%87%E7%89%A9%E3%80%8B%E2%80%94%E2%80%94%E5%AE%81%E9%AB%98%E5%AE%81/" rel="next" title="《三生万物》——宁高宁">
+      《三生万物》——宁高宁 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A1%B9%E7%9B%AE%E8%83%8C%E6%99%AF"><span class="nav-number">1.</span> <span class="nav-text">项目背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">系统架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97"><span class="nav-number">2.1.</span> <span class="nav-text">核心模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">2.2.</span> <span class="nav-text">工作流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%9A%E8%AF%9D%E7%AE%A1%E7%90%86%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.</span> <span class="nav-text">会话管理设计</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Session%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="nav-number">3.1.</span> <span class="nav-text">Session存储结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%9C%BA%E5%88%B6"><span class="nav-number">3.2.</span> <span class="nav-text">安全机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%AE%9E%E7%8E%B0"><span class="nav-number">4.</span> <span class="nav-text">文件上传实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%87%E4%BB%B6%E6%89%AB%E6%8F%8F"><span class="nav-number">4.1.</span> <span class="nav-text">文件扫描</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E4%BC%A0%E4%BB%BB%E5%8A%A1%E7%AE%A1%E7%90%86"><span class="nav-number">4.2.</span> <span class="nav-text">上传任务管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86"><span class="nav-number">4.3.</span> <span class="nav-text">错误处理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E7%AB%AF%E5%AE%9E%E7%8E%B0"><span class="nav-number">5.</span> <span class="nav-text">前端实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5%E7%94%9F%E6%88%90%E9%A1%B5%E9%9D%A2%EF%BC%88%E7%AE%A1%E7%90%86%E5%B9%B3%E9%9D%A2%EF%BC%89"><span class="nav-number">5.1.</span> <span class="nav-text">链接生成页面（管理平面）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%99%BB%E5%BD%95%E9%A1%B5%E9%9D%A2"><span class="nav-number">5.2.</span> <span class="nav-text">登录页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8A%E4%BC%A0%E9%A1%B5%E9%9D%A2"><span class="nav-number">5.3.</span> <span class="nav-text">上传页面</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AA%E6%9D%A5%E4%BC%98%E5%8C%96%E6%96%B9%E5%90%91"><span class="nav-number">6.</span> <span class="nav-text">未来优化方向</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">KingCide</p>
+  <div class="site-description" itemprop="description">乐极生悲，否极泰来</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kingcide" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kingcide" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1659057796@qq.com" title="E-Mail → mailto:1659057796@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://space.bilibili.com/436691243" title="https:&#x2F;&#x2F;space.bilibili.com&#x2F;436691243" rel="noopener" target="_blank">Bilibili</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">KingCide</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//fastly.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

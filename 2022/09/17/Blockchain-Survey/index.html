@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kingcide.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="记录对区块链的综述。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Blockchain Survey">
+<meta property="og:url" content="https://kingcide.github.io/2022/09/17/Blockchain-Survey/index.html">
+<meta property="og:site_name" content="Kc&#39;s Blog">
+<meta property="og:description" content="记录对区块链的综述。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20220918150542336.png">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20220919223045649.png">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20220922162708902.png">
+<meta property="article:published_time" content="2022-09-17T06:26:18.000Z">
+<meta property="article:modified_time" content="2022-09-23T07:45:21.000Z">
+<meta property="article:author" content="KingCide">
+<meta property="article:tag" content="区块链">
+<meta property="article:tag" content="综述">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20220918150542336.png">
+
+<link rel="canonical" href="https://kingcide.github.io/2022/09/17/Blockchain-Survey/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Blockchain Survey | Kc's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Kc's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">(⊙.⊙)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-music">
+
+    <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
+
+  </li>
+        <li class="menu-item menu-item-cv">
+
+    <a href="/cv/" rel="section"><i class="fa fa-graduation-cap fa-fw"></i>简历</a>
+
+  </li>
+        <li class="menu-item menu-item-others">
+
+    <a href="/others/" rel="section"><i class="fa fa-ellipsis-h fa-fw"></i>其他</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kingcide.github.io/2022/09/17/Blockchain-Survey/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KingCide">
+      <meta itemprop="description" content="乐极生悲，否极泰来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kc's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Blockchain Survey
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-09-17 14:26:18" itemprop="dateCreated datePublished" datetime="2022-09-17T14:26:18+08:00">2022-09-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-09-23 15:45:21" itemprop="dateModified" datetime="2022-09-23T15:45:21+08:00">2022-09-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E5%8D%B0%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习印记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <link rel="stylesheet" type="text/css" href="https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>记录对区块链的综述。</p>
+<span id="more"></span>
+
+<h2 id="Blockchain-challenges-and-opportunities-a-survey"><a href="#Blockchain-challenges-and-opportunities-a-survey" class="headerlink" title="Blockchain challenges and opportunities: a survey"></a>Blockchain challenges and opportunities: a survey</h2><h3 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h3><h4 id="Key-characteristics"><a href="#Key-characteristics" class="headerlink" title="Key characteristics"></a>Key characteristics</h4><p>such as decentralisation, persistency, anonymity and auditability</p>
+<h4 id="Application"><a href="#Application" class="headerlink" title="Application"></a>Application</h4><ol>
+<li>decentralised environment<ul>
+<li>core technologies: cryptographic hash, digital signature (based on asymmetric cryptography) and distributed consensus mechanism.</li>
+</ul>
+</li>
+<li>digital assets, remittance and online payment</li>
+<li>next generation of internet interaction systems<ul>
+<li> smart contracts, public services, internet of things (IoT), reputation systems and security services.</li>
+</ul>
+</li>
+</ol>
+<h4 id="Technical-challenges"><a href="#Technical-challenges" class="headerlink" title="Technical challenges"></a>Technical challenges</h4><ol>
+<li>scalability</li>
+<li>miners can achieve larger revenue than their fair share through selfish mining strategy</li>
+<li> privacy leakage</li>
+<li>PoW wastes too much electricity energy while the phenomenon that the rich get richer could appear in the PoS consensus process.   proof of work (PoW) or proof of stake (PoS) </li>
+</ol>
+<h3 id="Blockchain-architecture"><a href="#Blockchain-architecture" class="headerlink" title="Blockchain architecture"></a>Blockchain architecture</h3><h4 id="Digital-signature"><a href="#Digital-signature" class="headerlink" title="Digital signature"></a>Digital signature</h4><p><img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20220918150542336.png" alt="image-20220918150542336"></p>
+<p>algorithm: ECDSA（椭圆曲线数字签名算法）</p>
+<h4 id="Key-characteristics-1"><a href="#Key-characteristics-1" class="headerlink" title="Key characteristics"></a>Key characteristics</h4><ol>
+<li>Decentralisation: P2P; reduce the server costs; mitigate the performance bottlenecks at the central server.</li>
+<li>Persistency</li>
+<li>Anonymity</li>
+<li>Auditability 可审计性，可以迭代查询之前的记录</li>
+</ol>
+<h4 id="Taxonomy-分类"><a href="#Taxonomy-分类" class="headerlink" title="Taxonomy 分类"></a>Taxonomy 分类</h4><p><img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20220919223045649.png" alt="image-20220919223045649">   </p>
+<h4 id="Consensus-algorithms"><a href="#Consensus-algorithms" class="headerlink" title="Consensus algorithms"></a>Consensus algorithms</h4><ol>
+<li>Approaches<ul>
+<li>Proof of work (PoW) <ul>
+<li>系统给定一个哈希值并公布，矿工计算哪个散列值通过SHA256可以得到这个哈希。</li>
+<li>少数服从多数，由诚实节点组成的大多数被表现为最长的链。</li>
+</ul>
+</li>
+<li>Proof of  burn<ul>
+<li>燃烧其他种类的货币，发送到一个不属于任何人的账户地址。</li>
+</ul>
+</li>
+<li>Proof of stake (PoS)<ul>
+<li>谁拥有的币越多谁能挖出区块获得奖励的概率就越高</li>
+<li>各节点满足一定条件（抵押一定货币）后成为验证节点，从中选择一部分作为出块节点，只有出块节点才能进行数据处理，争夺记账权。</li>
+</ul>
+</li>
+<li>Practical byzantine fault tolerance (PBFT) <ul>
+<li>最多可以解决1/3的恶意节点。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>comparision<br><img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20220922162708902.png" alt="image-20220922162708902"></li>
+<li>Advances on consensus algorithms<ul>
+<li>将块产生和交易确认解耦，从而提升共识速度。</li>
+<li>不选择最长链而是给每个链以权重</li>
+</ul>
+</li>
+</ol>
+<h3 id="Applications-of-blockchain"><a href="#Applications-of-blockchain" class="headerlink" title="Applications of blockchain"></a>Applications of blockchain</h3><h4 id="Financial"><a href="#Financial" class="headerlink" title="Financial"></a>Financial</h4><ol>
+<li>Financial services, reduce costs and risks</li>
+<li>Enterprise transformation，物流公司</li>
+<li>P2P financial market</li>
+<li>Risk management</li>
+</ol>
+<h4 id="IoT"><a href="#IoT" class="headerlink" title="IoT"></a>IoT</h4><ol>
+<li>Safety and privacy, 帮助设备证明其制造来源，它的制造出处，而不需要第三方的认证，并且它被允许匿名注册</li>
+<li>E-business</li>
+</ol>
+<h4 id="Public-and-social-services"><a href="#Public-and-social-services" class="headerlink" title="Public and social services"></a>Public and social services</h4><ol>
+<li>Land registration，提升效率</li>
+<li>Energy saving，产生太阳能来获得硬币</li>
+<li>Education，老师可以产生块，而学习可以看作硬币</li>
+<li>Free-speech right，使DNS更安全更快，更能抵抗审查</li>
+</ol>
+<h4 id="Reputation-system"><a href="#Reputation-system" class="headerlink" title="Reputation system"></a>Reputation system</h4><ol>
+<li>Academics，每个机构发信用货币，可以奖励职工，转移记录代表名声的变化。</li>
+<li>Web community</li>
+</ol>
+<h4 id="Security-and-privacy"><a href="#Security-and-privacy" class="headerlink" title="Security and privacy"></a>Security and privacy</h4><ol>
+<li>Security enhancement，区块链提升分布式网络的安全性，改善conventional public key infrastructures (PKIs)</li>
+<li>Privacy protection，去中心化个人数据管理系统</li>
+</ol>
+<h3 id="Challenges-and-recent-advances"><a href="#Challenges-and-recent-advances" class="headerlink" title="Challenges and recent advances"></a>Challenges and recent advances</h3><h4 id="Scalability"><a href="#Scalability" class="headerlink" title="Scalability"></a>Scalability</h4><p>块的大小和产生的时间间隔，限制了交易的速度</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%8C%BA%E5%9D%97%E9%93%BE/" rel="tag"># 区块链</a>
+              <a href="/tags/%E7%BB%BC%E8%BF%B0/" rel="tag"># 综述</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/01/%E6%9B%B4%E6%8D%A2%E9%98%BF%E9%87%8C%E4%BA%91OSS%E5%9B%BE%E5%BA%8A/" rel="prev" title="更换阿里云OSS图床">
+      <i class="fa fa-chevron-left"></i> 更换阿里云OSS图床
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/09/25/Mobile-Edge-Computing-Survey/" rel="next" title="Mobile Edge Computing Survey">
+      Mobile Edge Computing Survey <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Blockchain-challenges-and-opportunities-a-survey"><span class="nav-number">1.</span> <span class="nav-text">Blockchain challenges and opportunities: a survey</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Introduction"><span class="nav-number">1.1.</span> <span class="nav-text">Introduction</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Key-characteristics"><span class="nav-number">1.1.1.</span> <span class="nav-text">Key characteristics</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Application"><span class="nav-number">1.1.2.</span> <span class="nav-text">Application</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Technical-challenges"><span class="nav-number">1.1.3.</span> <span class="nav-text">Technical challenges</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Blockchain-architecture"><span class="nav-number">1.2.</span> <span class="nav-text">Blockchain architecture</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Digital-signature"><span class="nav-number">1.2.1.</span> <span class="nav-text">Digital signature</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Key-characteristics-1"><span class="nav-number">1.2.2.</span> <span class="nav-text">Key characteristics</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Taxonomy-%E5%88%86%E7%B1%BB"><span class="nav-number">1.2.3.</span> <span class="nav-text">Taxonomy 分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Consensus-algorithms"><span class="nav-number">1.2.4.</span> <span class="nav-text">Consensus algorithms</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Applications-of-blockchain"><span class="nav-number">1.3.</span> <span class="nav-text">Applications of blockchain</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Financial"><span class="nav-number">1.3.1.</span> <span class="nav-text">Financial</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IoT"><span class="nav-number">1.3.2.</span> <span class="nav-text">IoT</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Public-and-social-services"><span class="nav-number">1.3.3.</span> <span class="nav-text">Public and social services</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Reputation-system"><span class="nav-number">1.3.4.</span> <span class="nav-text">Reputation system</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Security-and-privacy"><span class="nav-number">1.3.5.</span> <span class="nav-text">Security and privacy</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Challenges-and-recent-advances"><span class="nav-number">1.4.</span> <span class="nav-text">Challenges and recent advances</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Scalability"><span class="nav-number">1.4.1.</span> <span class="nav-text">Scalability</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">KingCide</p>
+  <div class="site-description" itemprop="description">乐极生悲，否极泰来</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kingcide" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kingcide" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1659057796@qq.com" title="E-Mail → mailto:1659057796@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://space.bilibili.com/436691243" title="https:&#x2F;&#x2F;space.bilibili.com&#x2F;436691243" rel="noopener" target="_blank">Bilibili</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">KingCide</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//fastly.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

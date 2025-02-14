@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kingcide.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="网络层概述网络层功能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机通信网络-5-网络层">
+<meta property="og:url" content="https://kingcide.github.io/2021/05/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E9%80%9A%E4%BF%A1%E7%BD%91%E7%BB%9C-5-%E7%BD%91%E7%BB%9C%E5%B1%82/index.html">
+<meta property="og:site_name" content="Kc&#39;s Blog">
+<meta property="og:description" content="网络层概述网络层功能">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210525163414167.png">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210525170346255.png">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210608103111407.png">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210608103234498.png">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210609170959303.png">
+<meta property="article:published_time" content="2021-05-20T06:15:04.000Z">
+<meta property="article:modified_time" content="2022-08-01T04:10:33.000Z">
+<meta property="article:author" content="KingCide">
+<meta property="article:tag" content="网络">
+<meta property="article:tag" content="计通">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210525163414167.png">
+
+<link rel="canonical" href="https://kingcide.github.io/2021/05/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E9%80%9A%E4%BF%A1%E7%BD%91%E7%BB%9C-5-%E7%BD%91%E7%BB%9C%E5%B1%82/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>计算机通信网络-5-网络层 | Kc's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Kc's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">(⊙.⊙)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-music">
+
+    <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
+
+  </li>
+        <li class="menu-item menu-item-cv">
+
+    <a href="/cv/" rel="section"><i class="fa fa-graduation-cap fa-fw"></i>简历</a>
+
+  </li>
+        <li class="menu-item menu-item-others">
+
+    <a href="/others/" rel="section"><i class="fa fa-ellipsis-h fa-fw"></i>其他</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kingcide.github.io/2021/05/20/%E8%AE%A1%E7%AE%97%E6%9C%BA%E9%80%9A%E4%BF%A1%E7%BD%91%E7%BB%9C-5-%E7%BD%91%E7%BB%9C%E5%B1%82/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KingCide">
+      <meta itemprop="description" content="乐极生悲，否极泰来">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kc's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          计算机通信网络-5-网络层
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-05-20 14:15:04" itemprop="dateCreated datePublished" datetime="2021-05-20T14:15:04+08:00">2021-05-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-08-01 12:10:33" itemprop="dateModified" datetime="2022-08-01T12:10:33+08:00">2022-08-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E5%8D%B0%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习印记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <link rel="stylesheet" type="text/css" href="https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h2 id="网络层概述"><a href="#网络层概述" class="headerlink" title="网络层概述"></a>网络层概述</h2><h3 id="网络层功能"><a href="#网络层功能" class="headerlink" title="网络层功能"></a>网络层功能</h3><span id="more"></span>
+
+<ol>
+<li><p>核心功能：路由选择</p>
+<ul>
+<li>传播路径信息、计算源到目的的路径</li>
+<li>沿着路径转发数据</li>
+</ul>
+</li>
+<li><p>交换技术</p>
+</li>
+<li><p>路由功能</p>
+</li>
+<li><p>拥塞控制</p>
+</li>
+<li><p>网络互联</p>
+</li>
+</ol>
+<h3 id="两大阵营的技术路线"><a href="#两大阵营的技术路线" class="headerlink" title="两大阵营的技术路线"></a>两大阵营的技术路线</h3><ol>
+<li>通信子网应该承担什么样的任务<ul>
+<li>电信公司为代表——网络应该可靠、尽量简单的终端、网络尽量复杂、面向连接</li>
+<li>IETF为代表——通信注定不可靠、终端自行解决差错、网络尽力就好可以简单</li>
+</ul>
+</li>
+<li>两大技术路线——网络层面的面向连接和无连接<ul>
+<li>电路交换（面向连接）</li>
+<li>分组交换<ul>
+<li>虚电路交换（面向连接）QAS</li>
+<li>数据包交换（无连接）IP</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="交换技术"><a href="#交换技术" class="headerlink" title="交换技术"></a>交换技术</h2><h3 id="电路交换与分组交换"><a href="#电路交换与分组交换" class="headerlink" title="电路交换与分组交换"></a>电路交换与分组交换</h3><ol>
+<li>什么是交换——在多输入多输出的节点，将数据输到指定的线路</li>
+<li>为什么需要交换——仅提供较少的中继资源，让所有用户共享这些资源</li>
+<li>电路交换：通信期间，在源和目的之间建立一条专用通路<ul>
+<li>呼叫+维持+拆除</li>
+<li>建立好链路后收到信号几乎可以立即发送，只有传播延时</li>
+<li>透明性强</li>
+<li>静态分配，固定时隙</li>
+</ul>
+</li>
+<li>分组交换：以分组为单位，存储转发，逐站寻径<ul>
+<li>适应性强，带宽利用率高</li>
+<li>端到端延时=传播延时+存储+寻径</li>
+</ul>
+</li>
+</ol>
+<h3 id="虚电路与数据报交换"><a href="#虚电路与数据报交换" class="headerlink" title="虚电路与数据报交换"></a>虚电路与数据报交换</h3><h4 id="数据报交换"><a href="#数据报交换" class="headerlink" title="数据报交换"></a>数据报交换</h4><ol>
+<li>每个分组携带详细的源和目的地址</li>
+<li>存储转发原因<ul>
+<li>需要提取目的地址以供查表转发</li>
+<li>完整的分组才能进行校验，确定无误</li>
+</ul>
+</li>
+<li>逐站寻径<ul>
+<li>原因：没有事先建立好源到目的通路</li>
+<li>影响：理论上达到对资源的最大利用（动态资源）、同源同目的的不同分组路径可能不同、产生寻径延时</li>
+</ul>
+</li>
+<li>发展<ul>
+<li>快速转发表</li>
+<li>SDN——控制与执行分离</li>
+</ul>
+</li>
+</ol>
+<h4 id="虚电路"><a href="#虚电路" class="headerlink" title="虚电路"></a>虚电路</h4><ol>
+<li>每条线路有多条虚电路，分组需带上虚电路号。</li>
+<li>为每一个呼叫请求建立一个虚电路号，实现输入和输出的虚电路映射</li>
+<li>虚电路号可以说是虚电路映射表的表格索引号</li>
+<li>通过查询路由表填写虚电路映射表</li>
+<li>特点：提高了查询的效率，路径固定而不灵活，第一个分组延时较大</li>
+</ol>
+<h4 id="比较"><a href="#比较" class="headerlink" title="比较"></a>比较</h4><ul>
+<li>都是<strong>分组</strong>交换技术——存储转发逐站寻径</li>
+<li>虚电路面向连接</li>
+<li>数据报无连接</li>
+</ul>
+<h2 id="寻址与转发"><a href="#寻址与转发" class="headerlink" title="寻址与转发"></a>寻址与转发</h2><h3 id="路由功能概述"><a href="#路由功能概述" class="headerlink" title="路由功能概述"></a>路由功能概述</h3><ol>
+<li><p>路由功能要素</p>
+<ul>
+<li>基础要素：编址和寻址</li>
+<li>理论要素：路由的最优化原则（收敛法则）</li>
+<li>数据要素：路由表</li>
+<li>程序要素：转发技术</li>
+<li>核心要素：路由选择算法</li>
+</ul>
+</li>
+<li><p><strong>最佳路由</strong>评估指标：跳数、费用、时延、吞吐量</p>
+</li>
+<li><p>路由表组成：目的、（下一站地址）、连接接口</p>
+</li>
+<li><p>路由选择技术：表驱动路由或按需路由</p>
+</li>
+</ol>
+<h3 id="编址与寻址"><a href="#编址与寻址" class="headerlink" title="编址与寻址"></a>编址与寻址</h3><ol>
+<li><p>编址：容量和唯一</p>
+</li>
+<li><p>IP地址</p>
+<img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210525163414167.png" alt="image-20210525163414167" style="zoom: 33%;" />
+
+<ul>
+<li>A类：最多128个这种大型网络 0~127</li>
+<li>B类：每个网络约允许6万台主机 128.0.0.0~191.255.255.255</li>
+<li>C类：小型网络，允许256台主机 192.0.0.0~223.255.255.255</li>
+<li>D类：多个主机可共用一个组播地址 224.0.0.0~239.255.255.255</li>
+<li>E类：私有地址不再公网使用</li>
+</ul>
+<img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210525170346255.png" alt="image-20210525170346255" style="zoom: 67%;" />
+</li>
+<li><p>互联网设备和主机统一编址，路由器每个接口一个IP地址</p>
+</li>
+<li><p>物理网内依靠物理网自身机制转发，需要ARP、HSS在IP和物理地址之间映射</p>
+</li>
+</ol>
+<h3 id="数据转发与路由表的查询"><a href="#数据转发与路由表的查询" class="headerlink" title="数据转发与路由表的查询"></a>数据转发与路由表的查询</h3><ol>
+<li>查表方法：最短适配（从最大范围开始）、最长适配（逐渐增大范围）、完整适配、Hash</li>
+<li>IP查表——最长适配<ul>
+<li>从路由表项中子网掩码最长的路由表项开始查找</li>
+<li>分组数据中IP网络号==表项网络号则为适配</li>
+</ul>
+</li>
+</ol>
+<h2 id="路由选择技术"><a href="#路由选择技术" class="headerlink" title="路由选择技术"></a>路由选择技术</h2><h3 id="静态路由"><a href="#静态路由" class="headerlink" title="静态路由"></a>静态路由</h3><ul>
+<li>不测量也不利用网络信息，人工设置路由表，固定规则选择路由</li>
+</ul>
+<h3 id="独立路由"><a href="#独立路由" class="headerlink" title="独立路由"></a>独立路由</h3><ol>
+<li>洪泛：某个接口进来的PDU，转发到其余所有接口<ul>
+<li>丢弃超时报文——PDU生命周期</li>
+<li>丢弃重复报文——报文序号</li>
+</ul>
+</li>
+<li>随机路由：从多个出口中随机选择一个来转发PDU</li>
+<li>最短等待法（配合其他算法）</li>
+<li>反向学习法</li>
+</ol>
+<h3 id="中心路由"><a href="#中心路由" class="headerlink" title="中心路由"></a>中心路由</h3><ol>
+<li>工作方式：各节点定期把自己信道和相邻节点情况汇报给中心路由计算机，路由表分发到各节点。</li>
+<li>特点：<ul>
+<li>能形成最佳路由——<strong>理想路由</strong></li>
+<li>路由信息上报更新同步困难</li>
+<li>中心节点可靠性影响全网</li>
+</ul>
+</li>
+<li>SDN：路由的控制和执行分离</li>
+</ol>
+<h3 id="分布式路由"><a href="#分布式路由" class="headerlink" title="分布式路由"></a>分布式路由</h3><ol>
+<li>各路由器各自计算路由<ul>
+<li>可靠性高</li>
+<li>扩展性强</li>
+<li>以局部最优代替全局最优</li>
+</ul>
+</li>
+<li>最佳路由法则</li>
+<li><ul>
+<li>交换路由信息</li>
+<li>分布式计算</li>
+<li>动态：边交换边计算</li>
+</ul>
+</li>
+</ol>
+<h3 id="距离矢量算法"><a href="#距离矢量算法" class="headerlink" title="距离矢量算法"></a>距离矢量算法</h3><ol>
+<li>特点：<ul>
+<li>只与邻居节点交换路由信息</li>
+<li>各节点独立计算最优路径</li>
+<li>能适应网络拓扑的变化，稳定后形成最短路径</li>
+</ul>
+</li>
+<li>无穷计数问题<ul>
+<li>水平分割技术：不将从某节点收到的信息再传回该节点。（下一节点是该节点的信息不传）</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>网络的变化扩散到全网速度慢</li>
+<li>路由<strong>收敛速度</strong>（全网重新统一的速度）慢</li>
+<li>容易形成路由环</li>
+</ul>
+</li>
+</ol>
+<h3 id="链路状态算法"><a href="#链路状态算法" class="headerlink" title="链路状态算法"></a>链路状态算法</h3><ol>
+<li><p>工作方式</p>
+<ul>
+<li>每个节点测试相邻节点，得到每条链路状态初始值</li>
+<li>每个节点定期和所有节点交换（有控制的洪泛）</li>
+<li>根据收集到的各节点的链路及状态，计算到其他节点的路径</li>
+</ul>
+</li>
+<li><p>计算最佳路由</p>
+<ul>
+<li>Dijstra算法</li>
+</ul>
+</li>
+<li><p>与路由矢量算法对比</p>
+<img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210608103111407.png" alt="image-20210608103111407" style="zoom:67%;" />
+
+<img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210608103234498.png" alt="image-20210608103234498" style="zoom:67%;" />
+
+</li>
+</ol>
+<h3 id="分级路由体系"><a href="#分级路由体系" class="headerlink" title="分级路由体系"></a>分级路由体系</h3><ol>
+<li>背景：网络结构复杂，建设结构管理机构众多。</li>
+<li>分级路由体系<ul>
+<li>简化：不在域间暴露域内路由细节，只有可达性信息</li>
+<li>抽象：将一个网络抽象为一个“节点”</li>
+<li>归并：IP网络的“超网”，将多个网络归并成一个超网，域间只有一条路</li>
+</ul>
+</li>
+</ol>
+<h2 id="网络拥塞"><a href="#网络拥塞" class="headerlink" title="网络拥塞"></a>网络拥塞</h2><h3 id="网络拥塞问题概述"><a href="#网络拥塞问题概述" class="headerlink" title="网络拥塞问题概述"></a>网络拥塞问题概述</h3><ol>
+<li>分组堆积：网络节点中出现大量分组堆积、等待传输</li>
+<li>拥塞无法自愈</li>
+<li>拥塞控制策略<ul>
+<li>开环策略：预防和避免拥塞<ul>
+<li>缓冲区预分配</li>
+<li>网络分组定额控制</li>
+<li>分组丢弃</li>
+</ul>
+</li>
+<li>闭环策略：问题可能出现通过反馈进行控制——检测和解决拥塞<ul>
+<li>拥塞检测：<ul>
+<li>路由器关键参数持续陡升：线路利用率、缓冲队列长度、分组丢弃率</li>
+<li>源端感知：应答分组返回时间增大，要求重传次数增多</li>
+<li>目的端感知：流量下降，丢包率升高</li>
+</ul>
+</li>
+<li>拥塞反馈：发现拥塞的设备将信息传递给能控制这个拥塞的路由器<ul>
+<li>隐式反馈与显式反馈</li>
+</ul>
+</li>
+<li>拥塞解除：<ul>
+<li>增加线路</li>
+<li>另选路径</li>
+<li>拒绝为新用户服务</li>
+<li>降低当前用户服务质量</li>
+<li>丢弃拥塞点内所有分组</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="网络拥塞控制技术"><a href="#网络拥塞控制技术" class="headerlink" title="网络拥塞控制技术"></a>网络拥塞控制技术</h3><ol>
+<li>网络供给调整</li>
+<li>流量感知路由：将负载与度量关联</li>
+<li>准入控制（虚电路）</li>
+<li>流量整形：调整用户数据为可控的匀速速率</li>
+<li>流量限制：通知源端降速<ul>
+<li>路由器通知：路由器直接向排队分组的源发抑制分组（沿途都发可能抑制过度）</li>
+<li>目的端通知：路由器给分组做拥塞标记，目的端收到后在应答也包含抑制（反应速度慢）</li>
+<li>逐跳后压：路由器通知周围路由器多缓存 （可能拥塞更快形成）</li>
+</ul>
+</li>
+<li>负载脱落<ul>
+<li>牛奶策略：新的分组更好，丢弃老的</li>
+<li>葡萄酒策略：老分组更好，丢弃新的</li>
+<li>重要性策略：分析重要性</li>
+<li>随机丢弃策略：提前随机丢弃分组，会导致发送方降速</li>
+</ul>
+</li>
+</ol>
+<h3 id="网络服务质量"><a href="#网络服务质量" class="headerlink" title="网络服务质量"></a>网络服务质量</h3><ol>
+<li>电信网络通过过度配置，较大代价提升服务质量<br>传统IP网络通过尽力传输，相对较少资源支持更大规模应用</li>
+<li>端到端的数据分组序列可以看作是一个”流”</li>
+<li>规范进入网络的流量<ul>
+<li>流量整形：先约定后监管</li>
+<li>漏桶——恒定速率流出、令牌桶——入口恒定速率令牌流出口速率可不恒定</li>
+</ul>
+</li>
+<li>调度资源<ul>
+<li>分组调度：接口队列调度——公平队列算法、加权公平队列</li>
+</ul>
+</li>
+<li>能否安全地接收更多流量<ul>
+<li>准入控制：全网所有路由器都应具备QoS保障技术</li>
+</ul>
+</li>
+<li>资源预留协议 RSVP</li>
+</ol>
+<h2 id="网络互联"><a href="#网络互联" class="headerlink" title="网络互联"></a>网络互联</h2><h3 id="网络互联问题概述"><a href="#网络互联问题概述" class="headerlink" title="网络互联问题概述"></a>网络互联问题概述</h3><ol>
+<li>面临问题：影响网络性能的主要参数在各网络中不同，是网络互联问题复杂性的主要方面。<ul>
+<li>服务不同：例如虚电路与数据报</li>
+<li>协议不同</li>
+<li>寻址方式不同：地址结构编址不同</li>
+<li>是否支持组播和广播</li>
+<li>最大可传输分组MTU（Max Transmit Unit）大小不同——分段技术</li>
+</ul>
+</li>
+<li>协议实体间虚通信规则</li>
+</ol>
+<h3 id="网络互联技术之协议转换"><a href="#网络互联技术之协议转换" class="headerlink" title="网络互联技术之协议转换"></a>网络互联技术之协议转换</h3><ol>
+<li>不同协议之间：选择适当的层次，相似的协议。</li>
+<li>802.3——令牌环：地址之间映射，字段从无到有、从有到无，重新算校验</li>
+</ol>
+<h3 id="网络互联技术之隧道技术"><a href="#网络互联技术之隧道技术" class="headerlink" title="网络互联技术之隧道技术"></a>网络互联技术之隧道技术</h3><ol>
+<li><p>透明通信作为理论基础</p>
+<ul>
+<li>两个同构网之间是异构网络提供服务时</li>
+</ul>
+</li>
+<li><p>IPV6通过IPV4互联</p>
+</li>
+<li><p>LAN通过Internet互联</p>
+</li>
+<li><p>LTE承载网到互联网关</p>
+<img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20210609170959303.png" alt="image-20210609170959303" style="zoom: 50%;" />
+
+</li>
+</ol>
+<h3 id="网络互联技术之协议覆盖"><a href="#网络互联技术之协议覆盖" class="headerlink" title="网络互联技术之协议覆盖"></a>网络互联技术之协议覆盖</h3><ol>
+<li>隧道技术的缺点：只适应在两个相同网络之间通过第三方网络互联。</li>
+<li>协议覆盖方式：在上层寻求协议的统一</li>
+<li>TCP/IP协议互联思想<ul>
+<li>网络层之上都是同一层协议</li>
+<li>IP协议具有分层地址结构，适合大规模组网</li>
+<li>IP协议向下定义了灵活的网络接口层</li>
+<li>IP协议族中有很实用的路由选择协议</li>
+</ul>
+</li>
+</ol>
+<h2 id="网络层实例"><a href="#网络层实例" class="headerlink" title="网络层实例"></a>网络层实例</h2><ol>
+<li><p>下一代网络</p>
+<ul>
+<li>融合：互联网QoS化，电信网分组化（IP化）</li>
+<li>软交换：控制和交换分离（SDN）</li>
+</ul>
+</li>
+<li><p>网络虚拟化——NFV</p>
+<p>在常用的X86结构下，采用开放的标准和软件结构，灵活地实现和配置各种网络功能。</p>
+</li>
+<li><p>无线蜂窝网</p>
+<ul>
+<li>LTE——基于IP分组交换</li>
+</ul>
+</li>
+</ol>
+<h2 id="网络为什么这么慢"><a href="#网络为什么这么慢" class="headerlink" title="网络为什么这么慢"></a>网络为什么这么慢</h2><ol>
+<li>速度<ul>
+<li>延时<ul>
+<li>距离—-&gt;线长—-&gt;路径—-&gt;拓扑与寻径</li>
+<li>帧长—-&gt;数传速率</li>
+<li>处理<ul>
+<li>差错</li>
+<li>寻路—-&gt;路由表与算法</li>
+<li>拥塞—-&gt;限流限入</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>流量<ul>
+<li>缓存</li>
+<li>处理速度</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>不同人对于解决速度问题的思考</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>工程师</th>
+<th>用户</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>应用层</td>
+<td>计算机性能、内存、操作系统、病毒</td>
+<td>同</td>
+</tr>
+<tr>
+<td>传输层</td>
+<td>多流并发</td>
+<td></td>
+</tr>
+<tr>
+<td>网络层</td>
+<td>高速设备、拓扑改变、路径优化</td>
+<td>接入网选择</td>
+</tr>
+<tr>
+<td>数据链路层</td>
+<td>线路质量</td>
+<td>同</td>
+</tr>
+<tr>
+<td>物理层</td>
+<td>接口、干扰源</td>
+<td>同</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag"># 网络</a>
+              <a href="/tags/%E8%AE%A1%E9%80%9A/" rel="tag"># 计通</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/05/19/Git%E5%8D%9A%E5%AE%A2%E6%8E%A8%E9%80%81%E5%A4%B1%E8%B4%A5/" rel="prev" title="Git博客推送失败">
+      <i class="fa fa-chevron-left"></i> Git博客推送失败
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/05/20/%E3%80%8A%E6%88%91%E7%9A%84%E5%BF%AB%E4%B9%90%E6%97%B6%E4%BB%A3%E3%80%8B/" rel="next" title="《我的快乐时代》">
+      《我的快乐时代》 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">网络层概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82%E5%8A%9F%E8%83%BD"><span class="nav-number">1.1.</span> <span class="nav-text">网络层功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%A4%E5%A4%A7%E9%98%B5%E8%90%A5%E7%9A%84%E6%8A%80%E6%9C%AF%E8%B7%AF%E7%BA%BF"><span class="nav-number">1.2.</span> <span class="nav-text">两大阵营的技术路线</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%A4%E6%8D%A2%E6%8A%80%E6%9C%AF"><span class="nav-number">2.</span> <span class="nav-text">交换技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%B5%E8%B7%AF%E4%BA%A4%E6%8D%A2%E4%B8%8E%E5%88%86%E7%BB%84%E4%BA%A4%E6%8D%A2"><span class="nav-number">2.1.</span> <span class="nav-text">电路交换与分组交换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E7%94%B5%E8%B7%AF%E4%B8%8E%E6%95%B0%E6%8D%AE%E6%8A%A5%E4%BA%A4%E6%8D%A2"><span class="nav-number">2.2.</span> <span class="nav-text">虚电路与数据报交换</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%8A%A5%E4%BA%A4%E6%8D%A2"><span class="nav-number">2.2.1.</span> <span class="nav-text">数据报交换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E7%94%B5%E8%B7%AF"><span class="nav-number">2.2.2.</span> <span class="nav-text">虚电路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AF%94%E8%BE%83"><span class="nav-number">2.2.3.</span> <span class="nav-text">比较</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%BB%E5%9D%80%E4%B8%8E%E8%BD%AC%E5%8F%91"><span class="nav-number">3.</span> <span class="nav-text">寻址与转发</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E5%8A%9F%E8%83%BD%E6%A6%82%E8%BF%B0"><span class="nav-number">3.1.</span> <span class="nav-text">路由功能概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%9D%80%E4%B8%8E%E5%AF%BB%E5%9D%80"><span class="nav-number">3.2.</span> <span class="nav-text">编址与寻址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%BD%AC%E5%8F%91%E4%B8%8E%E8%B7%AF%E7%94%B1%E8%A1%A8%E7%9A%84%E6%9F%A5%E8%AF%A2"><span class="nav-number">3.3.</span> <span class="nav-text">数据转发与路由表的查询</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B7%AF%E7%94%B1%E9%80%89%E6%8B%A9%E6%8A%80%E6%9C%AF"><span class="nav-number">4.</span> <span class="nav-text">路由选择技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E8%B7%AF%E7%94%B1"><span class="nav-number">4.1.</span> <span class="nav-text">静态路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8B%AC%E7%AB%8B%E8%B7%AF%E7%94%B1"><span class="nav-number">4.2.</span> <span class="nav-text">独立路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E5%BF%83%E8%B7%AF%E7%94%B1"><span class="nav-number">4.3.</span> <span class="nav-text">中心路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8F%E8%B7%AF%E7%94%B1"><span class="nav-number">4.4.</span> <span class="nav-text">分布式路由</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%9D%E7%A6%BB%E7%9F%A2%E9%87%8F%E7%AE%97%E6%B3%95"><span class="nav-number">4.5.</span> <span class="nav-text">距离矢量算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E8%B7%AF%E7%8A%B6%E6%80%81%E7%AE%97%E6%B3%95"><span class="nav-number">4.6.</span> <span class="nav-text">链路状态算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E7%BA%A7%E8%B7%AF%E7%94%B1%E4%BD%93%E7%B3%BB"><span class="nav-number">4.7.</span> <span class="nav-text">分级路由体系</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%8B%A5%E5%A1%9E"><span class="nav-number">5.</span> <span class="nav-text">网络拥塞</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%8B%A5%E5%A1%9E%E9%97%AE%E9%A2%98%E6%A6%82%E8%BF%B0"><span class="nav-number">5.1.</span> <span class="nav-text">网络拥塞问题概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6%E6%8A%80%E6%9C%AF"><span class="nav-number">5.2.</span> <span class="nav-text">网络拥塞控制技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%9C%8D%E5%8A%A1%E8%B4%A8%E9%87%8F"><span class="nav-number">5.3.</span> <span class="nav-text">网络服务质量</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E4%BA%92%E8%81%94"><span class="nav-number">6.</span> <span class="nav-text">网络互联</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E4%BA%92%E8%81%94%E9%97%AE%E9%A2%98%E6%A6%82%E8%BF%B0"><span class="nav-number">6.1.</span> <span class="nav-text">网络互联问题概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E4%BA%92%E8%81%94%E6%8A%80%E6%9C%AF%E4%B9%8B%E5%8D%8F%E8%AE%AE%E8%BD%AC%E6%8D%A2"><span class="nav-number">6.2.</span> <span class="nav-text">网络互联技术之协议转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E4%BA%92%E8%81%94%E6%8A%80%E6%9C%AF%E4%B9%8B%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF"><span class="nav-number">6.3.</span> <span class="nav-text">网络互联技术之隧道技术</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E4%BA%92%E8%81%94%E6%8A%80%E6%9C%AF%E4%B9%8B%E5%8D%8F%E8%AE%AE%E8%A6%86%E7%9B%96"><span class="nav-number">6.4.</span> <span class="nav-text">网络互联技术之协议覆盖</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82%E5%AE%9E%E4%BE%8B"><span class="nav-number">7.</span> <span class="nav-text">网络层实例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%99%E4%B9%88%E6%85%A2"><span class="nav-number">8.</span> <span class="nav-text">网络为什么这么慢</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">KingCide</p>
+  <div class="site-description" itemprop="description">乐极生悲，否极泰来</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kingcide" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kingcide" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1659057796@qq.com" title="E-Mail → mailto:1659057796@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://space.bilibili.com/436691243" title="https:&#x2F;&#x2F;space.bilibili.com&#x2F;436691243" rel="noopener" target="_blank">Bilibili</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">KingCide</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//fastly.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
