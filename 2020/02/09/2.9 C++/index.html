@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.2.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
@@ -239,7 +239,7 @@
 
       
         <link rel="stylesheet" type="text/css" href="https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css"><h3 id="配置环境"><a href="#配置环境" class="headerlink" title="配置环境"></a>配置环境</h3><p>前几天将VS卸载，下了VS Code。下载，…</p>
-<h3 id="结构体"><a href="#结构体" class="headerlink" title="结构体"></a>结构体</h3><h5 id="成员函数"><a href="#成员函数" class="headerlink" title="成员函数"></a>成员函数</h5><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Point</span>&#123;</span><br><span class="line">    <span class="type">int</span> x,y;</span><br><span class="line">    <span class="comment">//Point (int m=1,int n=1):x(m),y(n) &#123;&#125;      //为结构体赋初值，为简写形式</span></span><br><span class="line">    <span class="built_in">Point</span> (<span class="type">int</span> m=<span class="number">1</span>,<span class="type">int</span> n=<span class="number">1</span>)&#123;					<span class="comment">//不指定这两个参数按零处理</span></span><br><span class="line">        <span class="keyword">this</span>-&gt;x=m+<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">this</span>-&gt;y=n+<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="结构体"><a href="#结构体" class="headerlink" title="结构体"></a>结构体</h3><h5 id="成员函数"><a href="#成员函数" class="headerlink" title="成员函数"></a>成员函数</h5><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">Point</span>&#123;</span><br><span class="line">    <span class="type">int</span> x,y;</span><br><span class="line">    <span class="comment">//Point (int m=1,int n=1):x(m),y(n) &#123;&#125;      //为结构体赋初值，为简写形式</span></span><br><span class="line">    <span class="built_in">Point</span> (<span class="type">int</span> m=<span class="number">1</span>,<span class="type">int</span> n=<span class="number">1</span>)&#123;					<span class="comment">//不指定这两个参数按零处理</span></span><br><span class="line">        <span class="keyword">this</span>-&gt;x=m<span class="number">+1</span>;</span><br><span class="line">        <span class="keyword">this</span>-&gt;y=n<span class="number">+1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <p>这个函数没有返回值，被称为构造函数，在声明变量的时候调用。</p>
 <h5 id="重载运算符"><a href="#重载运算符" class="headerlink" title="重载运算符"></a>重载运算符</h5><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Point <span class="keyword">operator</span> + (<span class="type">const</span> Point &amp;A,<span class="type">const</span> Point &amp;B)&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Point</span> (A.x+B.x,A.y+B.y);</span><br><span class="line">&#125;</span><br><span class="line">ostream&amp; <span class="keyword">operator</span> &lt;&lt;(ostream &amp;out,<span class="type">const</span> Point &amp;p)&#123;</span><br><span class="line">    out&lt;&lt;<span class="string">&quot;(&quot;</span>&lt;&lt;p.x&lt;&lt;<span class="string">&quot;,&quot;</span>&lt;&lt;p.y&lt;&lt;<span class="string">&quot;)&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> out;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -348,7 +348,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-count">71</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -361,7 +361,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">63</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

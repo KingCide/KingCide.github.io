@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 7.2.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
@@ -28,7 +28,7 @@
 <meta property="og:description" content="我开发了一个支持多用户批量上传到网易云盘的扩展功能模块，主要包括：批量音乐文件上传、音质选择（SQ&#x2F;Hi-res）、自动与系统元数据信息匹配、会话管理系统。通过对多用户的session进行管理，实现并行上传不同曲库；通过对网易云曲库元数据的读取，创建了与本地音频的映射数据库，相比其他商家实现了0误差的歌曲匹配；在公网服务器与内网机器之间做内网穿透和nginx反向代理，同时依托前后端分离的设计思路，">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-11-06T16:42:50.000Z">
-<meta property="article:modified_time" content="2024-11-06T17:10:10.287Z">
+<meta property="article:modified_time" content="2024-11-06T17:10:10.000Z">
 <meta property="article:author" content="KingCide">
 <meta property="article:tag" content="JavaScript">
 <meta property="article:tag" content="HTML">
@@ -257,7 +257,7 @@
 <li>自动开始上传任务</li>
 <li>实时监控上传进度</li>
 </ol>
-<h2 id="会话管理设计"><a href="#会话管理设计" class="headerlink" title="会话管理设计"></a>会话管理设计</h2><h3 id="Session存储结构"><a href="#Session存储结构" class="headerlink" title="Session存储结构"></a>Session存储结构</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 存储session信息</span></span><br><span class="line"><span class="keyword">const</span> sessions = <span class="keyword">new</span> <span class="title class_">Map</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 修改处理函数格式以匹配项目要求</span></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="keyword">async</span> (query, request) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; sessionId, operation, cookie &#125; = query;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (operation) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&#x27;save&#x27;</span>:</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (!sessionId) &#123;</span><br><span class="line">                    <span class="keyword">return</span> &#123;</span><br><span class="line">                        <span class="attr">status</span>: <span class="number">400</span>,</span><br><span class="line">                        <span class="attr">body</span>: &#123; <span class="attr">code</span>: <span class="number">400</span>, <span class="attr">message</span>: <span class="string">&#x27;sessionId不能为空&#x27;</span> &#125;</span><br><span class="line">                    &#125;;</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// 保存session信息，包括cookie和quality</span></span><br><span class="line">                sessions.<span class="title function_">set</span>(sessionId, &#123;</span><br><span class="line">                    <span class="attr">createdAt</span>: <span class="keyword">new</span> <span class="title class_">Date</span>(),</span><br><span class="line">                    <span class="attr">isUsed</span>: <span class="literal">false</span>,</span><br></pre></td></tr></table></figure>
+<h2 id="会话管理设计"><a href="#会话管理设计" class="headerlink" title="会话管理设计"></a>会话管理设计</h2><h3 id="Session存储结构"><a href="#Session存储结构" class="headerlink" title="Session存储结构"></a>Session存储结构</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 存储session信息</span></span><br><span class="line"><span class="keyword">const</span> sessions = <span class="keyword">new</span> <span class="title class_">Map</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 修改处理函数格式以匹配项目要求</span></span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = <span class="title function_">async</span> (query, request) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; sessionId, operation, cookie &#125; = query;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (operation) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&#x27;save&#x27;</span>:</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (!sessionId) &#123;</span><br><span class="line">                    <span class="keyword">return</span> &#123;</span><br><span class="line">                        <span class="attr">status</span>: <span class="number">400</span>,</span><br><span class="line">                        <span class="attr">body</span>: &#123; <span class="attr">code</span>: <span class="number">400</span>, <span class="attr">message</span>: <span class="string">&#x27;sessionId不能为空&#x27;</span> &#125;</span><br><span class="line">                    &#125;;</span><br><span class="line">                &#125;</span><br><span class="line">                </span><br><span class="line">                <span class="comment">// 保存session信息，包括cookie和quality</span></span><br><span class="line">                sessions.<span class="title function_">set</span>(sessionId, &#123;</span><br><span class="line">                    <span class="attr">createdAt</span>: <span class="keyword">new</span> <span class="title class_">Date</span>(),</span><br><span class="line">                    <span class="attr">isUsed</span>: <span class="literal">false</span>,</span><br></pre></td></tr></table></figure>
 
 
 <h3 id="安全机制"><a href="#安全机制" class="headerlink" title="安全机制"></a>安全机制</h3><ol>
@@ -479,7 +479,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">70</span>
+          <span class="site-state-item-count">71</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -492,7 +492,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">60</span>
+        <span class="site-state-item-count">63</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
