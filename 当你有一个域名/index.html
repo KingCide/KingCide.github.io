@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20260131041025560.png">
 <meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20260131051248160.png">
 <meta property="article:published_time" content="2026-01-30T20:08:33.000Z">
-<meta property="article:modified_time" content="2026-01-31T09:12:00.965Z">
+<meta property="article:modified_time" content="2026-01-31T09:41:32.309Z">
 <meta property="article:author" content="KingCide">
 <meta property="article:tag" content="网络">
 <meta property="article:tag" content="DNS">
@@ -81,6 +81,7 @@
   </style>
 </noscript>
 
+<link rel="alternate" href="/atom.xml" title="Kc's Blog" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -205,7 +206,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2026-01-31 04:08:33 / 修改时间：17:12:00" itemprop="dateCreated datePublished" datetime="2026-01-31T04:08:33+08:00">2026-01-31</time>
+              <time title="创建时间：2026-01-31 04:08:33 / 修改时间：17:41:32" itemprop="dateCreated datePublished" datetime="2026-01-31T04:08:33+08:00">2026-01-31</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -238,7 +239,7 @@
         <link rel="stylesheet" type="text/css" href="https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>正式购买了10年的域名 keyc.top ， 庆祝它成为我在互联网的一个锚点。</p>
 <span id="more"></span>
 
-<h2 id="更改博客托管地址"><a href="#更改博客托管地址" class="headerlink" title="更改博客托管地址"></a>更改博客托管地址</h2><h3 id="github配置"><a href="#github配置" class="headerlink" title="github配置"></a>github配置</h3><p>将原本 <a href="">kingcide.github.io</a> 访问的网站，改为通过 <a href="">keyc.top</a> 和 <a target="_blank" rel="noopener" href="http://www.keyc.top/">www.keyc.top</a> 访问</p>
+<h2 id="更改博客访问地址"><a href="#更改博客访问地址" class="headerlink" title="更改博客访问地址"></a>更改博客访问地址</h2><h3 id="github配置"><a href="#github配置" class="headerlink" title="github配置"></a>github配置</h3><p>将原本 <a href="">kingcide.github.io</a> 访问的网站，改为通过 <a href="">keyc.top</a> 和 <a target="_blank" rel="noopener" href="http://www.keyc.top/">www.keyc.top</a> 访问</p>
 <img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20260131041025560.png" alt="image-20260131041025560" style="zoom:50%;" />
 
 <h3 id="Cloudflare-配置"><a href="#Cloudflare-配置" class="headerlink" title="Cloudflare 配置"></a>Cloudflare 配置</h3><p>cloudflare里必须把ssl设置为Full模式，不能是Flexible，否则页面会显示重定向次数过多：</p>
@@ -266,9 +267,8 @@
 <li>请求单个文章抓取（快速收录）：输入某篇文章的完整 URL</li>
 </ol>
 <h3 id="本地修改-1"><a href="#本地修改-1" class="headerlink" title="本地修改"></a>本地修改</h3><ol>
-<li>安装 Hexo Sitemap 插件 <code>npm install hexo-generator-sitemap --save</code></li>
+<li>安装 Hexo Sitemap 插件 <code>npm install hexo-generator-sitemap --save</code><br>在 Hexo 根目录的 <code>_config.yml</code> 里加入：</li>
 </ol>
-<p>在 Hexo 根目录的 <code>_config.yml</code> 里加入：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sitemap:</span><br><span class="line">  path: sitemap.xml</span><br></pre></td></tr></table></figure>
 
 <ol start="2">
@@ -276,12 +276,39 @@
 <li>在 <code>source/</code> 目录下新建：robots.txt，填入内容允许所有</li>
 <li>将 Hexo 默认的 URL 从<code>*permalink: :year/:month/:day/:title/*</code>改为<code>permalink: :title/</code>，结构更简洁，更利于 SEO。</li>
 </ol>
+<h2 id="为博客增加RSS订阅功能"><a href="#为博客增加RSS订阅功能" class="headerlink" title="为博客增加RSS订阅功能"></a>为博客增加RSS订阅功能</h2><ol>
+<li><p><code>npm install hexo-generator-feed --save</code></p>
+</li>
+<li><p>配置 <code>_config.yml</code>：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">feed:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">atom</span>      <span class="comment"># 生成的格式（常用 atom 或 rss2）</span></span><br><span class="line">  <span class="attr">path:</span> <span class="string">atom.xml</span>  <span class="comment"># 生成的 RSS 文件名</span></span><br><span class="line">  <span class="attr">limit:</span> <span class="number">20</span>       <span class="comment"># feed 中包含的文章数量，设置 0 或 false 显示全部</span></span><br><span class="line">  <span class="attr">hub:</span></span><br><span class="line">  <span class="attr">content:</span> <span class="literal">true</span>   <span class="comment"># 是否在 RSS 中包含全文</span></span><br><span class="line">  <span class="attr">content_limit:</span> <span class="number">0</span></span><br><span class="line">  <span class="attr">content_limit_delim:</span></span><br><span class="line">  <span class="attr">order_by:</span> <span class="string">-date</span> <span class="comment"># 按日期倒序排列</span></span><br></pre></td></tr></table></figure>
+</li>
+<li></li>
+</ol>
 
     </div>
 
     
     
     
+        
+
+  <div class="followme">
+    <p>欢迎关注我的其它发布渠道</p>
+
+    <div class="social-list">
+
+        <div class="social-item">
+          <a target="_blank" class="social-link" href="/atom.xml">
+            <span class="icon">
+              <i class="fa fa-rss"></i>
+            </span>
+
+            <span class="label">RSS</span>
+          </a>
+        </div>
+    </div>
+  </div>
+
 
       <footer class="post-footer">
           <div class="post-tags">
@@ -295,7 +322,7 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/CloudFlare%E7%8E%A9%E6%B3%95%E5%A4%A7%E5%85%A8/" rel="prev" title="Cloudflare玩法大全">
+    <a href="/Cloudflare%E7%8E%A9%E6%B3%95%E5%A4%A7%E5%85%A8/" rel="prev" title="Cloudflare玩法大全">
       <i class="fa fa-chevron-left"></i> Cloudflare玩法大全
     </a></div>
       <div class="post-nav-item"></div>
@@ -357,7 +384,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%94%B9%E5%8D%9A%E5%AE%A2%E6%89%98%E7%AE%A1%E5%9C%B0%E5%9D%80"><span class="nav-number">1.</span> <span class="nav-text">更改博客托管地址</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#github%E9%85%8D%E7%BD%AE"><span class="nav-number">1.1.</span> <span class="nav-text">github配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cloudflare-%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.</span> <span class="nav-text">Cloudflare 配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Full-Flexible-Strict%E5%8C%BA%E5%88%AB"><span class="nav-number">1.2.1.</span> <span class="nav-text">Full&#x2F;Flexible&#x2F;Strict区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DNS%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.2.</span> <span class="nav-text">DNS配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E4%BF%AE%E6%94%B9"><span class="nav-number">1.3.</span> <span class="nav-text">本地修改</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A9%E8%B0%B7%E6%AD%8C%E6%90%9C%E7%B4%A2%E6%94%B6%E5%BD%95%E6%9C%AC%E7%AB%99%E6%96%87%E7%AB%A0"><span class="nav-number">2.</span> <span class="nav-text">让谷歌搜索收录本站文章</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E4%BF%AE%E6%94%B9-1"><span class="nav-number">2.1.</span> <span class="nav-text">本地修改</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9B%B4%E6%94%B9%E5%8D%9A%E5%AE%A2%E8%AE%BF%E9%97%AE%E5%9C%B0%E5%9D%80"><span class="nav-number">1.</span> <span class="nav-text">更改博客访问地址</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#github%E9%85%8D%E7%BD%AE"><span class="nav-number">1.1.</span> <span class="nav-text">github配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cloudflare-%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.</span> <span class="nav-text">Cloudflare 配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Full-Flexible-Strict%E5%8C%BA%E5%88%AB"><span class="nav-number">1.2.1.</span> <span class="nav-text">Full&#x2F;Flexible&#x2F;Strict区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DNS%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.2.</span> <span class="nav-text">DNS配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E4%BF%AE%E6%94%B9"><span class="nav-number">1.3.</span> <span class="nav-text">本地修改</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%A9%E8%B0%B7%E6%AD%8C%E6%90%9C%E7%B4%A2%E6%94%B6%E5%BD%95%E6%9C%AC%E7%AB%99%E6%96%87%E7%AB%A0"><span class="nav-number">2.</span> <span class="nav-text">让谷歌搜索收录本站文章</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E4%BF%AE%E6%94%B9-1"><span class="nav-number">2.1.</span> <span class="nav-text">本地修改</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E5%8D%9A%E5%AE%A2%E5%A2%9E%E5%8A%A0RSS%E8%AE%A2%E9%98%85%E5%8A%9F%E8%83%BD"><span class="nav-number">3.</span> <span class="nav-text">为博客增加RSS订阅功能</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
