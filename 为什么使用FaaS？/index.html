@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kingcide.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="在阅读《Serverless核心技术和大规模实践》这本书时，会有种和阅读其他教科书一样的感觉——知其然而不知其所以然。 我觉得根本原因是我对它提到的一些问题理解不够深刻，自然也难以get到它的解决方案的精妙之处。因此我这篇文章从上层业务出发，研究一下使用FaaS的一般是什么应用？它们为什么使用FaaS？这些应用对于底层平台带来了什么需求和要求？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为什么使用FaaS？">
+<meta property="og:url" content="https://kingcide.github.io/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8FaaS%EF%BC%9F/index.html">
+<meta property="og:site_name" content="Kc&#39;s Blog">
+<meta property="og:description" content="在阅读《Serverless核心技术和大规模实践》这本书时，会有种和阅读其他教科书一样的感觉——知其然而不知其所以然。 我觉得根本原因是我对它提到的一些问题理解不够深刻，自然也难以get到它的解决方案的精妙之处。因此我这篇文章从上层业务出发，研究一下使用FaaS的一般是什么应用？它们为什么使用FaaS？这些应用对于底层平台带来了什么需求和要求？">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-10-14T13:28:23.000Z">
+<meta property="article:modified_time" content="2025-10-18T22:25:20.980Z">
+<meta property="article:author" content="KingCide">
+<meta property="article:tag" content="Serverless">
+<meta property="article:tag" content="FaaS">
+<meta property="article:tag" content="字节">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kingcide.github.io/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8FaaS%EF%BC%9F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>为什么使用FaaS？ | Kc's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Kc's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">(⊙.⊙)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-music">
+
+    <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
+
+  </li>
+        <li class="menu-item menu-item-cv">
+
+    <a href="/cv/" rel="section"><i class="fa fa-graduation-cap fa-fw"></i>简历</a>
+
+  </li>
+        <li class="menu-item menu-item-others">
+
+    <a href="/others/" rel="section"><i class="fa fa-ellipsis-h fa-fw"></i>其他</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kingcide.github.io/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8FaaS%EF%BC%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KingCide">
+      <meta itemprop="description" content="乐极生悲，否极泰来<br>灵魂的渴望是命运的先知">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kc's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          为什么使用FaaS？
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-10-14 21:28:23" itemprop="dateCreated datePublished" datetime="2025-10-14T21:28:23+08:00">2025-10-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-10-19 06:25:20" itemprop="dateModified" datetime="2025-10-19T06:25:20+08:00">2025-10-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E5%8D%B0%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习印记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <link rel="stylesheet" type="text/css" href="https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>在阅读《Serverless核心技术和大规模实践》这本书时，会有种和阅读其他教科书一样的感觉——知其然而不知其所以然。</p>
+<p>我觉得根本原因是我对它提到的一些<strong>问题</strong>理解不够深刻，自然也难以get到它的解决方案的精妙之处。因此我这篇文章从上层业务出发，研究一下使用FaaS的一般是什么应用？它们为什么使用FaaS？这些应用对于底层平台带来了什么需求和要求？</p>
+<span id="more"></span>
+
+<h2 id="如何使用多个FaaS函数，共同构建一个完整的真实应用？"><a href="#如何使用多个FaaS函数，共同构建一个完整的真实应用？" class="headerlink" title="如何使用多个FaaS函数，共同构建一个完整的真实应用？"></a>如何使用多个FaaS函数，共同构建一个完整的真实应用？</h2><p>多个FaaS函数协同工作的核心思想，是将一个复杂的业务流程拆解成一系列独立的、职责单一的函数，它们之间通过<strong>事件</strong>或<strong>API调用</strong>连接起来，构建出一个灵活的事件驱动应用，通常被称为“Serverless微服务架构”。</p>
+<p>以下是两个具体的例子：</p>
+<h3 id="示例一：电子商务订单处理系统"><a href="#示例一：电子商务订单处理系统" class="headerlink" title="示例一：电子商务订单处理系统"></a>示例一：电子商务订单处理系统</h3><p>一个完整的订单流程可以被拆分成多个函数，通过消息队列（MQ）进行解耦。</p>
+<ul>
+<li><strong><code>function-create-order</code> (HTTP触发)</strong>: 接收前端下单请求，校验数据后将订单以“待支付”状态写入数据库，并发出一个 <code>ORDER_CREATED</code> 事件到消息队列。</li>
+<li><strong><code>function-process-payment</code> (MQ触发)</strong>: 监听到 <code>ORDER_CREATED</code> 事件，调用第三方支付接口扣款，成功后更新订单状态为“已支付”，并发出 <code>PAYMENT_SUCCESS</code> 事件。</li>
+<li><strong><code>function-update-inventory</code> (MQ触发)</strong>: 监听到 <code>PAYMENT_SUCCESS</code> 事件，在库存数据库中扣减相应商品数量，并发出 <code>INVENTORY_UPDATED</code> 事件。</li>
+<li><strong><code>function-notify-logistics</code> (MQ触发)</strong>: 监听到 <code>INVENTORY_UPDATED</code> 事件，调用物流系统API，通知仓库准备发货。</li>
+<li><strong><code>function-send-confirmation</code> (MQ触发)</strong>: 监听到支付或发货相关的事件，调用邮件服务，向用户发送订单确认和发货通知邮件。</li>
+</ul>
+<blockquote>
+<p><strong>优势</strong>: 系统的每个环节都高度解耦，健壮性强。例如，物流系统暂时故障，不会影响支付和库存环节，相关的事件会在消息队列中排队，等待系统恢复后重试。</p>
+</blockquote>
+<h3 id="示例二：视频处理管道"><a href="#示例二：视频处理管道" class="headerlink" title="示例二：视频处理管道"></a>示例二：视频处理管道</h3><p>当用户上传一个视频后，系统需要对其进行转码、截图、审核等一系列并行或串行操作。</p>
+<ul>
+<li><strong><code>function-start-processing</code> (对象存储触发)</strong>: 当有新视频上传到存储桶时，该函数被自动触发，记录元数据并发出 <code>NEW_VIDEO</code> 事件。</li>
+<li><strong><code>function-transcode-video</code> (MQ触发)</strong>: 监听到 <code>NEW_VIDEO</code> 事件，将视频转换为多种分辨率的版本。</li>
+<li><strong><code>function-generate-thumbnail</code> (MQ触发)</strong>: 与转码函数<strong>并行工作</strong>，同样监听 <code>NEW_VIDEO</code> 事件，从视频中截取一帧作为封面图。</li>
+<li><strong><code>function-content-moderation</code> (MQ触发)</strong>: 在转码或截图完成后，调用AI服务对内容进行安全审核，并将结果写回数据库。</li>
+</ul>
+<blockquote>
+<p><strong>优势</strong>: 强大的并行处理能力。转码、截图、审核等耗时操作可以同时进行，且每个环节都能独立扩缩容，极大地提高了处理效率。</p>
+</blockquote>
+<h2 id="如果不使用FaaS，这些应用会是什么样？与FaaS架构相比有什么区别和不足？"><a href="#如果不使用FaaS，这些应用会是什么样？与FaaS架构相比有什么区别和不足？" class="headerlink" title="如果不使用FaaS，这些应用会是什么样？与FaaS架构相比有什么区别和不足？"></a>如果不使用FaaS，这些应用会是什么样？与FaaS架构相比有什么区别和不足？</h2><p>如果不使用FaaS，这些应用通常会采用<strong>单体应用</strong>或<strong>基于服务器/容器的微服务</strong>架构来构建。它们与FaaS在资源使用、运维模式和扩展性上存在差异。</p>
+<ul>
+<li><strong>单体应用</strong>: 订单处理的所有逻辑（支付、库存、物流）都封装在一个庞大的应用程序中，部署在长期运行的服务器上。</li>
+<li><strong>基于服务器的微服务</strong>: 每个功能（支付服务、库存服务）都是一个独立的、长期运行的服务，部署在各自的虚拟机或容器中。需要自己维护这些服务和它们之间的通信。</li>
+</ul>
+<p>主要区别与不足：</p>
+<table>
+<thead>
+<tr>
+<th><strong>对比维度</strong></th>
+<th><strong>FaaS 架构</strong></th>
+<th><strong>传统架构</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>运行方式</strong></td>
+<td><strong>事件触发，按需执行</strong> 没有请求时，不运行，不产生计算费用。</td>
+<td><strong>长期运行 (24/7)</strong> 无论有无请求，服务进程都必须保持运行。</td>
+</tr>
+<tr>
+<td><strong>成本模型</strong></td>
+<td><strong>按实际使用计费</strong> 真正实现“用多少付多少”，非常适合负载波动大的场景，无闲置成本。</td>
+<td><strong>按预配资源计费</strong> 需要为峰值流量预留资源，导致在流量低谷期资源大量闲置，成本效率低。</td>
+</tr>
+<tr>
+<td><strong>弹性伸缩</strong></td>
+<td><strong>自动、瞬时、事件驱动</strong> 平台根据事件数量自动、快速地从0扩容到数千个实例，无需人工干预。</td>
+<td><strong>被动、基于资源负载</strong> 需要手动配置复杂的伸缩规则（如CPU&gt;80%），响应有延迟，无法完美匹配突发流量。</td>
+</tr>
+<tr>
+<td><strong>运维管理</strong></td>
+<td><strong>平台托管 (Serverless)</strong> 开发者无需关心服务器、操作系统和补丁，只需专注于业务代码。</td>
+<td><strong>开发者/运维负责</strong> 需要投入大量精力管理服务器、部署、监控、系统更新和安全。</td>
+</tr>
+<tr>
+<td><strong>容错性</strong></td>
+<td><strong>天生解耦</strong> 通过消息队列连接的函数，一个函数失败不会影响其他函数，系统健壮性高。</td>
+<td><strong>高度耦合或依赖同步调用</strong> 单体应用中一个模块的崩溃可能导致整个应用瘫痪；微服务间的同步调用可能产生级联失败。</td>
+</tr>
+</tbody></table>
+<p>总之，传统架构给予用户更多的底层控制权，但代价是高昂的资源成本和沉重的运维负担。<strong>FaaS架构的核心优势在于将这些复杂性交由平台处理，让用户能够以更低的成本、更快的速度和更高的灵活性来构建和迭代应用。</strong></p>
+<h2 id="其他资料"><a href="#其他资料" class="headerlink" title="其他资料"></a>其他资料</h2><p>2020年的这篇论文《<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2008.11110">A Review of Serverless Use Cases and their Characteristics</a>》收集和分析了89个无服务器用例，来理解其特征，从而指导平台优化。</p>
+<ul>
+<li><strong>平台与领域</strong>: AWS是主导平台（80%），Web服务是主要应用领域（33%）。</li>
+<li><strong>应用与函数</strong>: 大多数应用（82%）只包含5个或更少的函数，且多为短期运行。</li>
+<li><strong>驱动因素</strong>: 成本、运维简化和可伸缩性是采用无服务器的主要动机。</li>
+<li><strong>工作负载</strong>: 81%的用例表现出突发性（bursty）的工作负载。</li>
+<li><strong>工作流</strong>: 约31%的用例包含工作流，但大多结构简单。</li>
+<li><strong>数据量</strong>: 大多数（44%）执行处理的数据量小于1MB。</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Serverless/" rel="tag"># Serverless</a>
+              <a href="/tags/FaaS/" rel="tag"># FaaS</a>
+              <a href="/tags/%E5%AD%97%E8%8A%82/" rel="tag"># 字节</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%9E%E6%8E%A5%E4%B8%96%E7%95%8C/" rel="prev" title="云服务器连接世界">
+      <i class="fa fa-chevron-left"></i> 云服务器连接世界
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E5%AF%B9%E4%BA%8EFaaS%E8%BF%98%E5%AD%98%E5%9C%A8%E5%93%AA%E4%BA%9B%E6%8C%91%E6%88%98%EF%BC%9F/" rel="next" title="对于FaaS还存在哪些挑战？">
+      对于FaaS还存在哪些挑战？ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E5%A4%9A%E4%B8%AAFaaS%E5%87%BD%E6%95%B0%EF%BC%8C%E5%85%B1%E5%90%8C%E6%9E%84%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%AE%8C%E6%95%B4%E7%9A%84%E7%9C%9F%E5%AE%9E%E5%BA%94%E7%94%A8%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">如何使用多个FaaS函数，共同构建一个完整的真实应用？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%B8%80%EF%BC%9A%E7%94%B5%E5%AD%90%E5%95%86%E5%8A%A1%E8%AE%A2%E5%8D%95%E5%A4%84%E7%90%86%E7%B3%BB%E7%BB%9F"><span class="nav-number">1.1.</span> <span class="nav-text">示例一：电子商务订单处理系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BA%8C%EF%BC%9A%E8%A7%86%E9%A2%91%E5%A4%84%E7%90%86%E7%AE%A1%E9%81%93"><span class="nav-number">1.2.</span> <span class="nav-text">示例二：视频处理管道</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C%E4%B8%8D%E4%BD%BF%E7%94%A8FaaS%EF%BC%8C%E8%BF%99%E4%BA%9B%E5%BA%94%E7%94%A8%E4%BC%9A%E6%98%AF%E4%BB%80%E4%B9%88%E6%A0%B7%EF%BC%9F%E4%B8%8EFaaS%E6%9E%B6%E6%9E%84%E7%9B%B8%E6%AF%94%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%E5%92%8C%E4%B8%8D%E8%B6%B3%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">如果不使用FaaS，这些应用会是什么样？与FaaS架构相比有什么区别和不足？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B6%E4%BB%96%E8%B5%84%E6%96%99"><span class="nav-number">3.</span> <span class="nav-text">其他资料</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">KingCide</p>
+  <div class="site-description" itemprop="description">乐极生悲，否极泰来<br>灵魂的渴望是命运的先知</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kingcide" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kingcide" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1659057796@qq.com" title="E-Mail → mailto:1659057796@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://space.bilibili.com/436691243" title="https:&#x2F;&#x2F;space.bilibili.com&#x2F;436691243" rel="noopener" target="_blank">Bilibili</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">KingCide</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//fastly.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kingcide.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="但有个例外，在网络研究领域，工程师比科学家更伟大。因为在其他领域，科学家研究的自然规律可以说是造物主创造的，但网络空间所遵循的TCP&#x2F;IP等协议是由工程师创造的，在此基础上，科学家们正在努力研究互联网的规律。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="李星：互联网技术演进的回顾和思考-摘录">
+<meta property="og:url" content="https://kingcide.github.io/%E6%9D%8E%E6%98%9F%EF%BC%9A%E4%BA%92%E8%81%94%E7%BD%91%E6%8A%80%E6%9C%AF%E6%BC%94%E8%BF%9B%E7%9A%84%E5%9B%9E%E9%A1%BE%E5%92%8C%E6%80%9D%E8%80%83-%E6%91%98%E5%BD%95/index.html">
+<meta property="og:site_name" content="Kc&#39;s Blog">
+<meta property="og:description" content="但有个例外，在网络研究领域，工程师比科学家更伟大。因为在其他领域，科学家研究的自然规律可以说是造物主创造的，但网络空间所遵循的TCP&#x2F;IP等协议是由工程师创造的，在此基础上，科学家们正在努力研究互联网的规律。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-11-23T02:56:47.000Z">
+<meta property="article:modified_time" content="2021-11-23T03:08:25.000Z">
+<meta property="article:author" content="KingCide">
+<meta property="article:tag" content="网络">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kingcide.github.io/%E6%9D%8E%E6%98%9F%EF%BC%9A%E4%BA%92%E8%81%94%E7%BD%91%E6%8A%80%E6%9C%AF%E6%BC%94%E8%BF%9B%E7%9A%84%E5%9B%9E%E9%A1%BE%E5%92%8C%E6%80%9D%E8%80%83-%E6%91%98%E5%BD%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>李星：互联网技术演进的回顾和思考-摘录 | Kc's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Kc's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">(⊙.⊙)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-music">
+
+    <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
+
+  </li>
+        <li class="menu-item menu-item-cv">
+
+    <a href="/cv/" rel="section"><i class="fa fa-graduation-cap fa-fw"></i>简历</a>
+
+  </li>
+        <li class="menu-item menu-item-others">
+
+    <a href="/others/" rel="section"><i class="fa fa-ellipsis-h fa-fw"></i>其他</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kingcide.github.io/%E6%9D%8E%E6%98%9F%EF%BC%9A%E4%BA%92%E8%81%94%E7%BD%91%E6%8A%80%E6%9C%AF%E6%BC%94%E8%BF%9B%E7%9A%84%E5%9B%9E%E9%A1%BE%E5%92%8C%E6%80%9D%E8%80%83-%E6%91%98%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KingCide">
+      <meta itemprop="description" content="乐极生悲，否极泰来<br>灵魂的渴望是命运的先知">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kc's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          李星：互联网技术演进的回顾和思考-摘录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-11-23 10:56:47 / 修改时间：11:08:25" itemprop="dateCreated datePublished" datetime="2021-11-23T10:56:47+08:00">2021-11-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E5%8D%B0%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习印记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <link rel="stylesheet" type="text/css" href="https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>但有个例外，在网络研究领域，工程师比科学家更伟大。因为在其他领域，科学家研究的自然规律可以说是造物主创造的，但网络空间所遵循的TCP/IP等协议是由工程师创造的，在此基础上，科学家们正在努力研究互联网的规律。</p>
+<span id="more"></span>
+
+<p>而这至少给了我们两点启示：</p>
+<p>首先，如果年轻人想从事挑战性的工作，当一名互联网工程师其实大有可为。</p>
+<p>其次，人类虽然在某种程度上充当了造物主的角色，但人类毕竟不是造物主，对问题的理解是有限的。所以千万别认为自己可以无视前人工作，再造一个全新的事物，历史证明这种行为通常是错误的。还是要不断试错，一点一点摸索前进。</p>
+<p>我认为要充分理解互联网的两个基本要素，一是“设计原则”；二是“技术组件”。如IP、TCP、UDP、BGP、OSPF等协议是互联网的技术组件，“技术组件”可以多种多样，吐故纳新，但互联网的设计原则是不变的。如果一项新技术完全否定了互联网的基本设计理念，那么这项技术是否有利于互联网的发展值得怀疑。因此，要充分理解互联网的设计原则。</p>
+<p>这也是我今天回顾互联网历史的原因，正如以下三句话所表达的：</p>
+<p>第一，历史总是重复的。要学习过去的经验，更要从过去所犯的错误中吸取教训。</p>
+<p>第二，未来是一扇门，过去则是门的钥匙。只有把握好钥匙，才能打开门，走得更远。</p>
+<p>第三，如果一切能重来，我们会怎么做？如果我们早出生50年，处在前人曾经的位置，面对互联网发展的重要时刻，我们能否作出正确的决策？</p>
+<p>······</p>
+<p>因此，现在无论是IETF，还是其他网络研究人员都应该清楚地认识到，在自己可以控制的网络内（或自治域内）追求“完美”（如服务质量控制），可能可以实现。但如果想在整个互联网范围内构建“完美的网络”，显然违背了互联网的设计原则。</p>
+<p>······</p>
+<p>因此，互联网的“无连接分组交换”、“端对端”、“尽力而为”等本质特征，使得其在与ATM网络的较量中获得了最终的胜利。</p>
+<p>克拉克表达了对OSI的看法，他认为OSI是过去式，未来是属于互联网的。他提出为应对互联网及其社区发展所带来的变化，需要有六个过程：</p>
+<p>第一，开放的过程，让所有声音都被听到；</p>
+<p>第二，封闭的过程，向前推进，取得进展；</p>
+<p>第三，快速的过程，与时俱进；</p>
+<p>第四，慢速的过程，留出时间认真思考；</p>
+<p>第五，市场驱动的过程，未来是商业化的；</p>
+<p>第六，可扩展的过程，未来是互联网的。</p>
+<p>分离后的TCP/IP协议经过ARPANET和美国科学基金网（NSFNET）等网络的实践，最后温顿·瑟夫总结了互联网的基本原理：</p>
+<ol>
+<li>不为任何特定的应用设计，仅仅做到移动数据报文；</li>
+<li>可以运行在任何通信技术之上；</li>
+<li>允许边缘的任何创新；</li>
+<li>可扩展性强；</li>
+<li>对于任何新协议、新技术、新应用开放。</li>
+</ol>
+<p>如果以10年为一个阶段，1970年代，最重要的技术是NCP；1980年代，最重要的技术是TCP/IP；1990年代，是DNS和BGP；2000年代，WWW出现，最重要的技术则是HTTP；2010年代，受斯诺登事件影响，加密的HTTPS广受关注。</p>
+<p>RFC1925中总结的互联网12条军规，对于互联网研究人员很有启示：</p>
+<p>1.必须有效。</p>
+<p>2.不管你如何增加推力，你也不可能超越光速。推论：不论你怎么努力，也不可能让胎儿在9个月之前正常出生。拔苗助长只会适得其反。</p>
+<p>3.只要推力足够，猪也能在天上飞。不过这并不是个好主意，因为着陆可能会是个问题。还有，当猪在天上飞的时候，你在下面会很危险。</p>
+<p>4.有些事情如果不是亲自动手，这辈子都不会理解或体会到。如果某人没有真正搭建过商业网络设备或没有运营过网络，是无法完全理解网络的。</p>
+<p>5.很多人都希望通过一个解决方案，同时解决多个分立的问题。大多数情况下，这都是个坏主意。</p>
+<p>6.转换问题（比如做一个新的映射）总比解决问题简单。推论：增加另一层“间址”总是可能的。</p>
+<p>7.总是有原因的。推论：好用、快速、廉价，三者只能选其二(不可能三者都占着)。</p>
+<p>8.事情总比你想的复杂。</p>
+<p>9.不管什么资源，多多益善。推论：所有网络问题的解决时间总要比看上去长。</p>
+<p>10.不同情况分别对待。</p>
+<p>11.所有的老方案都会换个名字或者换个陈述方式重新被提出来，不论以前这种方案是否成功过。</p>
+<p>12.协议设计上完美，完美并不是指该添加的都添加了，而是指该去掉的都去掉了。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag"># 网络</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/tcp%E5%8D%8F%E8%AE%AE%E5%BA%8F%E5%8F%B7%E7%AA%97%E5%8F%A3%E5%8F%8A%E7%9B%B8%E5%85%B3%E6%9C%BA%E5%88%B6/" rel="prev" title="tcp协议序号窗口及相关机制">
+      <i class="fa fa-chevron-left"></i> tcp协议序号窗口及相关机制
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E7%B2%BE-%E7%A5%9E-%E5%86%85-%E8%80%97/" rel="next" title="精 神 内 耗">
+      精 神 内 耗 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">KingCide</p>
+  <div class="site-description" itemprop="description">乐极生悲，否极泰来<br>灵魂的渴望是命运的先知</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kingcide" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kingcide" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1659057796@qq.com" title="E-Mail → mailto:1659057796@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://space.bilibili.com/436691243" title="https:&#x2F;&#x2F;space.bilibili.com&#x2F;436691243" rel="noopener" target="_blank">Bilibili</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">KingCide</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//fastly.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

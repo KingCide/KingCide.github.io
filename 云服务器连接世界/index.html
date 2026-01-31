@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kingcide.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="从大一大二起我心里就有个种子：亲手打造一个属于自己的VPN服务。不仅是为了摆脱对付费“梯子”的依赖，也是希望能为身边的朋友提供一份便利。可惜当时学艺不精，又缺乏清晰的指引，扎进了无关紧要的技术中迷失了方向，迟迟无法窥见其全貌。 直到最近，当我重新审视这个问题时才恍然大悟。抛开所有复杂的表象，代理服务的核心，不就是一个位于中间节点、高效执行“数据包转发”任务的进程吗？ 我拆解了一下我的需求，这个代理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="云服务器连接世界">
+<meta property="og:url" content="https://kingcide.github.io/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%9E%E6%8E%A5%E4%B8%96%E7%95%8C/index.html">
+<meta property="og:site_name" content="Kc&#39;s Blog">
+<meta property="og:description" content="从大一大二起我心里就有个种子：亲手打造一个属于自己的VPN服务。不仅是为了摆脱对付费“梯子”的依赖，也是希望能为身边的朋友提供一份便利。可惜当时学艺不精，又缺乏清晰的指引，扎进了无关紧要的技术中迷失了方向，迟迟无法窥见其全貌。 直到最近，当我重新审视这个问题时才恍然大悟。抛开所有复杂的表象，代理服务的核心，不就是一个位于中间节点、高效执行“数据包转发”任务的进程吗？ 我拆解了一下我的需求，这个代理">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20241210225300731.png">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20260130162417489.png">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20260130161626472.png">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20260130161821531.png">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/4009874650.png">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/3339444791.png">
+<meta property="article:published_time" content="2025-10-12T06:39:09.000Z">
+<meta property="article:modified_time" content="2026-01-30T09:11:18.093Z">
+<meta property="article:author" content="KingCide">
+<meta property="article:tag" content="VPN">
+<meta property="article:tag" content="Proxy">
+<meta property="article:tag" content="云服务器">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20241210225300731.png">
+
+<link rel="canonical" href="https://kingcide.github.io/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%9E%E6%8E%A5%E4%B8%96%E7%95%8C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>云服务器连接世界 | Kc's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Kc's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">(⊙.⊙)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-music">
+
+    <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
+
+  </li>
+        <li class="menu-item menu-item-cv">
+
+    <a href="/cv/" rel="section"><i class="fa fa-graduation-cap fa-fw"></i>简历</a>
+
+  </li>
+        <li class="menu-item menu-item-others">
+
+    <a href="/others/" rel="section"><i class="fa fa-ellipsis-h fa-fw"></i>其他</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kingcide.github.io/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%9E%E6%8E%A5%E4%B8%96%E7%95%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KingCide">
+      <meta itemprop="description" content="乐极生悲，否极泰来<br>灵魂的渴望是命运的先知">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kc's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          云服务器连接世界
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-10-12 14:39:09" itemprop="dateCreated datePublished" datetime="2025-10-12T14:39:09+08:00">2025-10-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-01-30 17:11:18" itemprop="dateModified" datetime="2026-01-30T17:11:18+08:00">2026-01-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E5%8D%B0%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习印记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <link rel="stylesheet" type="text/css" href="https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>从大一大二起我心里就有个种子：亲手打造一个属于自己的VPN服务。不仅是为了摆脱对付费“梯子”的依赖，也是希望能为身边的朋友提供一份便利。可惜当时学艺不精，又缺乏清晰的指引，扎进了无关紧要的技术中迷失了方向，迟迟无法窥见其全貌。</p>
+<p>直到最近，当我重新审视这个问题时才恍然大悟。抛开所有复杂的表象，代理服务的核心，不就是一个位于中间节点、高效执行“数据包转发”任务的进程吗？</p>
+<p>我拆解了一下我的需求，这个代理只需要有以下特点和能力：</p>
+<span id="more"></span>
+
+<ol>
+<li>具备公网IP——能够被我的终端设备访问。</li>
+<li>位于海外——它本身能够顺畅地访问国外网站。</li>
+</ol>
+<p>运行在这个云服务器上的代理进程需要完成以下任务：</p>
+<ol>
+<li>支持终端设备和代理之间加密通信，避免被墙。</li>
+<li>将终端设备的请求，转发到目标地址之后，再转发回给终端。</li>
+</ol>
+<h2 id="云服务器"><a href="#云服务器" class="headerlink" title="云服务器"></a>云服务器</h2><p>我薅过各大云厂商的云服务，国外的亚马逊、微软、谷歌对于学生都很友好，提供了充分的额度，可以免费使用一年的云服务器，而且都有国外的公网IP，很适合做这件事情。Azure是少有的不需要国外信用卡认证。它只需要我用学生邮箱认证，或者也可以使用<strong>Github学生认证</strong>。</p>
+<img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20241210225300731.png" alt="image-20241210225300731" style="zoom: 33%;" />
+
+<p>国内的阿里云、腾讯云之类，虽然也有羊毛但是国内的云服务器不能拿来翻墙。</p>
+<h3 id="github学生认证"><a href="#github学生认证" class="headerlink" title="github学生认证"></a>github学生认证</h3><p><a target="_blank" rel="noopener" href="https://github.com/settings/education/benefits">https://github.com/settings/education/benefits</a></p>
+<p>我的经验如下：</p>
+<ol>
+<li><p>尽量使用手机认证，因为需要用手机摄像头拍照</p>
+</li>
+<li><p>只能身处学校，连接校园的wifi，因为有一步是验证当前位置（使用学校的vpn没有成功）</p>
+<img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20260130162417489.png" alt="image-20260130162417489" style="zoom:50%;" />
+</li>
+<li><p>认证的文书，我选择的是学校官网导出的<strong>在读证明</strong>，包括中英文的：姓名、生日、学号、入学考试日期、专业、学制时间、研究生院的红章。这个成功率100%。</p>
+</li>
+</ol>
+<img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20260130161626472.png" alt="image-20260130161626472" style="zoom:50%;" />
+
+<p>刚刚随手认证了一下，4min就通过了，虽然我可能一年就毕业了，通过后学生认证的有效期是2年。</p>
+<img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20260130161821531.png" alt="image-20260130161821531" style="zoom:50%;" />
+
+<p>如果定位有问题，或者拍摄的照片里的信息没有被系统捕获到，系统很快就会打回。</p>
+<h2 id="代理服务"><a href="#代理服务" class="headerlink" title="代理服务"></a>代理服务</h2><p><a target="_blank" rel="noopener" href="https://github.com/vaxilu/x-ui">https://github.com/vaxilu/x-ui</a></p>
+<p>X-ui是一个支持多协议、多用户的 xray 面板。基于 <code>Xray-core</code>，可以通过网页界面管理和创建多个代理节点。</p>
+<p>支持的协议：vmess、vless、trojan、shadowsocks、dokodemo-door、socks、http</p>
+<p>我使用docker部署后运行如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ba80439244d5   enwaiax/x-ui:latest   &quot;x-ui&quot;    7 weeks ago   Up 7 weeks (unhealthy)   0.0.0.0:9910-9920-&gt;9910-9920/tcp, 0.0.0.0:9910-9920-&gt;9910-9920/udp, [::]:9910-9920-&gt;9910-9920/tcp, [::]:9910-9920-&gt;9910-9920/udp, 0.0.0.0:9901-&gt;54321/tcp, [::]:9901-&gt;54321/tcp   x-ui</span><br></pre></td></tr></table></figure>
+
+<p>注意要在云服务器厂商的配置界面，打开需要的端口。</p>
+<p>我们可以在浏览器访问<code>http://&lt;服务器ip&gt;:9901/xui</code>进入配置界面。</p>
+<img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/4009874650.png" alt="img" style="zoom:50%;" />
+
+<img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/3339444791.png" alt="img" style="zoom:50%;" />
+
+<p>配置起来很简单，先添加入站，不懂的配置就不选，然后就获得了这个代理节点的详细配置信息。</p>
+<h2 id="终端配置"><a href="#终端配置" class="headerlink" title="终端配置"></a>终端配置</h2><h3 id="MacOS"><a href="#MacOS" class="headerlink" title="MacOS"></a>MacOS</h3><p>我的mac使用的代理软件是ClashX Pro，它有一个配置文件<code>clash_template.yaml</code>，我按照在X-ui中设置的内容，输入的配置如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># VMess</span><br><span class="line">- name: &quot;v2ray&quot;</span><br><span class="line">  type: vmess</span><br><span class="line">  server: 74.111.113.112 #这个要改成你自己服务器的IP</span><br><span class="line">  port: 9910 #配置的port</span><br><span class="line">  uuid: 4bbf8b9b-ecfc-47b5-e4fd-f9f17321db16 #从X-ui中复制过来</span><br><span class="line">  alterId: 0</span><br><span class="line">  cipher: auto</span><br><span class="line">  # udp: true</span><br><span class="line">  # tls: true</span><br><span class="line">  # skip-cert-verify: true</span><br><span class="line">  # tls-hostname: 填写伪装域名</span><br><span class="line">  network: ws #这个是我选择伪装流量使用的协议</span><br><span class="line">  ws-path: /</span><br><span class="line">  # ws-headers: #这一行后面不要写东西</span><br><span class="line">  #   Host: v2ray.com # 填写伪装域名</span><br></pre></td></tr></table></figure>
+
+<h3 id="IOS"><a href="#IOS" class="headerlink" title="IOS"></a>IOS</h3><p>使用shadowrocket，可以手动添加节点，关键的配置参数也就是包括：</p>
+<ol>
+<li>Vmess等协议</li>
+<li>地址、端口、UUID</li>
+<li>传输方式：http/grpc/websocket等</li>
+</ol>
+<h2 id="使用效果"><a href="#使用效果" class="headerlink" title="使用效果"></a>使用效果</h2><p>自己建的梯子的使用效果简直完美，访问谷歌搜索的速度比之前的付费梯子快了不知多少，youtube带宽至少可以到2MB/s毫不影响观看。ClashX Pro上显示的延迟是400ms。</p>
+<p>更重要的是，<strong>这个纯净的ip只有我个人使用，可以访问Claude这种严格封锁中国IP的网站，使用最新的模型。</strong></p>
+<h2 id="相关技术"><a href="#相关技术" class="headerlink" title="相关技术"></a>相关技术</h2><h3 id="TLS"><a href="#TLS" class="headerlink" title="TLS"></a>TLS</h3><p>我目前没有使用配置TLS，但是一个没有TLS保护的代理服务，它的数据流在握手和传输阶段有着独特的“指纹”可能被网络审查系统通过深度包检测（DPI）技术识别。</p>
+<p>为代理服务配置TLS后，所有流量都会被封装在标准的HTTPS协议中。</p>
+<ol>
+<li><strong>流量伪装</strong>: 这是最核心的优势。开启TLS后，代理流量在外观上与浏览任何一个普通安全网站（例如 <code>https://google.com</code>）的流量变得完全无法区分。将自己伪装成海量日常网络活动的一部分，让审查系统无从下手，因为不可能为了拦截少数目标而切断所有正常的HTTPS访问。</li>
+<li><strong>抵御主动探测</strong>: 当外部系统试图探测服务器端口以识别服务类型时，开启TLS的端口会返回一个标准的、无懈可击的Web服务器响应。探测方无法借此判断背后运行的究竟是普通网站还是代理服务，从而使其失效。</li>
+<li><strong>连接的健壮性</strong>: 启用TLS需要绑定一个域名。这意味着我们可以通过域名而非固定IP来连接服务。未来即便服务器IP被封锁，只需将域名解析到新的IP，客户端即可无缝切换，大大提高了服务的灵活性和抗封锁能力。</li>
+</ol>
+<h2 id="基于Cloudflare-Workers建立VPN"><a href="#基于Cloudflare-Workers建立VPN" class="headerlink" title="基于Cloudflare Workers建立VPN"></a>基于Cloudflare Workers建立VPN</h2><p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=HcD4xYKXuRY">https://www.youtube.com/watch?v=HcD4xYKXuRY</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=755G850wXGw">https://www.youtube.com/watch?v=755G850wXGw</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/VPN/" rel="tag"># VPN</a>
+              <a href="/tags/Proxy/" rel="tag"># Proxy</a>
+              <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/" rel="tag"># 云服务器</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024%E5%B9%B4%E5%BA%A6%E6%80%BB%E7%BB%93/" rel="prev" title="2024年度总结">
+      <i class="fa fa-chevron-left"></i> 2024年度总结
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8FaaS%EF%BC%9F/" rel="next" title="为什么使用FaaS？">
+      为什么使用FaaS？ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">云服务器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#github%E5%AD%A6%E7%94%9F%E8%AE%A4%E8%AF%81"><span class="nav-number">1.1.</span> <span class="nav-text">github学生认证</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1"><span class="nav-number">2.</span> <span class="nav-text">代理服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%88%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="nav-number">3.</span> <span class="nav-text">终端配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MacOS"><span class="nav-number">3.1.</span> <span class="nav-text">MacOS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IOS"><span class="nav-number">3.2.</span> <span class="nav-text">IOS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E6%95%88%E6%9E%9C"><span class="nav-number">4.</span> <span class="nav-text">使用效果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E6%8A%80%E6%9C%AF"><span class="nav-number">5.</span> <span class="nav-text">相关技术</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TLS"><span class="nav-number">5.1.</span> <span class="nav-text">TLS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8ECloudflare-Workers%E5%BB%BA%E7%AB%8BVPN"><span class="nav-number">6.</span> <span class="nav-text">基于Cloudflare Workers建立VPN</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">KingCide</p>
+  <div class="site-description" itemprop="description">乐极生悲，否极泰来<br>灵魂的渴望是命运的先知</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kingcide" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kingcide" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1659057796@qq.com" title="E-Mail → mailto:1659057796@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://space.bilibili.com/436691243" title="https:&#x2F;&#x2F;space.bilibili.com&#x2F;436691243" rel="noopener" target="_blank">Bilibili</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">KingCide</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//fastly.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

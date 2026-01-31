@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"kingcide.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="技术很重要，但是技术之外的东西更容易被看到，也更容易被忽视，对于新入行的新手来说，如果只读一本书，当然是这个Readme。从开发到测试，从交付到如何背锅，到如何去讨论问题，与人交流。 从技术的具体实践中抽象出通用的工作和生活原则。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《程序员的README》">
+<meta property="og:url" content="https://kingcide.github.io/%E3%80%8A%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84README%E3%80%8B/index.html">
+<meta property="og:site_name" content="Kc&#39;s Blog">
+<meta property="og:description" content="技术很重要，但是技术之外的东西更容易被看到，也更容易被忽视，对于新入行的新手来说，如果只读一本书，当然是这个Readme。从开发到测试，从交付到如何背锅，到如何去讨论问题，与人交流。 从技术的具体实践中抽象出通用的工作和生活原则。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-04-01T12:44:39.000Z">
+<meta property="article:modified_time" content="2025-01-03T13:43:49.000Z">
+<meta property="article:author" content="KingCide">
+<meta property="article:tag" content="总结">
+<meta property="article:tag" content="书评">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://kingcide.github.io/%E3%80%8A%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84README%E3%80%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>《程序员的README》 | Kc's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Kc's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">(⊙.⊙)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-music">
+
+    <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
+
+  </li>
+        <li class="menu-item menu-item-cv">
+
+    <a href="/cv/" rel="section"><i class="fa fa-graduation-cap fa-fw"></i>简历</a>
+
+  </li>
+        <li class="menu-item menu-item-others">
+
+    <a href="/others/" rel="section"><i class="fa fa-ellipsis-h fa-fw"></i>其他</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://kingcide.github.io/%E3%80%8A%E7%A8%8B%E5%BA%8F%E5%91%98%E7%9A%84README%E3%80%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KingCide">
+      <meta itemprop="description" content="乐极生悲，否极泰来<br>灵魂的渴望是命运的先知">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kc's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          《程序员的README》
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-04-01 20:44:39" itemprop="dateCreated datePublished" datetime="2024-04-01T20:44:39+08:00">2024-04-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-01-03 21:43:49" itemprop="dateModified" datetime="2025-01-03T21:43:49+08:00">2025-01-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E5%8D%B0%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习印记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <link rel="stylesheet" type="text/css" href="https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>技术很重要，但是技术之外的东西更容易被看到，也更容易被忽视，对于新入行的新手来说，如果只读一本书，当然是这个Readme。从开发到测试，从交付到如何背锅，到如何去讨论问题，与人交流。</p>
+<p>从技术的具体实践中抽象出通用的工作和生活原则。</p>
+<span id="more"></span>
+
+<h2 id="重要观点"><a href="#重要观点" class="headerlink" title="重要观点"></a>重要观点</h2><p>想象一下，你正在建造一座桥梁。这座桥梁的每一块砖都是一个决策，每一滴水泥都是一行代码。《程序员的README》教你如何挑选最坚固的砖块和最持久的水泥，让你的桥梁能够经受时间的考验。</p>
+<p>首先，书中提到的“发布错误的答案来得到正确答案”策略，是一种巧妙地说明在互联网上，挑战和错误往往能激发群体智慧，找到正确解答的方法。就像在社交媒体上故意发布一张照片中的小错误，引发大家的注意和讨论，最终使得更多的焦点聚集在这张照片上。</p>
+<p>自行车棚效应，则像是在建造房子时，大家都在争论应该使用哪种颜色的油漆来粉刷车库，却忽略了更为重要的结构安全问题。它提醒我们，在面对问题时，不应过分沉迷于细节，而是要看到问题的全貌。</p>
+<p>关于技能的四个层次，可以想象成学习骑自行车的过程。最初，你甚至不知道自己为何会摔倒（无意识的无能力）；然后，你开始意识到是因为失去平衡（有意识的无能力）；接着，你通过刻意练习，能够在专注下保持平衡（有意识的有能力）；最后，骑车成为你的第二天性，你甚至可以在不经意间避开障碍物（无意识的有能力）。</p>
+<p>对于软件开发者而言，理解自己工作的影响，阅读并学习优秀的代码，合理安排研究时间，勇于向他人求助，以及在团队中共享知识和经验，都是职业成长的重要部分。这些原则同样适用于许多其他领域的专业人士。</p>
+<p>将这些技术原则翻译成生活中的智慧，我们可以学会更好地解决问题、合理安排时间、勇于向他人学习，并且不断地提高自己的能力。无论是编写代码，还是面对生活中的挑战，《程序员的README》提供的指导原则，都能帮助我们建立起一种更为有效和高效的解决问题的方法论。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>将《程序员的README》中的经验扩展到各行各业，就是要从技术的具体实践中抽象出通用的工作和生活原则，让不同领域的专业人士也能受益。</p>
+<h3 id="1-错误反馈机制：拥抱错误，以促进成长"><a href="#1-错误反馈机制：拥抱错误，以促进成长" class="headerlink" title="1. 错误反馈机制：拥抱错误，以促进成长"></a>1. <strong>错误反馈机制：拥抱错误，以促进成长</strong></h3><p>在互联网上故意发布错误答案以获得正确解答的策略，不仅适用于编程问题。在任何行业中，通过展示自己的工作成果并开放接受反馈，我们能够从他人的视角发现问题和改进的空间。这就如同在设计一款新产品时故意留下一些小“瑕疵”，邀请用户进行反馈，以此来迅速定位并解决真正重要的问题。</p>
+<h3 id="2-自行车棚效应：专注于真正重要的事"><a href="#2-自行车棚效应：专注于真正重要的事" class="headerlink" title="2. 自行车棚效应：专注于真正重要的事"></a>2. <strong>自行车棚效应：专注于真正重要的事</strong></h3><p>过度关注细枝末节而忽视了问题的本质，在任何行业都是一个常见误区。比如在商业策划会议中，团队可能会在无关紧要的细节上争论不休，而忽略了核心的商业策略。认识到这一点，能帮助我们在面对决策时，将注意力集中在真正能带来变化的因素上。</p>
+<h3 id="3-技能的四个层次：自我认知与持续进步"><a href="#3-技能的四个层次：自我认知与持续进步" class="headerlink" title="3. 技能的四个层次：自我认知与持续进步"></a>3. <strong>技能的四个层次：自我认知与持续进步</strong></h3><p>无论是在学习新的技能，还是在工作中提升自己，了解自己在技能掌握上的位置（无意识的无能力到无意识的有能力）对于个人成长至关重要。这一框架不仅适用于技术领域，比如编程，也同样适用于如销售、管理等非技术领域。它教会我们如何通过反思和实践，逐步提高自我效能和专业技能。</p>
+<h3 id="4-实践胜于空谈：动手实践的力量"><a href="#4-实践胜于空谈：动手实践的力量" class="headerlink" title="4. 实践胜于空谈：动手实践的力量"></a>4. <strong>实践胜于空谈：动手实践的力量</strong></h3><p>在软件开发中，实际编写并发布代码是学习的重要一环。同样，在其他行业中，比如营销或产品设计，真正将理论付诸实践，通过实际操作和试错，往往能获得比仅仅理论学习更深刻的见解。实践是检验真理的唯一标准，通过实际动手，我们能够更加深入地理解理论，发现问题，并学习如何解决问题。</p>
+<h3 id="5-合理规划研究与学习时间"><a href="#5-合理规划研究与学习时间" class="headerlink" title="5. 合理规划研究与学习时间"></a>5. <strong>合理规划研究与学习时间</strong></h3><p>设定时间限制并在必要时寻求帮助的建议，提示我们在任何任务或项目上，都应当合理安排时间和资源。无论是进行市场研究、新产品设计，还是学习新的技能，合理的时间管理和知道何时寻求外部帮助，是提高效率和质量的关键。</p>
+<h3 id="6-跨领域学习：拓宽知识视野"><a href="#6-跨领域学习：拓宽知识视野" class="headerlink" title="6. 跨领域学习：拓宽知识视野"></a>6. <strong>跨领域学习：拓宽知识视野</strong></h3><p>软件开发者被鼓励阅读高质量的开源项目和代码库。这一建议同样适用于其他行业的专业人士。例如，设计师可以研究其他设计师的作品，市场专家可以研究成功的营销案例，企业家可以学习其他成功企业的商业模式。跨领域学习不仅能帮助我们发现新的灵感和方法，还能让我们避免重复他人的错误。</p>
+<p>通过以上原则的扩展，看到《程序员的README》中的建议其实是一种思维方式和解决问题的方法，这些方法在任何行业中都是通用的。无论我们的职业背景如何，通过学习和实践这些原则，我们都能在自己的专业领域内实现更快的成长和更大的成功。</p>
+<h2 id="原文摘录"><a href="#原文摘录" class="headerlink" title="原文摘录"></a>原文摘录</h2><p>2024年3月31日</p>
+<p>在互联网上获得正确答案的最好方法并不是提出问题，而是发布错误的答案</p>
+<p>2024年3月31日</p>
+<p><strong>过度集中在细枝末节上的讨论总是会很冗长，这种现象被称为“自行车棚”(bike-shedding)效应</strong></p>
+<p>自行车棚效应</p>
+<p>2024年3月31日</p>
+<p><strong>无意识的无能力意味着你无法胜任某项任务，并且没有意识到这种差距。有意识的无能力意味着你虽然无法胜任某项任务，但其实已经意识到了其中的差距。有意识的有能力意味着你有能力通过努力完成某项任务。最后，无意识的有能力意味着你可以很轻松地胜任某项任务。</strong></p>
+<p>2024年3月31日</p>
+<p>在实践中学到的东西要比只坐在那里单纯地阅读学到的多出许多。你应该上手编写并且发布代码。第一次发布代码很可怕</p>
+<p>2024年3月31日</p>
+<p>尽你所能去理解你的工作会造成的影响，并以适当的谨慎程度行事。与变更高流量数据库上的索引相比，编写单元测试可以不那么谨慎，从而更快。</p>
+<p>2024年3月31日</p>
+<p>不要只读你自己的代码库，还要去阅读高质量的开源项目，特别是那些你使用的类库。不要像阅读小说一样从前到后地通读代码：请利用你的IDE来浏览代码。为关键的操作绘制控制流和状态图。仔细研究代码的数据结构和算法。注意那些临界值的处理。留意那些惯用写法和风格</p>
+<p>2024年3月31日</p>
+<p><strong>在你开始研究之前就应该设定好时间限制，这样可以鼓励你遵守这个限制，防止收益递减（研究最终会拖累生产性）</strong></p>
+<p>2024年3月31日</p>
+<p><strong>一旦你到达了设定的时间限制，就需要请人帮忙。只有在你取得良好进展的情况下才可以超过之前的时间限制。如果你已经超过了第一个时间限制，那么需要再设定一个</strong></p>
+<p>2024年3月31日</p>
+<p>第二个例子非常简洁，但又附有详细的信息，所以艾丽斯不需要主动去捕获这个问题</p>
+<p>2024年3月31日</p>
+<p>批量处理你的同步请求</p>
+<p>2024年3月31日</p>
+<p>聊天和电子邮件对简单的问题很实用，但复杂的讨论很难异步进行</p>
+<p>2024年3月31日</p>
+<p>尽管有着杰出的学术和职业成就，经历着冒充者现象的女性仍然坚持认为她们真的不聪明，而且还愚弄了任何不这么想的人。众多的成就似乎并不影响冒充者的信念，而这些成就本身就是能充分证明智力水平卓越的客观证据。</p>
+<p>2024年3月31日</p>
+<p>技术债甚至可能是成功的标志：项目只有存活了足够长的时间，才会变得无序。</p>
+<p>2024年3月31日</p>
+<p>所谓重构，是指在不改变软件行为的情况下改进内部代码结构。它经常发生在添加新特性的时候，因为它使新特性可以更容易地被添加。而在修复bug的过程中，则经常删除代码。</p>
+<p>2024年3月31日</p>
+<p>测试点是你想要修改的代码的入口，也就是测试用例需要调用和注入的区域。测试点揭示了代码在被你变更之前的行为，你需要使用这些测试点来测试你自己的变更。</p>
+<p>2024年3月31日</p>
+<p>当你在写代码的时候，简略地提交信息并没有错，但对其他人来说，这些信息是没有价值的。重置你的分支，压缩你的提交，并在提交代码修改供评审之前写一份清晰的提交信息。</p>
+<p>2024年3月31日</p>
+<p>尽可能地使用内置的异常，避免创建通用的异常。使用异常处理来应对故障，而不是控制应用程序的运行逻辑。</p>
+<p>什么是内置的异常</p>
+<p>2024年3月31日</p>
+<p>“早抛”意味着在尽可能接近错误的地方引发异常，这样开发人员就能迅速地定位相关的代码。</p>
+<p>同时，避免执行其他代码</p>
+<p>2024年3月31日</p>
+<p>“晚捕”意味着在调用的堆栈上传播这个异常，直到你到达能够处理异常的程序的层级。</p>
+<p>2024年3月31日</p>
+<p>当调用可能抛出异常的代码时，要么完全地处理它们，要么将它们在堆栈中进行传播。</p>
+<p>“能够在上述选择中做出决定的代码段很可能与遇到磁盘已满情况的底层类库中间相差了好几层，所有的中间层都需要将异常向上传播，而不是试图过早地进行补救处理。最糟糕的过早补救是“吞下”一个你无法处理的异常，这通常表现为catch代码块会自行忽略它”</p>
+<p>2024年3月31日</p>
+<p>处理重试的最好方法是构建幂等系统</p>
+<p>2024年3月31日</p>
+<p>Python的with语句会在调用路径离开代码块时自动关闭句柄</p>
+<p>“当故障发生后，要确保清理所有的资源，释放你不再需要的内存、数据结构、网络套接字和文件句柄”</p>
+<p>2024年3月31日</p>
+<p>并写出描述性的提交信息，务必将注释和测试包括在内</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%80%BB%E7%BB%93/" rel="tag"># 总结</a>
+              <a href="/tags/%E4%B9%A6%E8%AF%84/" rel="tag"># 书评</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/SDN%E6%8E%A7%E5%88%B6%E5%99%A8Ryu%E6%8B%93%E6%89%91%E5%8F%91%E7%8E%B0%E6%A8%A1%E5%9D%97/" rel="prev" title="SDN控制器Ryu的动态拓扑发现">
+      <i class="fa fa-chevron-left"></i> SDN控制器Ryu的动态拓扑发现
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/%E3%80%8AScaling%20Open%20vSwitch%20with%20a%20Computational%20Cache%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" rel="next" title="《Scaling Open vSwitch with a Computational Cache》阅读笔记">
+      《Scaling Open vSwitch with a Computational Cache》阅读笔记 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E8%A7%82%E7%82%B9"><span class="nav-number">1.</span> <span class="nav-text">重要观点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%94%99%E8%AF%AF%E5%8F%8D%E9%A6%88%E6%9C%BA%E5%88%B6%EF%BC%9A%E6%8B%A5%E6%8A%B1%E9%94%99%E8%AF%AF%EF%BC%8C%E4%BB%A5%E4%BF%83%E8%BF%9B%E6%88%90%E9%95%BF"><span class="nav-number">2.1.</span> <span class="nav-text">1. 错误反馈机制：拥抱错误，以促进成长</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%87%AA%E8%A1%8C%E8%BD%A6%E6%A3%9A%E6%95%88%E5%BA%94%EF%BC%9A%E4%B8%93%E6%B3%A8%E4%BA%8E%E7%9C%9F%E6%AD%A3%E9%87%8D%E8%A6%81%E7%9A%84%E4%BA%8B"><span class="nav-number">2.2.</span> <span class="nav-text">2. 自行车棚效应：专注于真正重要的事</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%8A%80%E8%83%BD%E7%9A%84%E5%9B%9B%E4%B8%AA%E5%B1%82%E6%AC%A1%EF%BC%9A%E8%87%AA%E6%88%91%E8%AE%A4%E7%9F%A5%E4%B8%8E%E6%8C%81%E7%BB%AD%E8%BF%9B%E6%AD%A5"><span class="nav-number">2.3.</span> <span class="nav-text">3. 技能的四个层次：自我认知与持续进步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%AE%9E%E8%B7%B5%E8%83%9C%E4%BA%8E%E7%A9%BA%E8%B0%88%EF%BC%9A%E5%8A%A8%E6%89%8B%E5%AE%9E%E8%B7%B5%E7%9A%84%E5%8A%9B%E9%87%8F"><span class="nav-number">2.4.</span> <span class="nav-text">4. 实践胜于空谈：动手实践的力量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%90%88%E7%90%86%E8%A7%84%E5%88%92%E7%A0%94%E7%A9%B6%E4%B8%8E%E5%AD%A6%E4%B9%A0%E6%97%B6%E9%97%B4"><span class="nav-number">2.5.</span> <span class="nav-text">5. 合理规划研究与学习时间</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E8%B7%A8%E9%A2%86%E5%9F%9F%E5%AD%A6%E4%B9%A0%EF%BC%9A%E6%8B%93%E5%AE%BD%E7%9F%A5%E8%AF%86%E8%A7%86%E9%87%8E"><span class="nav-number">2.6.</span> <span class="nav-text">6. 跨领域学习：拓宽知识视野</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E6%96%87%E6%91%98%E5%BD%95"><span class="nav-number">3.</span> <span class="nav-text">原文摘录</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">KingCide</p>
+  <div class="site-description" itemprop="description">乐极生悲，否极泰来<br>灵魂的渴望是命运的先知</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">72</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kingcide" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kingcide" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1659057796@qq.com" title="E-Mail → mailto:1659057796@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title"><i class="fa fa-link fa-fw"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://space.bilibili.com/436691243" title="https:&#x2F;&#x2F;space.bilibili.com&#x2F;436691243" rel="noopener" target="_blank">Bilibili</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">KingCide</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//fastly.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
