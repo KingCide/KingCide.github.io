@@ -17,13 +17,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"kingcide.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"keyc.top","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="本文摘要： Open vSwitch（OVS）是一种广泛使用的开源虚拟交换机实现。在这项工作中，我们试图通过加速其数据路径的核心组件——包分类机制，来扩展OVS以支持数十万条OpenFlow规则。为此，我们使用了NuevoMatch，这是一种利用神经网络推理进行数据包匹配的最新算法，它承诺具有显著的可扩展性和性能优势。我们克服了原始NuevoMatch中更新规则速度慢的主要算法挑战，将其速度提高了">
 <meta property="og:type" content="article">
 <meta property="og:title" content="《Scaling Open vSwitch with a Computational Cache》阅读笔记">
-<meta property="og:url" content="https://kingcide.github.io/%E3%80%8AScaling%20Open%20vSwitch%20with%20a%20Computational%20Cache%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:url" content="https://keyc.top/%E3%80%8AScaling%20Open%20vSwitch%20with%20a%20Computational%20Cache%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="Kc&#39;s Blog">
 <meta property="og:description" content="本文摘要： Open vSwitch（OVS）是一种广泛使用的开源虚拟交换机实现。在这项工作中，我们试图通过加速其数据路径的核心组件——包分类机制，来扩展OVS以支持数十万条OpenFlow规则。为此，我们使用了NuevoMatch，这是一种利用神经网络推理进行数据包匹配的最新算法，它承诺具有显著的可扩展性和性能优势。我们克服了原始NuevoMatch中更新规则速度慢的主要算法挑战，将其速度提高了">
 <meta property="og:locale" content="zh_CN">
@@ -42,7 +42,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20240420114946396.png">
 
-<link rel="canonical" href="https://kingcide.github.io/%E3%80%8AScaling%20Open%20vSwitch%20with%20a%20Computational%20Cache%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">
+<link rel="canonical" href="https://keyc.top/%E3%80%8AScaling%20Open%20vSwitch%20with%20a%20Computational%20Cache%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">
 
 
 <script id="page-configurations">
@@ -186,7 +186,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kingcide.github.io/%E3%80%8AScaling%20Open%20vSwitch%20with%20a%20Computational%20Cache%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">
+    <link itemprop="mainEntityOfPage" href="https://keyc.top/%E3%80%8AScaling%20Open%20vSwitch%20with%20a%20Computational%20Cache%E3%80%8B%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">

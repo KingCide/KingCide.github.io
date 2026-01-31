@@ -17,13 +17,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"kingcide.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"keyc.top","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Apache RocketMQ 改进提案 RIP-83 中提出了 Lite-Topic 模型。该提案为应对大规模分布式系统，特别是人工智能（AI）与多智能体（Multi-Agent）系统中的复杂通信需求，设计了一种全新的动态轻量级消息传递范式。文章将详细阐述 Lite-Topic 的核心设计、技术实现原理，包括其在存储层和消息分发机制上的创新，结合文章《Apache RocketMQ for AI">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RocketMQ的新消息模型Lite Topic解析">
-<meta property="og:url" content="https://kingcide.github.io/RocketMQ%E7%9A%84%E6%96%B0%E6%B6%88%E6%81%AF%E6%A8%A1%E5%9E%8BLite-Topic%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:url" content="https://keyc.top/RocketMQ%E7%9A%84%E6%96%B0%E6%B6%88%E6%81%AF%E6%A8%A1%E5%9E%8BLite-Topic%E8%A7%A3%E6%9E%90/index.html">
 <meta property="og:site_name" content="Kc&#39;s Blog">
 <meta property="og:description" content="Apache RocketMQ 改进提案 RIP-83 中提出了 Lite-Topic 模型。该提案为应对大规模分布式系统，特别是人工智能（AI）与多智能体（Multi-Agent）系统中的复杂通信需求，设计了一种全新的动态轻量级消息传递范式。文章将详细阐述 Lite-Topic 的核心设计、技术实现原理，包括其在存储层和消息分发机制上的创新，结合文章《Apache RocketMQ for AI">
 <meta property="og:locale" content="zh_CN">
@@ -36,7 +36,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/O1CN01iKud7m22qpf29CE40_!!6000000007172-2-tps-3000-1688.png">
 
-<link rel="canonical" href="https://kingcide.github.io/RocketMQ%E7%9A%84%E6%96%B0%E6%B6%88%E6%81%AF%E6%A8%A1%E5%9E%8BLite-Topic%E8%A7%A3%E6%9E%90/">
+<link rel="canonical" href="https://keyc.top/RocketMQ%E7%9A%84%E6%96%B0%E6%B6%88%E6%81%AF%E6%A8%A1%E5%9E%8BLite-Topic%E8%A7%A3%E6%9E%90/">
 
 
 <script id="page-configurations">
@@ -180,7 +180,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kingcide.github.io/RocketMQ%E7%9A%84%E6%96%B0%E6%B6%88%E6%81%AF%E6%A8%A1%E5%9E%8BLite-Topic%E8%A7%A3%E6%9E%90/">
+    <link itemprop="mainEntityOfPage" href="https://keyc.top/RocketMQ%E7%9A%84%E6%96%B0%E6%B6%88%E6%81%AF%E6%A8%A1%E5%9E%8BLite-Topic%E8%A7%A3%E6%9E%90/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">

@@ -17,13 +17,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"kingcide.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"keyc.top","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="本文介绍了如何使用SDN控制器Ryu进行动态网络拓扑的发现和监控。 通过实现一个名为SimpleTopologyPrinter的应用，展示了监控网络拓扑变化的基本方法，包括如何捕捉链路的添加和删除事件。实验中修改OvS交换机间的链路，观察到了Ryu对这些变化的响应，发现了链路添加事件有时会延迟反映的问题。本文还解释了Ryu的hub.spawn函数及其基于协程的并发特性，这些特性允许应用高效地处理多">
 <meta property="og:type" content="article">
 <meta property="og:title" content="SDN控制器Ryu的动态拓扑发现">
-<meta property="og:url" content="https://kingcide.github.io/SDN%E6%8E%A7%E5%88%B6%E5%99%A8Ryu%E6%8B%93%E6%89%91%E5%8F%91%E7%8E%B0%E6%A8%A1%E5%9D%97/index.html">
+<meta property="og:url" content="https://keyc.top/SDN%E6%8E%A7%E5%88%B6%E5%99%A8Ryu%E6%8B%93%E6%89%91%E5%8F%91%E7%8E%B0%E6%A8%A1%E5%9D%97/index.html">
 <meta property="og:site_name" content="Kc&#39;s Blog">
 <meta property="og:description" content="本文介绍了如何使用SDN控制器Ryu进行动态网络拓扑的发现和监控。 通过实现一个名为SimpleTopologyPrinter的应用，展示了监控网络拓扑变化的基本方法，包括如何捕捉链路的添加和删除事件。实验中修改OvS交换机间的链路，观察到了Ryu对这些变化的响应，发现了链路添加事件有时会延迟反映的问题。本文还解释了Ryu的hub.spawn函数及其基于协程的并发特性，这些特性允许应用高效地处理多">
 <meta property="og:locale" content="zh_CN">
@@ -37,7 +37,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20240331004305819.png">
 
-<link rel="canonical" href="https://kingcide.github.io/SDN%E6%8E%A7%E5%88%B6%E5%99%A8Ryu%E6%8B%93%E6%89%91%E5%8F%91%E7%8E%B0%E6%A8%A1%E5%9D%97/">
+<link rel="canonical" href="https://keyc.top/SDN%E6%8E%A7%E5%88%B6%E5%99%A8Ryu%E6%8B%93%E6%89%91%E5%8F%91%E7%8E%B0%E6%A8%A1%E5%9D%97/">
 
 
 <script id="page-configurations">
@@ -181,7 +181,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://kingcide.github.io/SDN%E6%8E%A7%E5%88%B6%E5%99%A8Ryu%E6%8B%93%E6%89%91%E5%8F%91%E7%8E%B0%E6%A8%A1%E5%9D%97/">
+    <link itemprop="mainEntityOfPage" href="https://keyc.top/SDN%E6%8E%A7%E5%88%B6%E5%99%A8Ryu%E6%8B%93%E6%89%91%E5%8F%91%E7%8E%B0%E6%A8%A1%E5%9D%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
