@@ -27,14 +27,17 @@
 <meta property="og:site_name" content="Kc&#39;s Blog">
 <meta property="og:description" content="Cloudflare Workers是我们最容易访问到的serverless服务，可以进行很多有意思的尝试，从尝试免费服务开始，学习它相关的技术。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20260201045821284.png">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20260201011313128.png">
 <meta property="article:published_time" content="2026-01-30T16:59:15.000Z">
-<meta property="article:modified_time" content="2026-01-31T09:30:05.441Z">
+<meta property="article:modified_time" content="2026-02-01T09:22:29.405Z">
 <meta property="article:author" content="KingCide">
 <meta property="article:tag" content="CloudFlare">
 <meta property="article:tag" content="VPN">
 <meta property="article:tag" content="网络">
 <meta property="article:tag" content="Serverless">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20260201045821284.png">
 
 <link rel="canonical" href="https://keyc.top/Cloudflare%E7%8E%A9%E6%B3%95%E5%A4%A7%E5%85%A8/">
 
@@ -203,10 +206,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2026-01-31 00:59:15 / 修改时间：17:30:05" itemprop="dateCreated datePublished" datetime="2026-01-31T00:59:15+08:00">2026-01-31</time>
+              <time title="创建时间：2026-01-31 00:59:15" itemprop="dateCreated datePublished" datetime="2026-01-31T00:59:15+08:00">2026-01-31</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-02-01 17:22:29" itemprop="dateModified" datetime="2026-02-01T17:22:29+08:00">2026-02-01</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -239,9 +248,40 @@
 <span id="more"></span>
 
 <h2 id="基于-Cloudflare-Workers-为静态页面做-KV-存储"><a href="#基于-Cloudflare-Workers-为静态页面做-KV-存储" class="headerlink" title="基于 Cloudflare Workers 为静态页面做 KV 存储"></a>基于 Cloudflare Workers 为静态页面做 KV 存储</h2><p>记录每个访客的IP，</p>
-<h2 id="基于-Cloudflare-搭建-VPN"><a href="#基于-Cloudflare-搭建-VPN" class="headerlink" title="基于 Cloudflare 搭建 VPN"></a>基于 Cloudflare 搭建 VPN</h2><p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=Y_SHcD3prt8">https://www.youtube.com/watch?v=Y_SHcD3prt8</a></p>
+<p><a href="https://keyc.top/__dash?key=ABC">https://keyc.top/__dash?key=ABC</a></p>
+<p><a target="_blank" rel="noopener" href="https://keyc-analytics.1659057796.workers.dev/__dash?key=ABC">https://keyc-analytics.1659057796.workers.dev/__dash?key=ABC</a></p>
+<h3 id="V1"><a href="#V1" class="headerlink" title="V1"></a>V1</h3><p>目标对象是任何<strong>托管域名DNS服务在cloudflare</strong>的用户，理论上希望能够统计根域名和子域名的多个服务，覆盖cloudflare的基本数据统计，但数据粒度更细，维度更全。</p>
+<img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20260201045821284.png" alt="image-20260201045821284" style="zoom:33%;" />
+
+<p>大体满足要求，但仍存在一些问题：</p>
+<ol>
+<li>pages的信息没有解码，可以转成中文的</li>
+<li>top referrers里面有来自 workers的<code>https://keyc-analytics.1659057796.workers.dev/</code>，不知道什么原理，希望不会在访问阶段产生性能损失</li>
+<li>地图是乌克兰提供的，看看有没有更优美的实现方案</li>
+<li>前端界面还是不够优美，有些块太大了，浏览器缩小的时候不能自动调整大小</li>
+<li>keyc.top/__dash是怎么实现的？出乎意料，我以为是用workers提供的域名，需要解释为什么需要配置route？</li>
+<li>需要解释下为什么要配置D1 database，和workers是如何协作的？</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">  %% ========= Traffic path =========</span><br><span class="line">  U[Visitor Browser] --&gt;|HTTPS request to keyc.top| CF[Cloudflare Edge]</span><br><span class="line"></span><br><span class="line">  CF --&gt;|Route: keyc.top/* -&gt; Worker| W[Worker: Analytics Proxy]</span><br><span class="line"></span><br><span class="line">  subgraph Origin[&quot;Origin Hosting&quot;]</span><br><span class="line">    GH[GitHub Pages\n(owner.github.io / repo pages)]</span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">  W --&gt;|fetch(request)\nproxy to origin| GH</span><br><span class="line">  GH --&gt;|HTML response| W</span><br><span class="line">  W --&gt;|Return response to visitor| CF</span><br><span class="line">  CF --&gt;|Serve page| U</span><br><span class="line"></span><br><span class="line">  %% ========= Async logging =========</span><br><span class="line">  subgraph Storage[&quot;Storage&quot;]</span><br><span class="line">    D1[(D1 Database\nSQLite-compatible)]</span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">  W -.-&gt;|ctx.waitUntil()\nINSERT event row| D1</span><br><span class="line"></span><br><span class="line">  %% ========= Dashboard path =========</span><br><span class="line">  A[Admin (You)] --&gt;|GET /__dash?key=...| CF</span><br><span class="line">  CF --&gt;|Route to Worker| W</span><br><span class="line">  W --&gt;|Return dashboard HTML| A</span><br><span class="line"></span><br><span class="line">  A --&gt;|XHR fetch /__api/summary\n/__api/map\n/__api/timeseries| CF</span><br><span class="line">  CF --&gt;|Route to Worker| W</span><br><span class="line">  W --&gt;|SELECT aggregates\nGROUP BY ...| D1</span><br><span class="line">  D1 --&gt;|rows| W</span><br><span class="line">  W --&gt;|JSON results| A</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="基于-Cloudflare-Workers-搭建-VPN"><a href="#基于-Cloudflare-Workers-搭建-VPN" class="headerlink" title="基于 Cloudflare Workers 搭建 VPN"></a>基于 Cloudflare Workers 搭建 VPN</h2><p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=Y_SHcD3prt8">https://www.youtube.com/watch?v=Y_SHcD3prt8</a></p>
 <p><a target="_blank" rel="noopener" href="https://github.com/yonggekkk/Cloudflare-vless-trojan">https://github.com/yonggekkk/Cloudflare-vless-trojan</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/cmliu/edgetunnel?tab=readme-ov-file">https://github.com/cmliu/edgetunnel?tab=readme-ov-file</a></p>
+<h3 id="edge-tunnel"><a href="#edge-tunnel" class="headerlink" title="edge tunnel"></a>edge tunnel</h3><p><a target="_blank" rel="noopener" href="https://github.com/cmliu/edgetunnel?tab=readme-ov-file">https://github.com/cmliu/edgetunnel?tab=readme-ov-file</a></p>
+<p>我最终选择部署项目edge tunnel，worker page给的原始域名是<strong>zyc456.pages.dev</strong>，</p>
+<p><a target="_blank" rel="noopener" href="https://edt2.net.keyc.top/admin">https://edt2.net.keyc.top/admin</a> 我使用了自定义的域名，这样之后即使更换worker，部署新的服务，我也可以只更改DNS解析的配置，就可以调整到新的服务。如果我给多个人提供服务，固定这个订阅链接可能比较方便。</p>
+<img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20260201011313128.png" alt="image-20260201011313128" style="zoom:33%;" />
+
+<p>效果：</p>
+<ol>
+<li>谷歌搜索，谷歌地图，youtube，流畅快速</li>
+<li>谷歌学术，能进入搜索界面，但是不能搜索</li>
+<li>X，登陆环节有故障</li>
+<li>chatgpt无法访问，gemini偶尔能够登上</li>
+</ol>
+<p>总体来说，仅供玩乐，可以作为视频专用或者梯子挂了备用的。</p>
+<p>折腾了很多方式，现在很多项目被封了，也试用了sing-box，很多人又在开发新的隧道协议、加密协议、混淆手段、新的代理客户端/服务端、新的订阅链接格式、新的配置文件格式，对于用户来说，最终最需要的也不过是个<strong>快速稳定</strong>罢了。</p>
 <h2 id="相关开源项目"><a href="#相关开源项目" class="headerlink" title="相关开源项目"></a>相关开源项目</h2><p><a target="_blank" rel="noopener" href="https://developers.cloudflare.com/">https://developers.cloudflare.com/</a></p>
 <p>官方文档，这是最权威、更新最快的信息来源。</p>
 <p><a target="_blank" rel="noopener" href="https://github.com/lyc8503/UptimeFlare/blob/main/README_zh-CN.md">https://github.com/lyc8503/UptimeFlare/blob/main/README_zh-CN.md</a></p>
@@ -337,7 +377,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-Cloudflare-Workers-%E4%B8%BA%E9%9D%99%E6%80%81%E9%A1%B5%E9%9D%A2%E5%81%9A-KV-%E5%AD%98%E5%82%A8"><span class="nav-number">1.</span> <span class="nav-text">基于 Cloudflare Workers 为静态页面做 KV 存储</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-Cloudflare-%E6%90%AD%E5%BB%BA-VPN"><span class="nav-number">2.</span> <span class="nav-text">基于 Cloudflare 搭建 VPN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE"><span class="nav-number">3.</span> <span class="nav-text">相关开源项目</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-Cloudflare-Workers-%E4%B8%BA%E9%9D%99%E6%80%81%E9%A1%B5%E9%9D%A2%E5%81%9A-KV-%E5%AD%98%E5%82%A8"><span class="nav-number">1.</span> <span class="nav-text">基于 Cloudflare Workers 为静态页面做 KV 存储</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#V1"><span class="nav-number">1.1.</span> <span class="nav-text">V1</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E-Cloudflare-Workers-%E6%90%AD%E5%BB%BA-VPN"><span class="nav-number">2.</span> <span class="nav-text">基于 Cloudflare Workers 搭建 VPN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#edge-tunnel"><span class="nav-number">2.1.</span> <span class="nav-text">edge tunnel</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E5%85%B3%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE"><span class="nav-number">3.</span> <span class="nav-text">相关开源项目</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
