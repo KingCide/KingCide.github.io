@@ -37,8 +37,12 @@
     return x - Math.floor(x);
   }
 
+  var VALID_THEMES = ['timeline', 'cards', 'sticky', 'cloud', 'minimal'];
+
   function getTheme() {
-    return localStorage.getItem('thoughts-theme') || 'timeline';
+    var t = localStorage.getItem('thoughts-theme');
+    if (t && VALID_THEMES.indexOf(t) !== -1) return t;
+    return 'timeline';
   }
 
   function setTheme(theme) {
