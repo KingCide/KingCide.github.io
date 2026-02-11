@@ -11,6 +11,13 @@
     return div.innerHTML;
   }
 
+  // 先转义再解析标记，保证安全
+  function formatContent(str) {
+    var s = escapeHTML(str);
+    s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    return s;
+  }
+
   function formatTime(iso) {
     var d = new Date(iso);
     var now = new Date();
@@ -114,30 +121,34 @@
       return { x: p.x * cos + p.z * sin, y: p.y, z: -p.x * sin + p.z * cos };
     }
 
+    var paused = false;
+
     function tick() {
-      // Auto-rotate + mouse influence
-      var ax = active ? mouseY * 0.00003 : 0.003;
-      var ay = active ? mouseX * 0.00003 : 0.005;
-      autoA += ax;
-      autoB += ay;
+      if (!paused) {
+        // Auto-rotate + mouse influence
+        var ax = active ? mouseY * 0.00003 : 0.003;
+        var ay = active ? mouseX * 0.00003 : 0.005;
+        autoA += ax;
+        autoB += ay;
 
-      for (var i = 0; i < count; i++) {
-        points[i] = rotateX(points[i], ax);
-        points[i] = rotateY(points[i], ay);
+        for (var i = 0; i < count; i++) {
+          points[i] = rotateX(points[i], ax);
+          points[i] = rotateY(points[i], ay);
 
-        var p = points[i];
-        var depth = (p.z + 1) / 2; // 0 (far) to 1 (near)
-        var scale = 0.6 + depth * 0.5;
-        var opacity = 0.3 + depth * 0.7;
-        var zIdx = Math.floor(depth * 1000);
+          var p = points[i];
+          var depth = (p.z + 1) / 2; // 0 (far) to 1 (near)
+          var scale = 0.6 + depth * 0.5;
+          var opacity = 0.3 + depth * 0.7;
+          var zIdx = Math.floor(depth * 1000);
 
-        var tx = p.x * radius;
-        var ty = p.y * radius;
+          var tx = p.x * radius;
+          var ty = p.y * radius;
 
-        tags[i].style.transform = 'translate(-50%,-50%) translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px) scale(' + scale.toFixed(3) + ')';
-        tags[i].style.opacity = opacity.toFixed(2);
-        tags[i].style.zIndex = zIdx;
-        tags[i].style.fontSize = (0.75 + depth * 0.3) + 'em';
+          tags[i].style.transform = 'translate(-50%,-50%) translate(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px) scale(' + scale.toFixed(3) + ')';
+          tags[i].style.opacity = opacity.toFixed(2);
+          tags[i].style.zIndex = zIdx;
+          tags[i].style.fontSize = (0.75 + depth * 0.3) + 'em';
+        }
       }
 
       cloudInstance.raf = requestAnimationFrame(tick);
@@ -167,6 +178,38 @@
       active = false;
     });
 
+    // Click to expand
+    function dismiss() {
+      var overlay = document.querySelector('.cloud-overlay');
+      var expanded = document.querySelector('.cloud-expanded');
+      if (overlay) overlay.remove();
+      if (expanded) expanded.remove();
+      paused = false;
+    }
+
+    for (var j = 0; j < count; j++) {
+      tags[j].setAttribute('data-idx', j);
+      tags[j].addEventListener('click', function () {
+        var idx = parseInt(this.getAttribute('data-idx'));
+        var item = data[idx];
+        paused = true;
+
+        var overlay = document.createElement('div');
+        overlay.className = 'cloud-overlay';
+        overlay.addEventListener('click', dismiss);
+
+        var card = document.createElement('div');
+        card.className = 'cloud-expanded';
+        card.innerHTML =
+          '<div class="thought-content">' + formatContent(item.content) + '</div>' +
+          '<div class="thought-time">' + formatTime(item.time) + '</div>';
+        card.addEventListener('click', function (e) { e.stopPropagation(); });
+
+        document.body.appendChild(overlay);
+        document.body.appendChild(card);
+      });
+    }
+
     cloudInstance = { raf: 0 };
     tick();
   }
@@ -175,7 +218,7 @@
 
   function renderItem(item, index, theme) {
     var time = formatTime(item.time);
-    var content = escapeHTML(item.content);
+    var content = formatContent(item.content);
     var style = '';
 
     if (theme === 'sticky') {
@@ -201,7 +244,7 @@
     var html = '<div class="cloud-scene">';
     for (var i = 0; i < data.length; i++) {
       var time = formatTime(data[i].time);
-      var content = escapeHTML(data[i].content);
+      var content = formatContent(data[i].content);
       html += '<div class="cloud-tag">' +
         '<div class="thought-content">' + content + '</div>' +
         '<div class="thought-time">' + time + '</div>' +
