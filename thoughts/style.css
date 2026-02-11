@@ -1,0 +1,140 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+  background: #fff;
+  color: #333;
+  line-height: 1.6;
+}
+
+header {
+  max-width: 640px;
+  margin: 40px auto 0;
+  padding: 0 20px;
+}
+
+header h1 {
+  font-size: 1.8em;
+  font-weight: 700;
+  color: #222;
+}
+
+header .back {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 0.9em;
+  color: #888;
+  text-decoration: none;
+}
+
+header .back:hover {
+  color: #555;
+}
+
+#app {
+  max-width: 640px;
+  margin: 30px auto 60px;
+  padding: 0 20px 0 40px;
+}
+
+/* 时间线 */
+.timeline {
+  position: relative;
+  padding-left: 24px;
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #e0e0e0;
+}
+
+.timeline-item {
+  position: relative;
+  padding-bottom: 32px;
+  animation: fadeIn 0.4s ease both;
+}
+
+.timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -29px;
+  top: 6px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ccc;
+  border: 2px solid #fff;
+}
+
+.timeline-item:first-child::before {
+  background: #555;
+}
+
+.thought-content {
+  font-size: 1em;
+  color: #333;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.thought-time {
+  margin-top: 6px;
+  font-size: 0.8em;
+  color: #aaa;
+}
+
+.empty {
+  color: #999;
+  font-size: 0.95em;
+  text-align: center;
+  padding-top: 40px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* 逐条延迟 */
+.timeline-item:nth-child(1)  { animation-delay: 0s; }
+.timeline-item:nth-child(2)  { animation-delay: 0.05s; }
+.timeline-item:nth-child(3)  { animation-delay: 0.1s; }
+.timeline-item:nth-child(4)  { animation-delay: 0.15s; }
+.timeline-item:nth-child(5)  { animation-delay: 0.2s; }
+.timeline-item:nth-child(6)  { animation-delay: 0.25s; }
+.timeline-item:nth-child(7)  { animation-delay: 0.3s; }
+.timeline-item:nth-child(8)  { animation-delay: 0.35s; }
+.timeline-item:nth-child(9)  { animation-delay: 0.4s; }
+.timeline-item:nth-child(10) { animation-delay: 0.45s; }
+
+@media (max-width: 480px) {
+  header {
+    margin-top: 24px;
+  }
+
+  header h1 {
+    font-size: 1.5em;
+  }
+
+  #app {
+    padding: 0 16px 0 32px;
+    margin-top: 20px;
+  }
+
+  .timeline {
+    padding-left: 20px;
+  }
+
+  .timeline-item::before {
+    left: -25px;
+  }
+}
