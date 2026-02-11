@@ -6,10 +6,19 @@
   <title>碎碎念</title>
   <link rel="stylesheet" href="./style.css">
 </head>
-<body>
+<body class="theme-timeline">
   <header>
-    <h1>碎碎念</h1>
-    <a href="/" class="back">← 返回博客</a>
+    <div class="header-top">
+      <h1>碎碎念</h1>
+      <div class="theme-switcher">
+        <button data-theme="timeline" title="时间线">&#9474;</button>
+        <button data-theme="cards" title="卡片">&#9638;</button>
+        <button data-theme="sticky" title="便签">&#9733;</button>
+        <button data-theme="cloud" title="3D 云">&#9741;</button>
+        <button data-theme="minimal" title="极简">&#9472;</button>
+      </div>
+    </div>
+    <a href="/" class="back">&larr; 返回博客</a>
   </header>
   <div id="app"></div>
   <script src="./app.js"></script>

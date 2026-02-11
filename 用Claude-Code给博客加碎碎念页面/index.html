@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"keyc.top","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="一直想在博客里加一个随手记录想法的地方，不用写成完整的文章，也不需要标题和分类，就是随便说两句。用 Claude Code 从需求到上线大概十分钟搞定了。">
+  <meta name="description" content="一直想在博客里加一个随手记录想法的地方，不用写成完整的文章，也不需要标题和分类，就是随便说两句。作为一个简单项目，测试下claude code pro 能有多少opus的用量。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="用Claude Code给博客加碎碎念页面">
 <meta property="og:url" content="https://keyc.top/%E7%94%A8Claude-Code%E7%BB%99%E5%8D%9A%E5%AE%A2%E5%8A%A0%E7%A2%8E%E7%A2%8E%E5%BF%B5%E9%A1%B5%E9%9D%A2/index.html">
 <meta property="og:site_name" content="Kc&#39;s Blog">
-<meta property="og:description" content="一直想在博客里加一个随手记录想法的地方，不用写成完整的文章，也不需要标题和分类，就是随便说两句。用 Claude Code 从需求到上线大概十分钟搞定了。">
+<meta property="og:description" content="一直想在博客里加一个随手记录想法的地方，不用写成完整的文章，也不需要标题和分类，就是随便说两句。作为一个简单项目，测试下claude code pro 能有多少opus的用量。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-02-11T09:00:00.000Z">
-<meta property="article:modified_time" content="2026-02-11T10:09:20.564Z">
+<meta property="article:modified_time" content="2026-02-11T10:40:00.931Z">
 <meta property="article:author" content="KingCide">
 <meta property="article:tag" content="Hexo">
 <meta property="article:tag" content="JavaScript">
@@ -209,7 +209,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2026-02-11 17:00:00 / 修改时间：18:09:20" itemprop="dateCreated datePublished" datetime="2026-02-11T17:00:00+08:00">2026-02-11</time>
+              <time title="创建时间：2026-02-11 17:00:00 / 修改时间：18:40:00" itemprop="dateCreated datePublished" datetime="2026-02-11T17:00:00+08:00">2026-02-11</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -239,18 +239,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <link rel="stylesheet" type="text/css" href="https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>一直想在博客里加一个随手记录想法的地方，不用写成完整的文章，也不需要标题和分类，就是随便说两句。用 Claude Code 从需求到上线大概十分钟搞定了。</p>
+        <link rel="stylesheet" type="text/css" href="https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>一直想在博客里加一个随手记录想法的地方，不用写成完整的文章，也不需要标题和分类，就是随便说两句。作为一个简单项目，测试下claude code pro 能有多少opus的用量。</p>
 <span id="more"></span>
 
-<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>博客写文章的门槛太高了，有时候只是一句感想、一个灵感，专门开一篇 post 太重了。我想要的是一个类似微博/说说的轻量页面：</p>
+<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><p>有时候只是一句感想、一个灵感，不足以专门开一篇 post 。我想要的是一个类似微博/说说的轻量页面：</p>
 <ul>
 <li>纯静态，不依赖后端，跟博客一起部署到 GitHub Pages</li>
 <li>数据用 JSON 文件存在本地，方便 git 管理</li>
 <li>独立页面，不经过 Hexo 主题渲染</li>
 <li>命令行一行命令就能添加新想法</li>
+<li>TODO：支持iphone移动端快速稳定流程上传</li>
 </ul>
-<h2 id="用-Claude-Code-实现"><a href="#用-Claude-Code-实现" class="headerlink" title="用 Claude Code 实现"></a>用 Claude Code 实现</h2><p><a target="_blank" rel="noopener" href="https://docs.anthropic.com/en/docs/claude-code/overview">Claude Code</a> 是 Anthropic 的命令行 AI 工具，可以直接在终端里对话，它能读写文件、执行命令、理解项目上下文。</p>
-<p>整个过程是这样的：我把需求描述给 Claude Code，包括文件结构、每个文件的职责、需要修改哪些配置，它会先给出实施方案，确认后直接在项目里创建和修改文件。</p>
+<h2 id="用-Claude-Code-实现"><a href="#用-Claude-Code-实现" class="headerlink" title="用 Claude Code 实现"></a>用 Claude Code 实现</h2><p>我把需求描述给 Claude Code，使用plan mode，它一开始总想用cloudflare，想使用worker作为后端，最后我让它基于现有github pages。</p>
 <p>最终的文件结构：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">source/thoughts/</span><br><span class="line">├── index.html     ← 独立页面（skip_render，不经 Hexo 处理）</span><br><span class="line">├── style.css      ← 时间线样式</span><br><span class="line">├── app.js         ← 读取 data.json 渲染</span><br><span class="line">└── data.json      ← 想法数据</span><br><span class="line"></span><br><span class="line">tools/</span><br><span class="line">└── thought.js     ← 快捷添加脚本</span><br></pre></td></tr></table></figure>
 
@@ -277,41 +277,13 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo generate &amp;&amp; hexo deploy</span><br></pre></td></tr></table></figure>
 
 <p><code>source/thoughts/</code> 会原样复制到 <code>public/thoughts/</code>，部署后访问 <a href="https://keyc.top/thoughts/">keyc.top/thoughts/</a> 即可。</p>
-<h2 id="Claude-Code-工作流"><a href="#Claude-Code-工作流" class="headerlink" title="Claude Code 工作流"></a>Claude Code 工作流</h2><p>简单记录下 Claude Code 的使用方式，以后类似的开发任务都可以这样做。</p>
-<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g @anthropic-ai/claude-code</span><br></pre></td></tr></table></figure>
-
-<p>需要 Node.js 18+，安装后在终端输入 <code>claude</code> 启动。</p>
-<h3 id="基本用法"><a href="#基本用法" class="headerlink" title="基本用法"></a>基本用法</h3><p>在项目根目录下启动，它会自动读取项目上下文：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> ~/BLOG/KingCide</span><br><span class="line">claude</span><br></pre></td></tr></table></figure>
-
-<p>进入交互界面后，直接用自然语言描述需求。它能：</p>
-<ul>
-<li>读取和修改项目中的文件</li>
-<li>执行 shell 命令（需要确认）</li>
-<li>理解项目结构和依赖关系</li>
-<li>一次性创建多个文件</li>
-</ul>
-<h3 id="实际对话示例"><a href="#实际对话示例" class="headerlink" title="实际对话示例"></a>实际对话示例</h3><p>我的做法是先进入 plan 模式，让它分析需求、列出要修改的文件和步骤，确认方案没问题后再让它执行。这样可以避免它自作主张改错东西。</p>
-<p>关键命令：</p>
-<ul>
-<li><code>/help</code>：查看帮助</li>
-<li>直接输入需求描述，它会分析并提出方案</li>
-<li>确认方案后它自动创建/修改文件</li>
-<li>可以让它直接执行 <code>hexo generate</code>、<code>hexo deploy</code> 等命令</li>
-</ul>
-<h3 id="适合的场景"><a href="#适合的场景" class="headerlink" title="适合的场景"></a>适合的场景</h3><ul>
-<li>博客功能开发（新页面、新插件、配置修改）</li>
-<li>批量文件操作</li>
-<li>调试和排查问题（它能读报错信息并给出修复）</li>
-<li>脚本编写</li>
-</ul>
-<p>对于这种”需求明确、涉及多个文件、有一定重复性”的任务，AI 工具的效率提升是很明显的。而且它对 Hexo 这类常见框架的理解很到位，不需要过多解释背景。</p>
 <h2 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h2><p>目前这个方案只能在电脑上添加想法。如果以后想在手机上也能发，可以：</p>
 <ul>
 <li>把 <code>data.json</code> 的读写迁移到 GitHub API 或 Cloudflare Workers</li>
 <li><code>app.js</code> 改为从 API 获取数据</li>
 <li>页面本身不需要改动</li>
 </ul>
+<p>之后还可以让它生成更多的主题</p>
 <p>先这样用着，够用了。</p>
 
     </div>
@@ -395,7 +367,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-number">1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8-Claude-Code-%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">用 Claude Code 实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E9%85%8D%E7%BD%AE"><span class="nav-number">2.1.</span> <span class="nav-text">关键配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">数据格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%B7%BB%E5%8A%A0"><span class="nav-number">2.3.</span> <span class="nav-text">命令行添加</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">3.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Claude-Code-%E5%B7%A5%E4%BD%9C%E6%B5%81"><span class="nav-number">4.</span> <span class="nav-text">Claude Code 工作流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">4.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="nav-number">4.2.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E5%AF%B9%E8%AF%9D%E7%A4%BA%E4%BE%8B"><span class="nav-number">4.3.</span> <span class="nav-text">实际对话示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%82%E5%90%88%E7%9A%84%E5%9C%BA%E6%99%AF"><span class="nav-number">4.4.</span> <span class="nav-text">适合的场景</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E7%BB%AD"><span class="nav-number">5.</span> <span class="nav-text">后续</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-number">1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8-Claude-Code-%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">用 Claude Code 实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E9%85%8D%E7%BD%AE"><span class="nav-number">2.1.</span> <span class="nav-text">关键配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">数据格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%B7%BB%E5%8A%A0"><span class="nav-number">2.3.</span> <span class="nav-text">命令行添加</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">3.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E7%BB%AD"><span class="nav-number">4.</span> <span class="nav-text">后续</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

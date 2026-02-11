@@ -11,10 +11,18 @@ body {
   line-height: 1.6;
 }
 
+/* ===== Header ===== */
+
 header {
-  max-width: 640px;
+  max-width: 720px;
   margin: 40px auto 0;
   padding: 0 20px;
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 header h1 {
@@ -35,19 +43,90 @@ header .back:hover {
   color: #555;
 }
 
-#app {
-  max-width: 640px;
-  margin: 30px auto 60px;
-  padding: 0 20px 0 40px;
+/* ===== Theme Switcher ===== */
+
+.theme-switcher {
+  display: flex;
+  gap: 4px;
 }
 
-/* 时间线 */
-.timeline {
+.theme-switcher button {
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid #ddd;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  color: #999;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-switcher button:hover {
+  border-color: #aaa;
+  color: #555;
+}
+
+.theme-switcher button.active {
+  border-color: #333;
+  color: #333;
+  background: #f5f5f5;
+}
+
+/* ===== Container ===== */
+
+#app {
+  max-width: 720px;
+  margin: 30px auto 60px;
+  padding: 0 20px;
+}
+
+.empty {
+  color: #999;
+  font-size: 0.95em;
+  text-align: center;
+  padding-top: 40px;
+}
+
+/* ===== Shared ===== */
+
+.thought-content {
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.thought-time {
+  font-size: 0.8em;
+  color: #aaa;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* =========================================
+   Theme 1: Timeline
+   ========================================= */
+
+.theme-timeline #app {
+  padding-left: 40px;
+}
+
+.theme-timeline .thought-list {
   position: relative;
   padding-left: 24px;
 }
 
-.timeline::before {
+.theme-timeline .thought-list::before {
   content: "";
   position: absolute;
   left: 0;
@@ -57,13 +136,13 @@ header .back:hover {
   background: #e0e0e0;
 }
 
-.timeline-item {
+.theme-timeline .thought-item {
   position: relative;
   padding-bottom: 32px;
   animation: fadeIn 0.4s ease both;
 }
 
-.timeline-item::before {
+.theme-timeline .thought-item::before {
   content: "";
   position: absolute;
   left: -29px;
@@ -75,46 +154,228 @@ header .back:hover {
   border: 2px solid #fff;
 }
 
-.timeline-item:first-child::before {
+.theme-timeline .thought-item:first-child::before {
   background: #555;
 }
 
-.thought-content {
+.theme-timeline .thought-content {
   font-size: 1em;
   color: #333;
-  word-break: break-word;
-  white-space: pre-wrap;
 }
 
-.thought-time {
+.theme-timeline .thought-time {
   margin-top: 6px;
-  font-size: 0.8em;
-  color: #aaa;
 }
 
-.empty {
-  color: #999;
+/* timeline stagger */
+.theme-timeline .thought-item:nth-child(1)  { animation-delay: 0s; }
+.theme-timeline .thought-item:nth-child(2)  { animation-delay: 0.05s; }
+.theme-timeline .thought-item:nth-child(3)  { animation-delay: 0.1s; }
+.theme-timeline .thought-item:nth-child(4)  { animation-delay: 0.15s; }
+.theme-timeline .thought-item:nth-child(5)  { animation-delay: 0.2s; }
+.theme-timeline .thought-item:nth-child(6)  { animation-delay: 0.25s; }
+.theme-timeline .thought-item:nth-child(7)  { animation-delay: 0.3s; }
+.theme-timeline .thought-item:nth-child(8)  { animation-delay: 0.35s; }
+.theme-timeline .thought-item:nth-child(9)  { animation-delay: 0.4s; }
+.theme-timeline .thought-item:nth-child(10) { animation-delay: 0.45s; }
+
+/* =========================================
+   Theme 2: Cards (Masonry)
+   ========================================= */
+
+.theme-cards .thought-list {
+  column-count: 2;
+  column-gap: 16px;
+}
+
+.theme-cards .thought-item {
+  break-inside: avoid;
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 16px;
+  animation: fadeInScale 0.35s ease both;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.theme-cards .thought-item:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+}
+
+.theme-cards .thought-content {
   font-size: 0.95em;
+  color: #333;
+}
+
+.theme-cards .thought-time {
+  margin-top: 10px;
+}
+
+/* cards stagger */
+.theme-cards .thought-item:nth-child(1)  { animation-delay: 0s; }
+.theme-cards .thought-item:nth-child(2)  { animation-delay: 0.04s; }
+.theme-cards .thought-item:nth-child(3)  { animation-delay: 0.08s; }
+.theme-cards .thought-item:nth-child(4)  { animation-delay: 0.12s; }
+.theme-cards .thought-item:nth-child(5)  { animation-delay: 0.16s; }
+.theme-cards .thought-item:nth-child(6)  { animation-delay: 0.2s; }
+.theme-cards .thought-item:nth-child(7)  { animation-delay: 0.24s; }
+.theme-cards .thought-item:nth-child(8)  { animation-delay: 0.28s; }
+
+/* =========================================
+   Theme 3: Sticky Notes
+   ========================================= */
+
+.theme-sticky .thought-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.theme-sticky .thought-item {
+  width: 200px;
+  min-height: 120px;
+  padding: 18px 16px 12px;
+  border-radius: 2px;
+  box-shadow: 2px 3px 8px rgba(0,0,0,0.12);
+  animation: fadeInScale 0.35s ease both;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.theme-sticky .thought-content {
+  font-size: 0.92em;
+  color: #333;
+  flex: 1;
+}
+
+.theme-sticky .thought-time {
+  margin-top: 12px;
+  font-size: 0.75em;
+  color: rgba(0,0,0,0.35);
+  text-align: right;
+}
+
+/* sticky stagger */
+.theme-sticky .thought-item:nth-child(1)  { animation-delay: 0s; }
+.theme-sticky .thought-item:nth-child(2)  { animation-delay: 0.06s; }
+.theme-sticky .thought-item:nth-child(3)  { animation-delay: 0.12s; }
+.theme-sticky .thought-item:nth-child(4)  { animation-delay: 0.18s; }
+.theme-sticky .thought-item:nth-child(5)  { animation-delay: 0.24s; }
+.theme-sticky .thought-item:nth-child(6)  { animation-delay: 0.3s; }
+
+/* =========================================
+   Theme 4: 3D Cloud
+   ========================================= */
+
+.theme-cloud #app {
+  max-width: 100%;
+  padding: 0;
+  margin: 0 auto 40px;
+}
+
+.cloud-scene {
+  position: relative;
+  width: 100%;
+  height: 520px;
+  overflow: hidden;
+  cursor: grab;
+}
+
+.cloud-scene:active {
+  cursor: grabbing;
+}
+
+.cloud-tag {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid #eee;
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  white-space: nowrap;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  will-change: transform, opacity, font-size;
+  user-select: none;
+}
+
+.cloud-tag:hover {
+  border-color: #bbb;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  z-index: 100 !important;
+}
+
+.cloud-tag .thought-content {
+  font-size: inherit;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cloud-tag .thought-time {
+  margin-top: 3px;
+  font-size: 0.72em;
+}
+
+.cloud-hint {
   text-align: center;
-  padding-top: 40px;
+  font-size: 0.8em;
+  color: #ccc;
+  margin-top: 4px;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* =========================================
+   Theme 5: Minimal
+   ========================================= */
+
+.theme-minimal .thought-list {
+  max-width: 520px;
+  margin: 0 auto;
 }
 
-/* 逐条延迟 */
-.timeline-item:nth-child(1)  { animation-delay: 0s; }
-.timeline-item:nth-child(2)  { animation-delay: 0.05s; }
-.timeline-item:nth-child(3)  { animation-delay: 0.1s; }
-.timeline-item:nth-child(4)  { animation-delay: 0.15s; }
-.timeline-item:nth-child(5)  { animation-delay: 0.2s; }
-.timeline-item:nth-child(6)  { animation-delay: 0.25s; }
-.timeline-item:nth-child(7)  { animation-delay: 0.3s; }
-.timeline-item:nth-child(8)  { animation-delay: 0.35s; }
-.timeline-item:nth-child(9)  { animation-delay: 0.4s; }
-.timeline-item:nth-child(10) { animation-delay: 0.45s; }
+.theme-minimal .thought-item {
+  padding: 20px 0;
+  border-bottom: 1px solid #f0f0f0;
+  animation: fadeIn 0.3s ease both;
+}
+
+.theme-minimal .thought-item:last-child {
+  border-bottom: none;
+}
+
+.theme-minimal .thought-time {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.78em;
+  color: #bbb;
+  letter-spacing: 0.5px;
+}
+
+.theme-minimal .thought-content {
+  font-size: 1.05em;
+  color: #222;
+  line-height: 1.7;
+}
+
+/* minimal stagger */
+.theme-minimal .thought-item:nth-child(1)  { animation-delay: 0s; }
+.theme-minimal .thought-item:nth-child(2)  { animation-delay: 0.04s; }
+.theme-minimal .thought-item:nth-child(3)  { animation-delay: 0.08s; }
+.theme-minimal .thought-item:nth-child(4)  { animation-delay: 0.12s; }
+.theme-minimal .thought-item:nth-child(5)  { animation-delay: 0.16s; }
+.theme-minimal .thought-item:nth-child(6)  { animation-delay: 0.2s; }
+
+/* ===== Responsive ===== */
 
 @media (max-width: 480px) {
   header {
@@ -125,16 +386,43 @@ header .back:hover {
     font-size: 1.5em;
   }
 
+  .theme-switcher button {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
   #app {
-    padding: 0 16px 0 32px;
     margin-top: 20px;
   }
 
-  .timeline {
+  .theme-timeline #app {
+    padding-left: 32px;
+  }
+
+  .theme-timeline .thought-list {
     padding-left: 20px;
   }
 
-  .timeline-item::before {
+  .theme-timeline .thought-item::before {
     left: -25px;
+  }
+
+  .theme-cards .thought-list {
+    column-count: 1;
+  }
+
+  .theme-sticky .thought-item {
+    width: 160px;
+    min-height: 100px;
+  }
+
+  .cloud-scene {
+    height: 400px;
+  }
+
+  .cloud-tag {
+    max-width: 180px;
+    padding: 8px 12px;
   }
 }
