@@ -28,7 +28,7 @@
 <meta property="og:description" content="一直想在博客里加一个随手记录想法的地方，不用写成完整的文章，也不需要标题和分类，就是随便说两句。作为一个简单项目，测试下claude code pro 能有多少opus的用量。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2026-02-11T09:00:00.000Z">
-<meta property="article:modified_time" content="2026-02-11T10:40:00.931Z">
+<meta property="article:modified_time" content="2026-02-11T14:06:04.080Z">
 <meta property="article:author" content="KingCide">
 <meta property="article:tag" content="Hexo">
 <meta property="article:tag" content="JavaScript">
@@ -209,7 +209,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2026-02-11 17:00:00 / 修改时间：18:40:00" itemprop="dateCreated datePublished" datetime="2026-02-11T17:00:00+08:00">2026-02-11</time>
+              <time title="创建时间：2026-02-11 17:00:00 / 修改时间：22:06:04" itemprop="dateCreated datePublished" datetime="2026-02-11T17:00:00+08:00">2026-02-11</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -277,6 +277,18 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo clean &amp;&amp; hexo generate &amp;&amp; hexo deploy</span><br></pre></td></tr></table></figure>
 
 <p><code>source/thoughts/</code> 会原样复制到 <code>public/thoughts/</code>，部署后访问 <a href="https://keyc.top/thoughts/">keyc.top/thoughts/</a> 即可。</p>
+<h2 id="macOS-快捷发布"><a href="#macOS-快捷发布" class="headerlink" title="macOS 快捷发布"></a>macOS 快捷发布</h2><p>命令行方式有几个痛点：每次要 cd 到项目目录，打开终端，而且终端粘贴中文偶尔会乱码。最初用 AppleScript 的 <code>display dialog</code> 做了一版，但它的输入框是单行的，按回车直接触发按钮，没法写多行内容。</p>
+<p>最终方案是用 JXA（JavaScript for Automation）+ Cocoa 的 NSTextView，做成一个原生多行编辑器：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// JXA 核心部分：用 NSTextView 做多行输入</span></span><br><span class="line"><span class="title class_">ObjC</span>.<span class="keyword">import</span>(<span class="string">&#x27;Cocoa&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> scrollView = $.<span class="title class_">NSScrollView</span>.<span class="property">alloc</span>.<span class="title function_">initWithFrame</span>($.<span class="title class_">NSMakeRect</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">420</span>, <span class="number">220</span>));</span><br><span class="line"><span class="keyword">var</span> textView = $.<span class="title class_">NSTextView</span>.<span class="property">alloc</span>.<span class="title function_">initWithFrame</span>(...);</span><br><span class="line">textView.<span class="property">font</span> = $.<span class="title class_">NSFont</span>.<span class="title function_">systemFontOfSize</span>(<span class="number">14</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> alert = $.<span class="title class_">NSAlert</span>.<span class="property">alloc</span>.<span class="property">init</span>;</span><br><span class="line">alert.<span class="property">accessoryView</span> = scrollView;</span><br><span class="line">alert.<span class="title function_">addButtonWithTitle</span>(<span class="string">&#x27;确定&#x27;</span>);</span><br><span class="line">alert.<span class="title function_">addButtonWithTitle</span>(<span class="string">&#x27;取消&#x27;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>交互流程是：启动 → 选择「新建想法」/「编辑已有」/「删除」。新建弹出多行编辑器，回车就是换行；编辑先选条目再打开编辑器，内容预填好；删除有二次确认。</p>
+<p>Node 脚本也扩展了，支持增删改查：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">node tools/thought.js <span class="string">&quot;想法内容&quot;</span>          <span class="comment"># 添加</span></span><br><span class="line">node tools/thought.js --edit 0 <span class="string">&quot;新内容&quot;</span>   <span class="comment"># 编辑第 0 条</span></span><br><span class="line">node tools/thought.js --delete 0          <span class="comment"># 删除第 0 条</span></span><br><span class="line">node tools/thought.js --list              <span class="comment"># 列出全部（JSON）</span></span><br></pre></td></tr></table></figure>
+
+<p>编译成 app：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">osacompile -l JavaScript -o tools/碎碎念.app tools/thought-ui.js</span><br></pre></td></tr></table></figure>
+
+<p>拖到 Dock 上或 Spotlight 搜索”碎碎念”就能用，支持中文、多行、Cmd+Z 撤销，全程不需要终端。</p>
 <h2 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h2><p>目前这个方案只能在电脑上添加想法。如果以后想在手机上也能发，可以：</p>
 <ul>
 <li>把 <code>data.json</code> 的读写迁移到 GitHub API 或 Cloudflare Workers</li>
@@ -367,7 +379,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-number">1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8-Claude-Code-%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">用 Claude Code 实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E9%85%8D%E7%BD%AE"><span class="nav-number">2.1.</span> <span class="nav-text">关键配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">数据格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%B7%BB%E5%8A%A0"><span class="nav-number">2.3.</span> <span class="nav-text">命令行添加</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">3.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E7%BB%AD"><span class="nav-number">4.</span> <span class="nav-text">后续</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9C%80%E6%B1%82"><span class="nav-number">1.</span> <span class="nav-text">需求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%A8-Claude-Code-%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">用 Claude Code 实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E9%85%8D%E7%BD%AE"><span class="nav-number">2.1.</span> <span class="nav-text">关键配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%A0%BC%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">数据格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%B7%BB%E5%8A%A0"><span class="nav-number">2.3.</span> <span class="nav-text">命令行添加</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">3.</span> <span class="nav-text">部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#macOS-%E5%BF%AB%E6%8D%B7%E5%8F%91%E5%B8%83"><span class="nav-number">4.</span> <span class="nav-text">macOS 快捷发布</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E7%BB%AD"><span class="nav-number">5.</span> <span class="nav-text">后续</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
