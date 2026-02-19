@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"keyc.top","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="记录个人 Hexo 博客在 Google 和百度搜索引擎的 SEO 优化全过程，包括 URL 主动推送配置（hexo-url-submission）、Google Indexing API 接入、front-matter 优化等实践经验。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="博客 SEO 优化实践：从零开始让 Google 和百度收录你的 Hexo 博客">
+<meta property="og:url" content="https://keyc.top/%E5%8D%9A%E5%AE%A2SEO%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:site_name" content="Kc&#39;s Blog">
+<meta property="og:description" content="记录个人 Hexo 博客在 Google 和百度搜索引擎的 SEO 优化全过程，包括 URL 主动推送配置（hexo-url-submission）、Google Indexing API 接入、front-matter 优化等实践经验。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-02-19T09:12:00.000Z">
+<meta property="article:modified_time" content="2026-02-19T09:28:48.878Z">
+<meta property="article:author" content="KingCide">
+<meta property="article:tag" content="Hexo">
+<meta property="article:tag" content="博客">
+<meta property="article:tag" content="SEO">
+<meta property="article:tag" content="Google">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://keyc.top/%E5%8D%9A%E5%AE%A2SEO%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>博客 SEO 优化实践：从零开始让 Google 和百度收录你的 Hexo 博客 | Kc's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Kc's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Kc's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">(⊙.⊙)</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-music">
+
+    <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
+
+  </li>
+        <li class="menu-item menu-item-cv">
+
+    <a href="/cv/" rel="section"><i class="fa fa-graduation-cap fa-fw"></i>简历</a>
+
+  </li>
+        <li class="menu-item menu-item-thoughts">
+
+    <a href="/thoughts/" rel="section"><i class="fa fa-comment fa-fw"></i>碎碎念</a>
+
+  </li>
+        <li class="menu-item menu-item-others">
+
+    <a href="/others/" rel="section"><i class="fa fa-ellipsis-h fa-fw"></i>其他</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keyc.top/%E5%8D%9A%E5%AE%A2SEO%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KingCide">
+      <meta itemprop="description" content="Kc 的个人技术博客，记录计算机网络、SDN、Serverless、云计算等学习笔记与项目实践，以及读书感悟和生活随想。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kc's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          博客 SEO 优化实践：从零开始让 Google 和百度收录你的 Hexo 博客
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-02-19 17:12:00 / 修改时间：17:28:48" itemprop="dateCreated datePublished" datetime="2026-02-19T17:12:00+08:00">2026-02-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E5%8D%B0%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习印记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <div class="post-description">记录个人 Hexo 博客在 Google 和百度搜索引擎的 SEO 优化全过程，包括 URL 主动推送配置（hexo-url-submission）、Google Indexing API 接入、front-matter 优化等实践经验。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <link rel="stylesheet" type="text/css" href="https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>这个博客运行了好几年，但一直是写给自己看的，从来没有考虑过搜索引擎优化。最近把站点提交到 Google 和百度之后发现，不做 SEO 优化的博客，基本等于在互联网上隐身。于是开始了一轮系统性的优化，本文记录整个过程。</p>
+<span id="more"></span>
+
+<h2 id="主动推送-URL-到搜索引擎"><a href="#主动推送-URL-到搜索引擎" class="headerlink" title="主动推送 URL 到搜索引擎"></a>主动推送 URL 到搜索引擎</h2><p>最基本的一步：让搜索引擎知道你的页面存在。除了被动等待爬虫发现，还可以通过 API 主动告诉搜索引擎我们更新了这些页面。</p>
+<h3 id="hexo-url-submission-插件"><a href="#hexo-url-submission-插件" class="headerlink" title="hexo-url-submission 插件"></a>hexo-url-submission 插件</h3><p><a target="_blank" rel="noopener" href="https://github.com/abnerwei/hexo-url-submission">hexo-url-submission</a> 是一个 Hexo 插件，可以在 <code>hexo deploy</code> 时自动将新页面的 URL 批量推送给 Google、Bing、百度和神马搜索。一条命令完成部署 + 推送，非常省事。</p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save hexo-url-submission</span><br></pre></td></tr></table></figure>
+
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p>在 <code>_config.yml</code> 中添加：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">url_submission:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">&#x27;all&#x27;</span>            <span class="comment"># all: 提交所有页面; latest: 仅提交当天修改的页面</span></span><br><span class="line">  <span class="attr">prefix:</span> []             <span class="comment"># 空数组匹配所有 URL 路径</span></span><br><span class="line">  <span class="attr">channels:</span></span><br><span class="line">    <span class="attr">baidu:</span></span><br><span class="line">      <span class="attr">token:</span> <span class="string">&quot;&lt;your_baidu_token&gt;&quot;</span></span><br><span class="line">      <span class="attr">count:</span> <span class="number">9</span></span><br><span class="line">    <span class="attr">google:</span></span><br><span class="line">      <span class="attr">key:</span> <span class="string">&quot;google.json&quot;</span></span><br><span class="line">      <span class="attr">count:</span> <span class="number">9</span></span><br><span class="line">  <span class="attr">count:</span> <span class="number">9</span></span><br><span class="line">  <span class="attr">sitemap:</span> <span class="string">&#x27;sitemap.xml&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>同时需要把 <code>deploy</code> 改成数组格式，追加 <code>url_submission</code>：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">    <span class="attr">repo:</span> <span class="string">git@github.com:YourName/YourName.github.io.git</span></span><br><span class="line">    <span class="attr">branch:</span> <span class="string">master</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">type:</span> <span class="string">url_submission</span></span><br></pre></td></tr></table></figure>
+
+<p>这样每次 <code>hexo d</code> 的时候，会先推送到 GitHub Pages，然后自动提交 URL 到搜索引擎。</p>
+<h4 id="踩过的坑"><a href="#踩过的坑" class="headerlink" title="踩过的坑"></a>踩过的坑</h4><ol>
+<li><p>**prefix 默认值是 <code>[&#39;post&#39;]</code>**：这个插件的默认配置假设你的文章 URL 以 <code>/post</code> 开头，但我的 permalink 格式是 <code>:title/</code>，导致所有 URL 都被过滤掉了。设置 <code>prefix: []</code> 就能匹配所有路径。</p>
+</li>
+<li><p><strong>type: ‘latest’ 的判断逻辑</strong>：<code>latest</code> 模式通过比较源文件的 <code>mtime</code>（修改时间）和当天日期来判断是否需要提交。如果你 <code>hexo clean</code> 后重新生成，源文件的修改时间不会变，所以可能没有任何 URL 被选中。首次推送建议用 <code>type: &#39;all&#39;</code>，之后再改回 <code>latest</code>。</p>
+</li>
+<li><p><strong>百度每日配额</strong>：百度站长平台默认每天只能推送 10 条 URL（新站额度很低），超出会返回 400 <code>over quota</code>。合理设置 <code>count</code> 避免浪费请求。</p>
+</li>
+</ol>
+<h3 id="Google-Indexing-API-配置"><a href="#Google-Indexing-API-配置" class="headerlink" title="Google Indexing API 配置"></a>Google Indexing API 配置</h3><p>Google 的推送不是简单的 token，而是需要一个 <strong>Service Account</strong>（服务账号）的 JSON 密钥文件。步骤稍微复杂：</p>
+<ol>
+<li><p><strong>创建项目 &amp; 启用 API</strong>：打开 <a target="_blank" rel="noopener" href="https://console.cloud.google.com/start/api?id=indexing.googleapis.com&credential=client_key">Google API Console</a>，创建项目并启用 Indexing API。</p>
+</li>
+<li><p><strong>创建服务账号</strong>：在 <a target="_blank" rel="noopener" href="https://console.cloud.google.com/iam-admin/serviceaccounts">Service Accounts</a> 页面创建服务账号，下载 JSON 密钥文件，重命名为 <code>google.json</code> 放到博客根目录。</p>
+</li>
+<li><p><strong>授权服务账号</strong>：在 <a target="_blank" rel="noopener" href="https://search.google.com/search-console">Google Search Console</a> 中，将 JSON 文件里 <code>client_email</code> 字段的邮箱添加为站点<strong>所有者</strong>。</p>
+</li>
+<li><p><strong>安全</strong>：在 <code>.gitignore</code> 中添加 <code>google.json</code>，防止密钥泄露到 GitHub。</p>
+</li>
+</ol>
+<p>配置完成后运行 <code>hexo clean &amp;&amp; hexo g &amp;&amp; hexo d</code>，看到以下输出就说明成功了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">INFO  url_submission: (google) Submit to google engine success</span><br><span class="line">INFO  url_submission: (baidu) Submit to baidu engine success: [success: 9, remain: 1]</span><br></pre></td></tr></table></figure>
+
+<h2 id="站点配置优化"><a href="#站点配置优化" class="headerlink" title="站点配置优化"></a>站点配置优化</h2><h3 id="修改站点-description-和-keywords"><a href="#修改站点-description-和-keywords" class="headerlink" title="修改站点 description 和 keywords"></a>修改站点 description 和 keywords</h3><p><code>_config.yml</code> 中的 <code>description</code> 会被渲染为站点的 <code>&lt;meta name=&quot;description&quot;&gt;</code> 标签，直接影响搜索结果中站点的摘要文字。之前这里写的是一句文学性的话，完全不含搜索关键词：</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">-description: &quot;乐极生悲，否极泰来&lt;br&gt;灵魂的渴望是命运的先知&quot;</span></span><br><span class="line"><span class="deletion">-keywords:</span></span><br><span class="line"><span class="addition">+description: &quot;Kc 的个人技术博客，记录计算机网络、SDN、Serverless、云计算等学习笔记与项目实践，以及读书感悟和生活随想。&quot;</span></span><br><span class="line"><span class="addition">+keywords: 计算机网络, SDN, Serverless, 云计算, Hexo, 技术博客, 读书笔记, FaaS, Cloudflare</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="文章-Front-matter-优化"><a href="#文章-Front-matter-优化" class="headerlink" title="文章 Front-matter 优化"></a>文章 Front-matter 优化</h2><h3 id="为所有文章添加-description"><a href="#为所有文章添加-description" class="headerlink" title="为所有文章添加 description"></a>为所有文章添加 description</h3><p><code>description</code> 字段是文章级别最重要的 SEO 元素，它决定了搜索结果中文章标题下方显示的摘要文字。优化前，我的 79 篇文章<strong>没有一篇</strong>设置了这个字段。</p>
+<p>手动逐篇添加太慢，我写了一个 Python 脚本（<code>tools/add_descriptions.py</code>），为每篇文章手工拟定了一句合适的描述，然后批量插入到 front-matter 中：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 核心逻辑：在 title 行之后插入 description</span></span><br><span class="line">pattern = <span class="string">r&#x27;(---\s*\n(?:.*\n)*?title:[^\n]*\n)&#x27;</span></span><br><span class="line">new_content = content[:<span class="keyword">match</span>.end()] + <span class="string">f&#x27;description: <span class="subst">&#123;desc&#125;</span>\n&#x27;</span> + content[<span class="keyword">match</span>.end():]</span><br></pre></td></tr></table></figure>
+
+<p>效果如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">SDN控制器Ryu的动态拓扑发现</span></span><br><span class="line"><span class="attr">description:</span> <span class="string">使用</span> <span class="string">SDN</span> <span class="string">控制器</span> <span class="string">Ryu</span> <span class="string">实现动态网络拓扑发现和监控，包括</span> <span class="string">LLDP</span> <span class="string">协议机制、hub.spawn</span> <span class="string">协程及自定义拓扑更新应用。</span></span><br><span class="line"><span class="attr">mathjax:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">categories:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">学习印记</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="修改-scaffold-模板"><a href="#修改-scaffold-模板" class="headerlink" title="修改 scaffold 模板"></a>修改 scaffold 模板</h3><p>同时修改了 <code>scaffolds/post.md</code>，让以后每篇新文章自动包含 <code>description</code> 字段，避免遗忘：</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> ---</span><br><span class="line"> title: &#123;&#123; title &#125;&#125;</span><br><span class="line"> date: &#123;&#123; date &#125;&#125;</span><br><span class="line"><span class="addition">+description:</span></span><br><span class="line"> mathjax: true</span><br><span class="line"> categories:</span><br><span class="line"> - 学习印记</span><br><span class="line"> tags:</span><br><span class="line"> ---</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Hexo/" rel="tag"># Hexo</a>
+              <a href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag"># 博客</a>
+              <a href="/tags/SEO/" rel="tag"># SEO</a>
+              <a href="/tags/Google/" rel="tag"># Google</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E7%94%A8Claude-Code%E7%BB%99%E5%8D%9A%E5%AE%A2%E5%8A%A0%E7%A2%8E%E7%A2%8E%E5%BF%B5%E9%A1%B5%E9%9D%A2/" rel="prev" title="用Claude Code给博客加碎碎念页面">
+      <i class="fa fa-chevron-left"></i> 用Claude Code给博客加碎碎念页面
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E5%8A%A8%E6%8E%A8%E9%80%81-URL-%E5%88%B0%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E"><span class="nav-number">1.</span> <span class="nav-text">主动推送 URL 到搜索引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hexo-url-submission-%E6%8F%92%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text">hexo-url-submission 插件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.1.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">1.1.2.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91"><span class="nav-number">1.1.3.</span> <span class="nav-text">踩过的坑</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Google-Indexing-API-%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.</span> <span class="nav-text">Google Indexing API 配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AB%99%E7%82%B9%E9%85%8D%E7%BD%AE%E4%BC%98%E5%8C%96"><span class="nav-number">2.</span> <span class="nav-text">站点配置优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E7%AB%99%E7%82%B9-description-%E5%92%8C-keywords"><span class="nav-number">2.1.</span> <span class="nav-text">修改站点 description 和 keywords</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%87%E7%AB%A0-Front-matter-%E4%BC%98%E5%8C%96"><span class="nav-number">3.</span> <span class="nav-text">文章 Front-matter 优化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E6%89%80%E6%9C%89%E6%96%87%E7%AB%A0%E6%B7%BB%E5%8A%A0-description"><span class="nav-number">3.1.</span> <span class="nav-text">为所有文章添加 description</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9-scaffold-%E6%A8%A1%E6%9D%BF"><span class="nav-number">3.2.</span> <span class="nav-text">修改 scaffold 模板</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">KingCide</p>
+  <div class="site-description" itemprop="description">Kc 的个人技术博客，记录计算机网络、SDN、Serverless、云计算等学习笔记与项目实践，以及读书感悟和生活随想。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">75</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kingcide" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kingcide" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1659057796@qq.com" title="E-Mail → mailto:1659057796@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/436691243" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;436691243" rel="noopener" target="_blank"><i class="fa-bilibili fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">KingCide</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>

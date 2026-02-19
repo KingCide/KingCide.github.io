@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"keyc.top","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="一篇关于网络虚拟化中，容器间通信，容器覆盖网络优化的好文。">
+  <meta name="description" content="论文阅读笔记：Slim OS Kernel 对低开销容器 Overlay 网络的支持，分析容器网络性能优化方案。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Slim: OS Kernel Support for a Low-Overhead Container Overlay Network 阅读笔记">
 <meta property="og:url" content="https://keyc.top/Slim-OS-Kernel-Support-for-a-Low-Overhead-Container-Overlay-Network-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="Kc&#39;s Blog">
-<meta property="og:description" content="一篇关于网络虚拟化中，容器间通信，容器覆盖网络优化的好文。">
+<meta property="og:description" content="论文阅读笔记：Slim OS Kernel 对低开销容器 Overlay 网络的支持，分析容器网络性能优化方案。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20221003153015741.png">
 <meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/20200423174051628.png">
@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20221003222606512.png">
 <meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/image-20221003190616156.png">
 <meta property="article:published_time" content="2022-10-03T04:00:46.000Z">
-<meta property="article:modified_time" content="2022-10-03T15:39:15.000Z">
+<meta property="article:modified_time" content="2026-02-19T09:19:11.667Z">
 <meta property="article:author" content="KingCide">
 <meta property="article:tag" content="网络虚拟化">
 <meta property="article:tag" content="论文笔记">
@@ -198,7 +198,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="KingCide">
-      <meta itemprop="description" content="乐极生悲，否极泰来<br>灵魂的渴望是命运的先知">
+      <meta itemprop="description" content="Kc 的个人技术博客，记录计算机网络、SDN、Serverless、云计算等学习笔记与项目实践，以及读书感悟和生活随想。">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -215,10 +215,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2022-10-03 12:00:46 / 修改时间：23:39:15" itemprop="dateCreated datePublished" datetime="2022-10-03T12:00:46+08:00">2022-10-03</time>
+              <time title="创建时间：2022-10-03 12:00:46" itemprop="dateCreated datePublished" datetime="2022-10-03T12:00:46+08:00">2022-10-03</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2026-02-19 17:19:11" itemprop="dateModified" datetime="2026-02-19T17:19:11+08:00">2026-02-19</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -237,6 +243,7 @@
               <span class="post-meta-item-text">阅读次数：</span>
               <span id="busuanzi_value_page_pv"></span>
             </span>
+            <div class="post-description">论文阅读笔记：Slim OS Kernel 对低开销容器 Overlay 网络的支持，分析容器网络性能优化方案。</div>
 
         </div>
       </header>
@@ -386,14 +393,14 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
   <p class="site-author-name" itemprop="name">KingCide</p>
-  <div class="site-description" itemprop="description">乐极生悲，否极泰来<br>灵魂的渴望是命运的先知</div>
+  <div class="site-description" itemprop="description">Kc 的个人技术博客，记录计算机网络、SDN、Serverless、云计算等学习笔记与项目实践，以及读书感悟和生活随想。</div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-count">80</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -406,7 +413,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-count">75</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

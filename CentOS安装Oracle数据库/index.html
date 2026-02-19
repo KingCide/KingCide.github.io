@@ -20,16 +20,16 @@
     var CONFIG = {"hostname":"keyc.top","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="下载版本说明   版本 描述    CentOS-8.4.2105-x86_64-boot.iso 只包含最基本的boot引导程序   CentOS-8.4.2105-x86_64-boot.iso.manifest boot依赖列表文件(指定依赖库)   CentOS-8.4.2105-x86_64-boot.torrent boot的 BT 文件   CentOS-8.4.2105-x86">
+  <meta name="description" content="在 CentOS 系统上安装 Oracle 数据库的完整步骤和常见问题解决方案。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CentOS安装Oracle数据库">
 <meta property="og:url" content="https://keyc.top/CentOS%E5%AE%89%E8%A3%85Oracle%E6%95%B0%E6%8D%AE%E5%BA%93/index.html">
 <meta property="og:site_name" content="Kc&#39;s Blog">
-<meta property="og:description" content="下载版本说明   版本 描述    CentOS-8.4.2105-x86_64-boot.iso 只包含最基本的boot引导程序   CentOS-8.4.2105-x86_64-boot.iso.manifest boot依赖列表文件(指定依赖库)   CentOS-8.4.2105-x86_64-boot.torrent boot的 BT 文件   CentOS-8.4.2105-x86">
+<meta property="og:description" content="在 CentOS 系统上安装 Oracle 数据库的完整步骤和常见问题解决方案。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/clip_image002.jpg">
 <meta property="article:published_time" content="2021-09-13T13:49:32.000Z">
-<meta property="article:modified_time" content="2022-08-01T04:10:33.000Z">
+<meta property="article:modified_time" content="2026-02-19T09:19:11.661Z">
 <meta property="article:author" content="KingCide">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="数据库">
@@ -191,7 +191,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="KingCide">
-      <meta itemprop="description" content="乐极生悲，否极泰来<br>灵魂的渴望是命运的先知">
+      <meta itemprop="description" content="Kc 的个人技术博客，记录计算机网络、SDN、Serverless、云计算等学习笔记与项目实践，以及读书感悟和生活随想。">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -216,7 +216,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2022-08-01 12:10:33" itemprop="dateModified" datetime="2022-08-01T12:10:33+08:00">2022-08-01</time>
+                <time title="修改时间：2026-02-19 17:19:11" itemprop="dateModified" datetime="2026-02-19T17:19:11+08:00">2026-02-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -236,6 +236,7 @@
               <span class="post-meta-item-text">阅读次数：</span>
               <span id="busuanzi_value_page_pv"></span>
             </span>
+            <div class="post-description">在 CentOS 系统上安装 Oracle 数据库的完整步骤和常见问题解决方案。</div>
 
         </div>
       </header>
@@ -433,14 +434,14 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
   <p class="site-author-name" itemprop="name">KingCide</p>
-  <div class="site-description" itemprop="description">乐极生悲，否极泰来<br>灵魂的渴望是命运的先知</div>
+  <div class="site-description" itemprop="description">Kc 的个人技术博客，记录计算机网络、SDN、Serverless、云计算等学习笔记与项目实践，以及读书感悟和生活随想。</div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">79</span>
+          <span class="site-state-item-count">80</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -453,7 +454,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">73</span>
+        <span class="site-state-item-count">75</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
