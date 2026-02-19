@@ -81,11 +81,11 @@
     <category term="学习印记" scheme="https://keyc.top/categories/%E5%AD%A6%E4%B9%A0%E5%8D%B0%E8%AE%B0/"/>
     
     
-    <category term="网络" scheme="https://keyc.top/tags/%E7%BD%91%E7%BB%9C/"/>
-    
     <category term="CloudFlare" scheme="https://keyc.top/tags/CloudFlare/"/>
     
     <category term="VPN" scheme="https://keyc.top/tags/VPN/"/>
+    
+    <category term="网络" scheme="https://keyc.top/tags/%E7%BD%91%E7%BB%9C/"/>
     
     <category term="Serverless" scheme="https://keyc.top/tags/Serverless/"/>
     
@@ -130,11 +130,11 @@
     <category term="学习印记" scheme="https://keyc.top/categories/%E5%AD%A6%E4%B9%A0%E5%8D%B0%E8%AE%B0/"/>
     
     
+    <category term="RocketMQ" scheme="https://keyc.top/tags/RocketMQ/"/>
+    
     <category term="开源" scheme="https://keyc.top/tags/%E5%BC%80%E6%BA%90/"/>
     
     <category term="Pulsar" scheme="https://keyc.top/tags/Pulsar/"/>
-    
-    <category term="RocketMQ" scheme="https://keyc.top/tags/RocketMQ/"/>
     
   </entry>
   
