@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/kc32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/kc16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"keyc.top","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="记录在只有公网 IP、没有域名的云服务器上搭建 Tailscale 自建 DERP 中继的完整过程，包括 DERP 原理、证书方案选择、systemd 部署和踩坑复盘。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="自建 Tailscale DERP 中继实践">
+<meta property="og:url" content="https://keyc.top/%E8%87%AA%E5%BB%BA-Tailscale-DERP-%E4%B8%AD%E7%BB%A7%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:site_name" content="Kc&#39;s Blog">
+<meta property="og:description" content="记录在只有公网 IP、没有域名的云服务器上搭建 Tailscale 自建 DERP 中继的完整过程，包括 DERP 原理、证书方案选择、systemd 部署和踩坑复盘。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/ChatGPT%20Image%202026%E5%B9%B45%E6%9C%883%E6%97%A5%2004_29_45.png">
+<meta property="article:published_time" content="2026-05-02T19:30:00.000Z">
+<meta property="article:modified_time" content="2026-05-02T20:31:53.898Z">
+<meta property="article:author" content="KingCide">
+<meta property="article:tag" content="网络">
+<meta property="article:tag" content="云服务器">
+<meta property="article:tag" content="Tailscale">
+<meta property="article:tag" content="DERP">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/ChatGPT%20Image%202026%E5%B9%B45%E6%9C%883%E6%97%A5%2004_29_45.png">
+
+<link rel="canonical" href="https://keyc.top/%E8%87%AA%E5%BB%BA-Tailscale-DERP-%E4%B8%AD%E7%BB%A7%E5%AE%9E%E8%B7%B5/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>自建 Tailscale DERP 中继实践 | Kc's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Kc's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Kc's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">乐极生悲，否极泰来 | 灵魂的渴望是命运的先知</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-music">
+
+    <a href="/music/" rel="section"><i class="fa fa-music fa-fw"></i>音乐</a>
+
+  </li>
+        <li class="menu-item menu-item-cv">
+
+    <a href="/cv/" rel="section"><i class="fa fa-graduation-cap fa-fw"></i>简历</a>
+
+  </li>
+        <li class="menu-item menu-item-thoughts">
+
+    <a href="/thoughts/" rel="section"><i class="fa fa-comment fa-fw"></i>碎碎念</a>
+
+  </li>
+        <li class="menu-item menu-item-others">
+
+    <a href="/others/" rel="section"><i class="fa fa-ellipsis-h fa-fw"></i>其他</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://keyc.top/%E8%87%AA%E5%BB%BA-Tailscale-DERP-%E4%B8%AD%E7%BB%A7%E5%AE%9E%E8%B7%B5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="KingCide">
+      <meta itemprop="description" content="Kc 的个人技术博客，记录计算机网络、AI、Serverless、云计算等学习笔记与项目实践，以及读书感悟和生活随想。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Kc's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          自建 Tailscale DERP 中继实践
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2026-05-03 03:30:00 / 修改时间：04:31:53" itemprop="dateCreated datePublished" datetime="2026-05-03T03:30:00+08:00">2026-05-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AD%A6%E4%B9%A0%E5%8D%B0%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">学习印记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <div class="post-description">记录在只有公网 IP、没有域名的云服务器上搭建 Tailscale 自建 DERP 中继的完整过程，包括 DERP 原理、证书方案选择、systemd 部署和踩坑复盘。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <link rel="stylesheet" type="text/css" href="https://fastly.jsdelivr.net/hint.css/2.4.1/hint.min.css"><p>最近使用 Tailscale 连接多台设备时，发现有些网络环境下直连并不总是稳定。虽然 Tailscale 的体验已经非常接近“无感组网”，但当两端网络都比较复杂时，连接还是可能会退回 DERP 中继。默认的 DERP 节点大多在香港、新加坡、日本等地，对我来说有时延迟还可以，有时又不够理想。</p>
+<p>手里刚好有一台国内云服务器，有公网 IP，而且长期在线。于是很自然地产生了一个想法：能不能把这台服务器配置成自己的 Tailscale DERP 中继，让 Tailscale 在需要中继时优先走一个更近、更可控的节点？</p>
+<span id="more"></span>
+
+<p>这篇文章记录这次配置过程。为了避免泄露敏感信息，文中的公网 IP、证书指纹、密钥等都使用占位符表示。</p>
+<p><img src="https://typora-kc.oss-cn-chengdu.aliyuncs.com/image/ChatGPT%20Image%202026%E5%B9%B45%E6%9C%883%E6%97%A5%2004_29_45.png" alt="poster"></p>
+<h2 id="DERP-是什么"><a href="#DERP-是什么" class="headerlink" title="DERP 是什么"></a>DERP 是什么</h2><p>Tailscale 的底层是 WireGuard。正常情况下，两台设备之间会尽量通过 NAT 穿透建立直连。直连成功之后，数据包直接在两端之间传输，延迟最低，吞吐也最好。</p>
+<p>但是现实网络并不总是理想的。比如：</p>
+<ol>
+<li>两端都在比较严格的 NAT 后面。</li>
+<li>某些网络限制 UDP。</li>
+<li>校园网、公司网、运营商网络策略比较复杂。</li>
+<li>两端公网路径质量不稳定。</li>
+</ol>
+<p>这时 Tailscale 就会使用 DERP 作为兜底通道。DERP 可以理解成一个中继服务器，负责转发已经端到端加密的 WireGuard 流量。DERP 本身并不能解密通信内容，它只是保证在直连失败时，两台设备仍然能够连上。</p>
+<p>所以自建 DERP 的意义不是替代 WireGuard 直连，而是提供一个更近的兜底节点：</p>
+<ol>
+<li>降低中继路径延迟。</li>
+<li>避免流量绕到较远地区。</li>
+<li>提升特殊网络环境下的可用性。</li>
+<li>对中继节点的位置和运行环境有更多控制权。</li>
+</ol>
+<h2 id="初始条件"><a href="#初始条件" class="headerlink" title="初始条件"></a>初始条件</h2><p>这次使用的是一台 Ubuntu 22.04 云服务器，只有公网 IP，没有绑定域名。服务器上原本已经有一些 Docker 服务和代理服务在运行，但 DERP 最终没有使用 Docker 部署，而是直接作为 systemd 管理的系统进程运行。</p>
+<p>Tailscale 官方对自建 DERP 的要求主要包括：</p>
+<ol>
+<li>服务器需要公网可达。</li>
+<li>TCP <code>443</code> 用于 DERP HTTPS。</li>
+<li>TCP <code>80</code> 用于 HTTP 辅助服务。</li>
+<li>UDP <code>3478</code> 用于 STUN。</li>
+<li>DERP 服务需要 TLS。</li>
+</ol>
+<p>这里最大的限制是：没有域名，只有公网 IP。</p>
+<p>按照普通 HTTPS 服务的思路，如果没有域名，就很难从 Let’s Encrypt 申请常规证书。最开始我也尝试过用通配 DNS 服务绕过这个问题，但最后发现 Tailscale 官方其实已经内置了更适合纯 IP 场景的方案。</p>
+<h2 id="第一版方案：通配-DNS-Let’s-Encrypt"><a href="#第一版方案：通配-DNS-Let’s-Encrypt" class="headerlink" title="第一版方案：通配 DNS + Let’s Encrypt"></a>第一版方案：通配 DNS + Let’s Encrypt</h2><p>一开始想到的方案是使用类似 <code>sslip.io</code> 的通配 DNS 服务。它可以把形如：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;SERVER_IP&gt;.sslip.io</span><br></pre></td></tr></table></figure>
+
+<p>这样的域名解析到：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;SERVER_IP&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这样即使没有自己的域名，也可以临时得到一个能解析到服务器的主机名，然后让 <code>derper</code> 通过 Let’s Encrypt 自动签发证书。</p>
+<p>当时的 DERP 启动命令大致如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/bin/derper \</span><br><span class="line">  --hostname=&lt;SERVER_IP&gt;.sslip.io \</span><br><span class="line">  --certdir=/var/lib/derper/certs \</span><br><span class="line">  --a=:443 \</span><br><span class="line">  --http-port=80 \</span><br><span class="line">  --stun-port=3478</span><br></pre></td></tr></table></figure>
+
+<p>对应的 DERPMap 类似：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;derpMap&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;Regions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;900&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;RegionID&quot;</span><span class="punctuation">:</span> <span class="number">900</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;RegionCode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;custom-cn&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;RegionName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Custom CN&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;Nodes&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;Name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;RegionID&quot;</span><span class="punctuation">:</span> <span class="number">900</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;HostName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&lt;SERVER_IP&gt;.sslip.io&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;IPv4&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&lt;SERVER_IP&gt;&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>这个方案一开始看起来是成功的。客户端执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tailscale netcheck</span><br></pre></td></tr></table></figure>
+
+<p>可以看到自建 DERP 节点已经出现在延迟列表里，并且会被识别为最近的 DERP 区域。</p>
+<p>但问题也很快出现了。Tailscale 客户端提示：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Relay Server Unavailable</span><br><span class="line">Tailscale could not connect to the custom relay server.</span><br><span class="line">Code: no-derp-connection</span><br></pre></td></tr></table></figure>
+
+<p>进一步使用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tailscale debug derp 900</span><br></pre></td></tr></table></figure>
+
+<p>可以看到客户端在完整建立 DERP 连接时失败。这里有一个容易误判的地方：<code>tailscale netcheck</code> 能看到延迟，不代表完整 DERP relay 长连接一定成功。DERP 连接不仅要 TCP 可达，还要完成 TLS 握手、HTTP Upgrade，然后进入 DERP 协议。</p>
+<p>第一版方案的问题可能主要出在在 TLS 连接和 DNS 细节上。尤其是只有 <code>IPv4</code> 时，如果没有显式写 <code>IPv6: &quot;none&quot;</code>，Tailscale 仍然会尝试解析 <code>HostName</code> 的 AAAA 记录，从而产生无效的 IPv6 查询错误。</p>
+<h2 id="最终方案：纯-IP-自签证书指纹"><a href="#最终方案：纯-IP-自签证书指纹" class="headerlink" title="最终方案：纯 IP + 自签证书指纹"></a>最终方案：纯 IP + 自签证书指纹</h2><p>后来翻了一下 <code>derper</code> 的实现，发现它本身支持纯 IP 场景。</p>
+<p>当 <code>--hostname</code> 是 IP 地址，并且使用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--certmode=manual</span><br></pre></td></tr></table></figure>
+
+<p>时，<code>derper</code> 会自动为这个 IP 生成一张自签证书，并在日志里输出 DERPMap 所需的证书指纹：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;CertName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;sha256-raw:&lt;CERT_SHA256&gt;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>这是一种证书 pinning。客户端不再依赖公共 CA，也不依赖通配 DNS，而是明确指定：只信任这个 SHA256 指纹对应的证书。</p>
+<p>这反而更适合“只有 IP，没有域名”的服务器。</p>
+<p>最终 <code>derper</code> 的启动命令变成：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/bin/derper \</span><br><span class="line">  --hostname=&lt;SERVER_IP&gt; \</span><br><span class="line">  --certmode=manual \</span><br><span class="line">  --certdir=/var/lib/derper/certs \</span><br><span class="line">  --a=:443 \</span><br><span class="line">  --http-port=80 \</span><br><span class="line">  --stun-port=3478</span><br></pre></td></tr></table></figure>
+
+<p>对应的 DERPMap 是：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;derpMap&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;Regions&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;900&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;RegionID&quot;</span><span class="punctuation">:</span> <span class="number">900</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;RegionCode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;custom-cn&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;RegionName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Custom CN&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;Nodes&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;Name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;RegionID&quot;</span><span class="punctuation">:</span> <span class="number">900</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;HostName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&lt;SERVER_IP&gt;&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;CertName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;sha256-raw:&lt;CERT_SHA256&gt;&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;IPv4&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&lt;SERVER_IP&gt;&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;IPv6&quot;</span><span class="punctuation">:</span> <span class="string">&quot;none&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>这里有几个字段比较关键：</p>
+<ol>
+<li><code>RegionID</code> 使用一个自定义的较大编号，例如 <code>900</code>，官方有推荐范围。</li>
+<li><code>HostName</code> 直接写服务器公网 IP。</li>
+<li><code>CertName</code> 写 <code>derper</code> 日志里输出的 <code>sha256-raw</code> 指纹。</li>
+<li><code>IPv4</code> 显式写公网 IP。</li>
+<li><code>IPv6</code> 显式写 <code>&quot;none&quot;</code>，避免客户端继续尝试 AAAA 解析。</li>
+</ol>
+<h2 id="服务器上做了什么"><a href="#服务器上做了什么" class="headerlink" title="服务器上做了什么"></a>服务器上做了什么</h2><p>服务器上安装了 Go 工具链：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/go</span><br></pre></td></tr></table></figure>
+
+<p>然后通过 Go 安装了 Tailscale 官方工具：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/bin/derper</span><br><span class="line">/usr/local/bin/derpprobe</span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<ol>
+<li><code>derper</code> 是实际运行的 DERP relay server。</li>
+<li><code>derpprobe</code> 用于探测 DERP 服务是否正常。</li>
+</ol>
+<p>DERP 的状态文件和证书放在：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/var/lib/derper</span><br><span class="line">/var/lib/derper/derper.key</span><br><span class="line">/var/lib/derper/certs</span><br></pre></td></tr></table></figure>
+
+<p>systemd 服务文件放在：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/etc/systemd/system/derper.service</span><br></pre></td></tr></table></figure>
+
+<p>核心配置如下：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[Unit]</span></span><br><span class="line"><span class="attr">Description</span>=Tailscale DERP relay server</span><br><span class="line"><span class="attr">After</span>=network-<span class="literal">on</span>line.target</span><br><span class="line"><span class="attr">Wants</span>=network-<span class="literal">on</span>line.target</span><br><span class="line"></span><br><span class="line"><span class="section">[Service]</span></span><br><span class="line"><span class="attr">Type</span>=simple</span><br><span class="line"><span class="attr">ExecStart</span>=/usr/local/bin/derper --hostname=&lt;SERVER_IP&gt; --certmode=manual --certdir=/var/lib/derper/certs --a=:<span class="number">443</span> --http-port=<span class="number">80</span> --stun-port=<span class="number">3478</span></span><br><span class="line"><span class="attr">Restart</span>=<span class="literal">on</span>-failure</span><br><span class="line"><span class="attr">RestartSec</span>=<span class="number">5</span>s</span><br><span class="line"><span class="attr">AmbientCapabilities</span>=CAP_NET_BIND_SERVICE</span><br><span class="line"><span class="attr">CapabilityBoundingSet</span>=CAP_NET_BIND_SERVICE</span><br><span class="line"><span class="attr">NoNewPrivileges</span>=<span class="literal">true</span></span><br><span class="line"><span class="attr">LimitNOFILE</span>=<span class="number">1048576</span></span><br><span class="line"></span><br><span class="line"><span class="section">[Install]</span></span><br><span class="line"><span class="attr">WantedBy</span>=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<p>然后启用服务：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl daemon-reload</span><br><span class="line">systemctl <span class="built_in">enable</span> --now derper</span><br></pre></td></tr></table></figure>
+
+<p>端口方面，需要保证以下端口开放：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">TCP 80</span><br><span class="line">TCP 443</span><br><span class="line">UDP 3478</span><br></pre></td></tr></table></figure>
+
+<p>如果使用 UFW，可以执行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ufw allow 3478/udp</span><br></pre></td></tr></table></figure>
+
+<h2 id="验证方式"><a href="#验证方式" class="headerlink" title="验证方式"></a>验证方式</h2><p>服务器侧可以用 <code>derpprobe</code> 验证：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/bin/derpprobe --derp-map=file:///root/derpmap-custom.json --once</span><br></pre></td></tr></table></figure>
+
+<p>客户端侧可以用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tailscale netcheck</span><br></pre></td></tr></table></figure>
+
+<p>如果配置正常，会看到自建 DERP 节点出现在延迟列表中：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Nearest DERP: Custom CN</span><br><span class="line">DERP latency:</span><br><span class="line">  - custom-cn: xx ms (Custom CN)</span><br></pre></td></tr></table></figure>
+
+<p>更进一步，可以使用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tailscale debug derp 900</span><br></pre></td></tr></table></figure>
+
+<p>这个命令比 <code>netcheck</code> 更直接，它会测试指定 DERP region 是否能完整建立连接。</p>
+<h2 id="关于重启和可用性"><a href="#关于重启和可用性" class="headerlink" title="关于重启和可用性"></a>关于重启和可用性</h2><p>因为 <code>derper</code> 是通过 systemd 管理，并且已经执行了：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl <span class="built_in">enable</span> --now derper</span><br></pre></td></tr></table></figure>
+
+<p>所以服务器重启后，DERP 服务会自动恢复。</p>
+<p>重启期间仍然会有短暂影响：</p>
+<ol>
+<li>如果没有设置 <code>OmitDefaultRegions</code>，Tailscale 可以回退到官方 DERP，连接一般仍然可用，只是路径可能绕远。</li>
+<li>如果设置了 <code>&quot;OmitDefaultRegions&quot;: true</code>，则服务器重启期间，自建 DERP 不可用，某些不能直连的设备可能会暂时失联。</li>
+</ol>
+<p>所以更稳妥的方式是先不要急着禁用官方 DERP。等自建 DERP 稳定运行一段时间后，再决定是否要完全只使用自己的 DERP 节点。</p>
+<h2 id="一些踩坑记录"><a href="#一些踩坑记录" class="headerlink" title="一些踩坑记录"></a>一些踩坑记录</h2><h3 id="netcheck-成功不代表-DERP-完全可用"><a href="#netcheck-成功不代表-DERP-完全可用" class="headerlink" title="netcheck 成功不代表 DERP 完全可用"></a>netcheck 成功不代表 DERP 完全可用</h3><p><code>tailscale netcheck</code> 能看到自建 DERP 的延迟，只能说明探测链路基本可达。真正的 DERP relay 连接还需要完成 TLS 和 HTTP Upgrade。遇到 health warning 时，应该继续使用：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tailscale debug derp &lt;RegionID&gt;</span><br></pre></td></tr></table></figure>
+
+<p>来确认完整连接是否成功。</p>
+<h3 id="没有-IPv6-时要显式禁用"><a href="#没有-IPv6-时要显式禁用" class="headerlink" title="没有 IPv6 时要显式禁用"></a>没有 IPv6 时要显式禁用</h3><p>如果服务器没有 IPv6，DERPMap 里最好写：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;IPv6&quot;</span><span class="punctuation">:</span> <span class="string">&quot;none&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>否则客户端可能会继续尝试对 <code>HostName</code> 做 AAAA 查询。</p>
+<h3 id="没有域名时不必强行使用通配-DNS"><a href="#没有域名时不必强行使用通配-DNS" class="headerlink" title="没有域名时不必强行使用通配 DNS"></a>没有域名时不必强行使用通配 DNS</h3><p>通配 DNS 可以解决一部分问题，但它仍然引入了额外依赖。对于只有公网 IP 的自建 DERP，<code>derper</code> 的 manual cert 模式更加直接：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--certmode=manual --hostname=&lt;SERVER_IP&gt;</span><br></pre></td></tr></table></figure>
+
+<p>然后配合：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;CertName&quot;</span><span class="punctuation">:</span> <span class="string">&quot;sha256-raw:&lt;CERT_SHA256&gt;&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>就可以完成证书信任。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>这次配置最大的收获是重新理解了 Tailscale 的连接路径：直连仍然是最优解，DERP 是兜底；自建 DERP 的价值不在于让所有流量都经过自己的服务器，而是在直连失败时提供一个更近、更稳定的中继点。</p>
+<p>对于只有公网 IP、没有域名的服务器，最终采用的方案是：</p>
+<ol>
+<li>使用官方 <code>derper</code>。</li>
+<li>通过 systemd 作为系统服务运行。</li>
+<li>使用 <code>--certmode=manual --hostname=&lt;SERVER_IP&gt;</code> 自动生成 IP 自签证书。</li>
+<li>在 DERPMap 中使用 <code>sha256-raw</code> 证书指纹 pinning。</li>
+<li>显式配置 <code>IPv4</code> 和 <code>IPv6: &quot;none&quot;</code>。</li>
+</ol>
+<p>最终效果是，Tailscale 网络中新增了一个自定义 DERP region。对于网络环境复杂、直连不稳定的设备，它可以作为一个更近、更可控的兜底路径。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag"># 网络</a>
+              <a href="/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8/" rel="tag"># 云服务器</a>
+              <a href="/tags/Tailscale/" rel="tag"># Tailscale</a>
+              <a href="/tags/DERP/" rel="tag"># DERP</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E8%87%B4%E8%B0%A2/" rel="prev" title="致谢">
+      <i class="fa fa-chevron-left"></i> 致谢
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#DERP-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">1.</span> <span class="nav-text">DERP 是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E6%9D%A1%E4%BB%B6"><span class="nav-number">2.</span> <span class="nav-text">初始条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%89%88%E6%96%B9%E6%A1%88%EF%BC%9A%E9%80%9A%E9%85%8D-DNS-Let%E2%80%99s-Encrypt"><span class="nav-number">3.</span> <span class="nav-text">第一版方案：通配 DNS + Let’s Encrypt</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%80%E7%BB%88%E6%96%B9%E6%A1%88%EF%BC%9A%E7%BA%AF-IP-%E8%87%AA%E7%AD%BE%E8%AF%81%E4%B9%A6%E6%8C%87%E7%BA%B9"><span class="nav-number">4.</span> <span class="nav-text">最终方案：纯 IP + 自签证书指纹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%E5%81%9A%E4%BA%86%E4%BB%80%E4%B9%88"><span class="nav-number">5.</span> <span class="nav-text">服务器上做了什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AA%8C%E8%AF%81%E6%96%B9%E5%BC%8F"><span class="nav-number">6.</span> <span class="nav-text">验证方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E9%87%8D%E5%90%AF%E5%92%8C%E5%8F%AF%E7%94%A8%E6%80%A7"><span class="nav-number">7.</span> <span class="nav-text">关于重启和可用性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95"><span class="nav-number">8.</span> <span class="nav-text">一些踩坑记录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#netcheck-%E6%88%90%E5%8A%9F%E4%B8%8D%E4%BB%A3%E8%A1%A8-DERP-%E5%AE%8C%E5%85%A8%E5%8F%AF%E7%94%A8"><span class="nav-number">8.1.</span> <span class="nav-text">netcheck 成功不代表 DERP 完全可用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B2%A1%E6%9C%89-IPv6-%E6%97%B6%E8%A6%81%E6%98%BE%E5%BC%8F%E7%A6%81%E7%94%A8"><span class="nav-number">8.2.</span> <span class="nav-text">没有 IPv6 时要显式禁用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B2%A1%E6%9C%89%E5%9F%9F%E5%90%8D%E6%97%B6%E4%B8%8D%E5%BF%85%E5%BC%BA%E8%A1%8C%E4%BD%BF%E7%94%A8%E9%80%9A%E9%85%8D-DNS"><span class="nav-number">8.3.</span> <span class="nav-text">没有域名时不必强行使用通配 DNS</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">9.</span> <span class="nav-text">小结</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">KingCide</p>
+  <div class="site-description" itemprop="description">Kc 的个人技术博客，记录计算机网络、AI、Serverless、云计算等学习笔记与项目实践，以及读书感悟和生活随想。</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">83</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/kingcide" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;kingcide" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1659057796@qq.com" title="E-Mail → mailto:1659057796@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/436691243" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;436691243" rel="noopener" target="_blank"><i class="fa-bilibili fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/atom.xml" title="RSS → &#x2F;atom.xml"><i class="fa fa-rss fa-fw"></i>RSS</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2026</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">KingCide</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+    <script defer src="/lib/three/three-waves.min.js"></script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+<script>
+document.querySelectorAll('.pdfobject-container').forEach(element => {
+  let url = element.dataset.target;
+  let pdfOpenParams = {
+    navpanes : 0,
+    toolbar  : 0,
+    statusbar: 0,
+    pagemode : 'thumbs',
+    view     : 'FitH'
+  };
+  let pdfOpenFragment = '#' + Object.entries(pdfOpenParams).map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+  let fullURL = `/lib/pdf/web/viewer.html?file=${encodeURIComponent(url)}${pdfOpenFragment}`;
+
+  if (NexT.utils.supportsPDFs()) {
+    element.innerHTML = `<embed class="pdfobject" src="${url + pdfOpenFragment}" type="application/pdf" style="height: ${element.dataset.height};">`;
+  } else {
+    element.innerHTML = `<iframe src="${fullURL}" style="height: ${element.dataset.height};" frameborder="0"></iframe>`;
+  }
+});
+</script>
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//fastly.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
